@@ -83,7 +83,7 @@ section{padding:5rem 2rem;}
 .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:2rem;margin-top:2.5rem;}
 .product-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all 0.3s;cursor:pointer;}
 .product-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(139,94,60,0.12);}
-.product-img{width:100%;height:220px;object-fit:cover;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:0.85rem;}
+.product-img{width:100%;height:220px;object-fit:cover;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:0.85rem;overflow:hidden;}
 .product-img img{width:100%;height:100%;object-fit:cover;}
 .product-info{padding:1.25rem;}
 .product-badge{display:inline-block;background:rgba(201,150,58,0.1);color:var(--gold-dark);font-size:0.72rem;padding:3px 10px;border-radius:10px;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.5rem;}
@@ -94,10 +94,10 @@ section{padding:5rem 2rem;}
 .add-to-cart{background:var(--gold);color:#fff;border:none;padding:8px 18px;border-radius:var(--radius-sm);font-size:0.85rem;font-family:'Georgia',serif;cursor:pointer;transition:all 0.2s;}
 .add-to-cart:hover{background:var(--gold-dark);}
 
-/* COLOR PICKER */
-.color-picker{display:flex;gap:6px;margin-bottom:0.75rem;flex-wrap:wrap;}
-.color-dot{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.2s;}
-.color-dot:hover,.color-dot.selected{border-color:var(--gold-dark);transform:scale(1.15);}
+/* LOADING */
+.products-loading{text-align:center;padding:3rem;color:var(--text-light);font-size:0.95rem;}
+.products-loading::after{content:'';display:block;width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;margin:1rem auto 0;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
 /* ABOUT */
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;margin-top:3rem;}
@@ -197,7 +197,6 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:3rem 2re
   .about-values{grid-template-columns:1fr;}
 }
 
-/* ANIMATIONS */
 @keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
 .fade-up{opacity:0;animation:fadeUp 0.6s ease forwards;}
 .delay-1{animation-delay:0.1s;}
@@ -269,78 +268,14 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:3rem 2re
     <p class="section-sub" data-da="Hvert produkt er lavet med omhu og kan tilpasses i farve og størrelse efter dine ønsker." data-en="Every product is crafted with care and can be customized in color and size to your wishes.">
       Hvert produkt er lavet med omhu og kan tilpasses i farve og størrelse efter dine ønsker.
     </p>
-
     <div class="filter-bar">
-      <button class="filter-btn active" onclick="filterProducts('alle')" data-da="Alle" data-en="All">Alle</button>
-      <button class="filter-btn" onclick="filterProducts('born')" data-da="Børn" data-en="Children">Børn</button>
-      <button class="filter-btn" onclick="filterProducts('voksne')" data-da="Voksne" data-en="Adults">Voksne</button>
-      <button class="filter-btn" onclick="filterProducts('erhverv')" data-da="Erhverv" data-en="Business">Erhverv</button>
+      <button class="filter-btn active" onclick="filterProducts('alle', event)" data-da="Alle" data-en="All">Alle</button>
+      <button class="filter-btn" onclick="filterProducts('born', event)" data-da="Børn" data-en="Children">Børn</button>
+      <button class="filter-btn" onclick="filterProducts('voksne', event)" data-da="Voksne" data-en="Adults">Voksne</button>
+      <button class="filter-btn" onclick="filterProducts('erhverv', event)" data-da="Erhverv" data-en="Business">Erhverv</button>
     </div>
-
     <div class="products-grid" id="productsGrid">
-<!-- PRODUCTS-START -->
-<div class="product-card" data-category="born"><div class="product-img"><img src="/images/uploads/whatsapp-image-2026-04-15-at-21.25.34.jpeg" alt="Fidget Tastatur" onerror="this.parentElement.innerHTML='📸 Billede kommer snart'"></div><div class="product-info"><span class="product-badge">Børn</span><div class="product-name">Fidget Tastatur</div><div class="product-desc">Fidget med mekaniske tastatur knapper til stress og koncentrationsbesvær.</div><div class="product-footer"><span class="product-price">50 kr</span><button class="add-to-cart" onclick="addToCart('Fidget Tastatur',50,null)">Læg i kurv</button></div></div></div>
-<!-- PRODUCTS-END -->
-
-      <!-- PRODUCT: Fidget Tastatur -->
-      <div class="product-card" data-category="voksne born">
-        <div class="product-img">
-          <img src="fidget-keyboard.jpg" alt="Fidget Tastatur" onerror="this.parentElement.innerHTML='📸 Billede kommer snart'">
-        </div>
-        <div class="product-info">
-          <span class="product-badge" data-da="Bedst sælgende" data-en="Best seller">Bedst sælgende</span>
-          <div class="product-name" data-da="Fidget Tastatur" data-en="Fidget Keyboard">Fidget Tastatur</div>
-          <div class="product-desc" data-da="9 mekaniske keyboard-knapper i 3D-print. Perfekt til at holde hænderne beskæftiget. Vælg din yndlingsfarve." data-en="9 mechanical keyboard buttons in 3D-print. Perfect for keeping hands busy. Choose your favorite color.">
-            9 mekaniske keyboard-knapper i 3D-print. Perfekt til at holde hænderne beskæftiget. Vælg din yndlingsfarve.
-          </div>
-          <div class="color-picker" id="colorPicker-fidget">
-            <div class="color-dot selected" style="background:#e74c3c" data-color="Rød" title="Rød"></div>
-            <div class="color-dot" style="background:#3498db" data-color="Blå" title="Blå"></div>
-            <div class="color-dot" style="background:#2ecc71" data-color="Grøn" title="Grøn"></div>
-            <div class="color-dot" style="background:#f39c12" data-color="Orange" title="Orange"></div>
-            <div class="color-dot" style="background:#9b59b6" data-color="Lilla" title="Lilla"></div>
-            <div class="color-dot" style="background:#1abc9c" data-color="Turkis" title="Turkis"></div>
-            <div class="color-dot" style="background:#34495e" data-color="Sort" title="Sort"></div>
-            <div class="color-dot" style="background:#ecf0f1;border:1px solid #ccc" data-color="Hvid" title="Hvid"></div>
-          </div>
-          <div class="product-footer">
-            <span class="product-price">50 kr</span>
-            <button class="add-to-cart" onclick="addToCart('Fidget Tastatur', 50, 'colorPicker-fidget')">
-              <span data-da="Læg i kurv" data-en="Add to cart">Læg i kurv</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- PLACEHOLDER PRODUCTS -->
-      <div class="product-card" data-category="born">
-        <div class="product-img" style="background:var(--cream-dark);display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:0.85rem;">
-          <span data-da="Kommende produkt" data-en="Coming soon">Kommende produkt</span>
-        </div>
-        <div class="product-info">
-          <span class="product-badge" data-da="Børn" data-en="Children">Børn</span>
-          <div class="product-name" data-da="Nyt produkt kommer snart" data-en="New product coming soon">Nyt produkt kommer snart</div>
-          <div class="product-desc" data-da="Vi arbejder på nye spændende produkter til de mindste." data-en="We are working on exciting new products for the little ones.">Vi arbejder på nye spændende produkter til de mindste.</div>
-          <div class="product-footer">
-            <span class="product-price" data-da="Pris TBD" data-en="Price TBD">Pris TBD</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="product-card" data-category="erhverv">
-        <div class="product-img" style="background:var(--cream-dark);display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:0.85rem;">
-          <span data-da="Kommende produkt" data-en="Coming soon">Kommende produkt</span>
-        </div>
-        <div class="product-info">
-          <span class="product-badge" data-da="Erhverv" data-en="Business">Erhverv</span>
-          <div class="product-name" data-da="Erhvervsløsninger" data-en="Business solutions">Erhvervsløsninger</div>
-          <div class="product-desc" data-da="Skræddersyede produkter til virksomheder. Kontakt os for et tilbud." data-en="Tailored products for businesses. Contact us for a quote.">Skræddersyede produkter til virksomheder. Kontakt os for et tilbud.</div>
-          <div class="product-footer">
-            <span class="product-price" data-da="Efter aftale" data-en="By agreement">Efter aftale</span>
-          </div>
-        </div>
-      </div>
-
+      <div class="products-loading" id="productsLoading">Henter produkter...</div>
     </div>
   </div>
 </section>
@@ -396,67 +331,61 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:3rem 2re
     <h2 class="section-title" data-da="Ofte stillede spørgsmål" data-en="Frequently asked questions">Ofte stillede spørgsmål</h2>
     <div class="divider"></div>
     <div class="faq-list">
-
       <div class="faq-item">
         <button class="faq-question" onclick="toggleFaq(this)">
           <span data-da="Hvordan bestiller jeg?" data-en="How do I order?">Hvordan bestiller jeg?</span>
           <i class="faq-icon">+</i>
         </button>
         <div class="faq-answer">
-          <p data-da="Du vælger dit produkt, lægger det i kurven og udfylder bestillingsformularen med dine kontaktoplysninger. Herefter modtager du en bekræftelsesemail med betalingsinformation." data-en="You choose your product, add it to the cart and fill out the order form with your contact details. You will then receive a confirmation email with payment information.">
-            Du vælger dit produkt, lægger det i kurven og udfylder bestillingsformularen med dine kontaktoplysninger. Herefter modtager du en bekræftelsesemail med betalingsinformation.
+          <p data-da="Du vælger dit produkt, lægger det i kurven og udfylder bestillingsformularen. Herefter modtager du en bekræftelsesemail med betalingsinformation." data-en="You choose your product, add it to the cart and fill out the order form. You will then receive a confirmation email with payment information.">
+            Du vælger dit produkt, lægger det i kurven og udfylder bestillingsformularen. Herefter modtager du en bekræftelsesemail med betalingsinformation.
           </p>
         </div>
       </div>
-
       <div class="faq-item">
         <button class="faq-question" onclick="toggleFaq(this)">
           <span data-da="Hvordan betaler jeg?" data-en="How do I pay?">Hvordan betaler jeg?</span>
           <i class="faq-icon">+</i>
         </button>
         <div class="faq-answer">
-          <p data-da="Vi modtager betaling via MobilePay eller bankoverførsel. Betalingsinformation sendes i bekræftelsesmailen. Betaling skal ske inden 48 timer for at bekræfte din ordre." data-en="We accept payment via MobilePay or bank transfer. Payment information is sent in the confirmation email. Payment must be made within 48 hours to confirm your order.">
-            Vi modtager betaling via MobilePay eller bankoverførsel. Betalingsinformation sendes i bekræftelsesmailen. Betaling skal ske inden 48 timer for at bekræfte din ordre.
+          <p data-da="Vi modtager betaling via MobilePay eller bankoverførsel. Betalingsinformation sendes i bekræftelsesmailen. Betaling skal ske inden 48 timer." data-en="We accept payment via MobilePay or bank transfer. Payment information is sent in the confirmation email. Payment must be made within 48 hours.">
+            Vi modtager betaling via MobilePay eller bankoverførsel. Betalingsinformation sendes i bekræftelsesmailen. Betaling skal ske inden 48 timer.
           </p>
         </div>
       </div>
-
       <div class="faq-item">
         <button class="faq-question" onclick="toggleFaq(this)">
           <span data-da="Kan jeg vælge farver?" data-en="Can I choose colors?">Kan jeg vælge farver?</span>
           <i class="faq-icon">+</i>
         </button>
         <div class="faq-answer">
-          <p data-da="Ja! De fleste af vores produkter fås i alle farver. Du vælger din ønskede farve direkte på produktsiden, eller skriver den i kommentarfeltet ved bestilling." data-en="Yes! Most of our products are available in all colors. You select your desired color directly on the product page, or write it in the comment field when ordering.">
-            Ja! De fleste af vores produkter fås i alle farver. Du vælger din ønskede farve direkte på produktsiden, eller skriver den i kommentarfeltet ved bestilling.
+          <p data-da="Ja! De fleste produkter fås i alle farver. Du skriver din ønskede farve i kommentarfeltet ved bestilling." data-en="Yes! Most products are available in all colors. Write your desired color in the comment field when ordering.">
+            Ja! De fleste produkter fås i alle farver. Du skriver din ønskede farve i kommentarfeltet ved bestilling.
           </p>
         </div>
       </div>
-
       <div class="faq-item">
         <button class="faq-question" onclick="toggleFaq(this)">
           <span data-da="Hvor lang er leveringstiden?" data-en="What is the delivery time?">Hvor lang er leveringstiden?</span>
           <i class="faq-icon">+</i>
         </button>
         <div class="faq-answer">
-          <p data-da="Leveringstiden er typisk 3-7 hverdage efter bekræftet betaling. Vi sender med PostNord. Du kan også arrangere afhentning lokalt — kontakt os for nærmere aftale." data-en="Delivery time is typically 3-7 business days after confirmed payment. We ship with PostNord. You can also arrange local pickup — contact us for details.">
-            Leveringstiden er typisk 3-7 hverdage efter bekræftet betaling. Vi sender med PostNord. Du kan også arrangere afhentning lokalt — kontakt os for nærmere aftale.
+          <p data-da="Leveringstiden er typisk 3-7 hverdage efter bekræftet betaling. Vi sender med PostNord." data-en="Delivery time is typically 3-7 business days after confirmed payment. We ship with PostNord.">
+            Leveringstiden er typisk 3-7 hverdage efter bekræftet betaling. Vi sender med PostNord.
           </p>
         </div>
       </div>
-
       <div class="faq-item">
         <button class="faq-question" onclick="toggleFaq(this)">
           <span data-da="Kan jeg returnere et produkt?" data-en="Can I return a product?">Kan jeg returnere et produkt?</span>
           <i class="faq-icon">+</i>
         </button>
         <div class="faq-answer">
-          <p data-da="Da alle produkter er håndlavet og ofte personaliserede, tager vi ikke retur på varen. Er der fejl ved produktet ved modtagelsen, kontakter du os inden 48 timer, så finder vi en løsning." data-en="Since all products are handmade and often personalized, we do not accept returns. If there is a defect upon receipt, contact us within 48 hours and we will find a solution.">
-            Da alle produkter er håndlavet og ofte personaliserede, tager vi ikke retur på varen. Er der fejl ved produktet ved modtagelsen, kontakter du os inden 48 timer, så finder vi en løsning.
+          <p data-da="Da alle produkter er håndlavet og personaliserede, tager vi ikke retur. Er der fejl ved produktet, kontakt os inden 48 timer." data-en="Since all products are handmade and personalized, we do not accept returns. If there is a defect, contact us within 48 hours.">
+            Da alle produkter er håndlavet og personaliserede, tager vi ikke retur. Er der fejl ved produktet, kontakt os inden 48 timer.
           </p>
         </div>
       </div>
-
     </div>
   </div>
 </section>
@@ -469,12 +398,12 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:3rem 2re
         <span class="section-label" data-da="Skriv til os" data-en="Get in touch">Skriv til os</span>
         <h2 class="section-title" data-da="Bestil eller stil et spørgsmål" data-en="Order or ask a question">Bestil eller stil et spørgsmål</h2>
         <div class="divider"></div>
-        <p data-da="Har du spørgsmål til et produkt, vil du bestille noget særligt, eller ønsker du et tilpasset produkt? Skriv til os — vi svarer inden for 24 timer." data-en="Have questions about a product, want to order something special, or wish for a customized product? Write to us — we reply within 24 hours.">
-          Har du spørgsmål til et produkt, vil du bestille noget særligt, eller ønsker du et tilpasset produkt? Skriv til os — vi svarer inden for 24 timer.
+        <p data-da="Har du spørgsmål til et produkt eller ønsker du at bestille? Skriv til os — vi svarer inden for 24 timer." data-en="Have questions about a product or want to order? Write to us — we reply within 24 hours.">
+          Har du spørgsmål til et produkt eller ønsker du at bestille? Skriv til os — vi svarer inden for 24 timer.
         </p>
         <div class="contact-detail">
           <span>📧</span>
-          <span><strong data-da="Email:" data-en="Email:">Email:</strong> din@email.dk</span>
+          <span><strong>Email:</strong> makingartdiy@gmail.com</span>
         </div>
         <div class="contact-detail">
           <span>⏱️</span>
@@ -489,7 +418,6 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:3rem 2re
           <span data-da="Betaling: MobilePay eller bank" data-en="Payment: MobilePay or bank transfer">Betaling: MobilePay eller bank</span>
         </div>
       </div>
-
       <div class="order-form">
         <h3 data-da="Send en besked eller bestilling" data-en="Send a message or order">Send en besked eller bestilling</h3>
         <div class="form-row">
@@ -510,8 +438,8 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:3rem 2re
           <label data-da="Besked / bestilling *" data-en="Message / order *">Besked / bestilling *</label>
           <textarea id="fmessage" rows="4" placeholder="Beskriv dit ønske eller din bestilling..." required></textarea>
         </div>
-        <div class="form-note" data-da="* Din besked sendes direkte til os. Du modtager en bekræftelsesemail med betalingsinfo (MobilePay + kontonr). Betaling skal ske inden 48 timer." data-en="* Your message is sent directly to us. You will receive a confirmation email with payment info (MobilePay + account number). Payment must be made within 48 hours.">
-          * Din besked sendes direkte til os. Du modtager en bekræftelsesemail med betalingsinfo (MobilePay + kontonr). Betaling skal ske inden 48 timer.
+        <div class="form-note" data-da="* Din besked sendes direkte til os. Du modtager en bekræftelsesemail med betalingsinfo. Betaling skal ske inden 48 timer." data-en="* Your message is sent directly to us. You will receive a confirmation email with payment info. Payment must be made within 48 hours.">
+          * Din besked sendes direkte til os. Du modtager en bekræftelsesemail med betalingsinfo. Betaling skal ske inden 48 timer.
         </div>
         <button class="submit-btn" id="submitBtn" onclick="sendOrder()">
           <span data-da="Send bestilling" data-en="Send order">Send bestilling</span>
@@ -554,7 +482,7 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:3rem 2re
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2025 Making Art DIY. <span data-da="Alle rettigheder forbeholdes." data-en="All rights reserved.">Alle rettigheder forbeholdes.</span></p>
+      <p>© 2026 Making Art DIY. <span data-da="Alle rettigheder forbeholdes." data-en="All rights reserved.">Alle rettigheder forbeholdes.</span></p>
       <p data-da="Håndlavet i Danmark 🇩🇰" data-en="Handmade in Denmark 🇩🇰">Håndlavet i Danmark 🇩🇰</p>
     </div>
   </div>
@@ -585,18 +513,139 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:3rem 2re
 <div class="toast" id="toast"></div>
 
 <script>
-// ── EMAILJS SETUP ──
-// TODO: Replace with your actual EmailJS credentials
+// ── EMAILJS ──
 const EMAILJS_SERVICE_ID = 'service_7tcloei';
 const EMAILJS_TEMPLATE_ID_ORDER = 'template_uhrxw7l';
 const EMAILJS_TEMPLATE_ID_CONFIRM = 'template_2tg7pck';
 const EMAILJS_PUBLIC_KEY = 'g5mNCLcsDEOxH_i3o';
-
 emailjs.init(EMAILJS_PUBLIC_KEY);
+
+// ── GITHUB PRODUKTER ──
+const GITHUB_USER = 'Creativecutsmedia';
+const GITHUB_REPO = 'making-art-diy';
+const GITHUB_BRANCH = 'master';
+const GITHUB_PRODUCTS_PATH = '_products';
+
+let allProducts = [];
+let currentFilter = 'alle';
+
+function parseMarkdown(text) {
+  const lines = text.split('\n');
+  const data = {};
+  let descLines = [];
+  let inDesc = false;
+
+  for (const line of lines) {
+    if (line.trim() === '---') continue;
+    if (line.startsWith('description: |-') || line.startsWith('description: |')) {
+      inDesc = true; continue;
+    }
+    if (inDesc) {
+      if (line.startsWith('  ') || line.startsWith('\t')) {
+        descLines.push(line.trim()); continue;
+      } else {
+        inDesc = false;
+        data.description = descLines.join(' ');
+      }
+    }
+    if (line.includes(':') && !inDesc) {
+      const idx = line.indexOf(':');
+      const key = line.substring(0, idx).trim();
+      const val = line.substring(idx + 1).trim();
+      if (key && val) data[key] = val;
+    }
+  }
+  if (descLines.length && !data.description) {
+    data.description = descLines.join(' ');
+  }
+  return data;
+}
+
+async function loadProducts() {
+  const grid = document.getElementById('productsGrid');
+  try {
+    const apiUrl = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_PRODUCTS_PATH}?ref=${GITHUB_BRANCH}`;
+    const res = await fetch(apiUrl);
+    if (!res.ok) throw new Error('Kunne ikke hente produkter');
+    const files = await res.json();
+
+    const mdFiles = files.filter(f => f.name.endsWith('.md'));
+    const products = [];
+
+    for (const file of mdFiles) {
+      const fileRes = await fetch(file.download_url);
+      const text = await fileRes.text();
+      const data = parseMarkdown(text);
+      if (data.published === 'true' || data.published === true) {
+        products.push(data);
+      }
+    }
+
+    allProducts = products;
+    renderProducts(products);
+  } catch (err) {
+    grid.innerHTML = '<p style="color:var(--text-light);padding:2rem;">Kunne ikke hente produkter. Prøv igen senere.</p>';
+    console.error(err);
+  }
+}
+
+function getCategoryKey(cat) {
+  const map = { 'børn': 'born', 'born': 'born', 'voksne': 'voksne', 'erhverv': 'erhverv' };
+  return map[(cat || '').toLowerCase()] || 'voksne';
+}
+
+function renderProducts(products) {
+  const grid = document.getElementById('productsGrid');
+  if (products.length === 0) {
+    grid.innerHTML = '<p style="color:var(--text-light);padding:2rem;text-align:center;">Ingen produkter fundet.</p>';
+    return;
+  }
+
+  grid.innerHTML = products.map((p, idx) => {
+    const catKey = getCategoryKey(p.category);
+    const imgHtml = p.image
+      ? `<img src="${p.image}" alt="${p.title}" onerror="this.parentElement.innerHTML='📸 Billede kommer snart'">`
+      : '📸 Billede kommer snart';
+    const price = parseInt(p.price) || 0;
+    const titleSafe = (p.title || '').replace(/'/g, "\\'");
+
+    return `
+      <div class="product-card" data-category="${catKey}">
+        <div class="product-img">${imgHtml}</div>
+        <div class="product-info">
+          <span class="product-badge">${p.category || ''}</span>
+          <div class="product-name">${p.title || ''}</div>
+          <div class="product-desc">${p.description || ''}</div>
+          <div class="product-footer">
+            <span class="product-price">${price} kr</span>
+            <button class="add-to-cart" onclick="addToCart('${titleSafe}', ${price})">Læg i kurv</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Genaktiver scroll animation
+  document.querySelectorAll('.product-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+}
+
+function filterProducts(cat, event) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (event) event.target.classList.add('active');
+
+  const filtered = cat === 'alle'
+    ? allProducts
+    : allProducts.filter(p => getCategoryKey(p.category) === cat);
+  renderProducts(filtered);
+}
 
 // ── LANGUAGE ──
 let currentLang = 'da';
-
 function setLang(lang) {
   currentLang = lang;
   document.documentElement.lang = lang;
@@ -605,15 +654,12 @@ function setLang(lang) {
   });
   document.getElementById('btnDa').classList.toggle('active', lang === 'da');
   document.getElementById('btnEn').classList.toggle('active', lang === 'en');
-  // Update placeholders
   if (lang === 'en') {
     document.getElementById('fname').placeholder = 'Your name';
-    document.getElementById('fphone').placeholder = '+45 12 34 56 78';
     document.getElementById('femail').placeholder = 'your@email.com';
     document.getElementById('fmessage').placeholder = 'Describe your wish or order...';
   } else {
     document.getElementById('fname').placeholder = 'Dit navn';
-    document.getElementById('fphone').placeholder = '+45 12 34 56 78';
     document.getElementById('femail').placeholder = 'din@email.dk';
     document.getElementById('fmessage').placeholder = 'Beskriv dit ønske eller din bestilling...';
   }
@@ -626,22 +672,15 @@ function toggleMobile() {
 
 // ── CART ──
 let cart = [];
-
 function toggleCart() {
   document.getElementById('cartSidebar').classList.toggle('open');
   document.getElementById('cartOverlay').classList.toggle('open');
 }
 
-function addToCart(name, price, colorPickerId) {
-  const picker = document.getElementById(colorPickerId);
-  const selected = picker ? picker.querySelector('.color-dot.selected') : null;
-  const color = selected ? selected.getAttribute('data-color') : '';
-  const existing = cart.find(i => i.name === name && i.color === color);
-  if (existing) {
-    existing.qty++;
-  } else {
-    cart.push({ name, price, color, qty: 1 });
-  }
+function addToCart(name, price) {
+  const existing = cart.find(i => i.name === name);
+  if (existing) { existing.qty++; }
+  else { cart.push({ name, price, qty: 1 }); }
   updateCart();
   showToast(currentLang === 'da' ? name + ' tilføjet til kurven! 🛒' : name + ' added to cart! 🛒');
 }
@@ -652,15 +691,8 @@ function updateCart() {
   document.getElementById('cartCount').textContent = count;
   document.getElementById('cartTotal').textContent = total + ' kr';
   const itemsEl = document.getElementById('cartItems');
-  const emptyEl = document.getElementById('cartEmpty');
-  if (cart.length === 0) {
-    emptyEl.style.display = 'block';
-    const existing = itemsEl.querySelectorAll('.cart-item');
-    existing.forEach(e => e.remove());
-    return;
-  }
-  emptyEl.style.display = 'none';
   itemsEl.querySelectorAll('.cart-item').forEach(e => e.remove());
+  document.getElementById('cartEmpty').style.display = cart.length === 0 ? 'block' : 'none';
   cart.forEach((item, idx) => {
     const div = document.createElement('div');
     div.className = 'cart-item';
@@ -668,7 +700,6 @@ function updateCart() {
       <div class="cart-item-img">🛍️</div>
       <div class="cart-item-info">
         <div class="cart-item-name">${item.name}</div>
-        <div class="cart-item-meta">${item.color ? (currentLang==='da'?'Farve: ':'Color: ') + item.color : ''}</div>
         <div class="cart-item-controls">
           <button class="qty-btn" onclick="changeQty(${idx},-1)">−</button>
           <span class="qty-num">${item.qty}</span>
@@ -676,8 +707,7 @@ function updateCart() {
         </div>
       </div>
       <span class="cart-item-price">${item.price * item.qty} kr</span>
-      <button class="remove-item" onclick="removeItem(${idx})">✕</button>
-    `;
+      <button class="remove-item" onclick="removeItem(${idx})">✕</button>`;
     itemsEl.appendChild(div);
   });
 }
@@ -687,39 +717,8 @@ function changeQty(idx, delta) {
   if (cart[idx].qty <= 0) cart.splice(idx, 1);
   updateCart();
 }
-
-function removeItem(idx) {
-  cart.splice(idx, 1);
-  updateCart();
-}
-
-function goToCheckout() {
-  toggleCart();
-  document.getElementById('kontakt').scrollIntoView({ behavior: 'smooth' });
-}
-
-// ── COLOR PICKER ──
-document.querySelectorAll('.color-picker').forEach(picker => {
-  picker.querySelectorAll('.color-dot').forEach(dot => {
-    dot.addEventListener('click', () => {
-      picker.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
-      dot.classList.add('selected');
-    });
-  });
-});
-
-// ── CATEGORY FILTER ──
-function filterProducts(cat) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  document.querySelectorAll('.product-card').forEach(card => {
-    if (cat === 'alle' || card.dataset.category.includes(cat)) {
-      card.style.display = '';
-    } else {
-      card.style.display = 'none';
-    }
-  });
-}
+function removeItem(idx) { cart.splice(idx, 1); updateCart(); }
+function goToCheckout() { toggleCart(); document.getElementById('kontakt').scrollIntoView({ behavior: 'smooth' }); }
 
 // ── FAQ ──
 function toggleFaq(btn) {
@@ -728,16 +727,13 @@ function toggleFaq(btn) {
   const isOpen = answer.classList.contains('open');
   document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
   document.querySelectorAll('.faq-icon').forEach(i => i.textContent = '+');
-  if (!isOpen) {
-    answer.classList.add('open');
-    icon.textContent = '−';
-  }
+  if (!isOpen) { answer.classList.add('open'); icon.textContent = '−'; }
 }
 
 // ── ORDER FORM ──
 function buildCartSummary() {
   if (cart.length === 0) return currentLang === 'da' ? 'Ingen kurv-varer' : 'No cart items';
-  return cart.map(i => `${i.name}${i.color ? ' (' + i.color + ')' : ''} x${i.qty} = ${i.price * i.qty} kr`).join('\n');
+  return cart.map(i => `${i.name} x${i.qty} = ${i.price * i.qty} kr`).join('\n');
 }
 
 function sendOrder() {
@@ -745,44 +741,29 @@ function sendOrder() {
   const email = document.getElementById('femail').value.trim();
   const phone = document.getElementById('fphone').value.trim();
   const message = document.getElementById('fmessage').value.trim();
-
   if (!name || !email || !message) {
     showToast(currentLang === 'da' ? '⚠️ Udfyld venligst alle påkrævede felter' : '⚠️ Please fill in all required fields');
     return;
   }
-
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.textContent = currentLang === 'da' ? 'Sender...' : 'Sending...';
-
   const cartSummary = buildCartSummary();
   const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-
-  // Send order notification to shop owner
   emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_ORDER, {
-    customer_name: name,
-    customer_email: email,
-    customer_phone: phone || '—',
-    customer_message: message,
-    cart_summary: cartSummary,
+    customer_name: name, customer_email: email, customer_phone: phone || '—',
+    customer_message: message, cart_summary: cartSummary,
     cart_total: total > 0 ? total + ' kr' : '—',
     order_date: new Date().toLocaleDateString('da-DK')
-  }).then(() => {
-    // Send confirmation to customer
-    return emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_CONFIRM, {
-      customer_name: name,
-      customer_email: email,
-      cart_summary: cartSummary,
-      cart_total: total > 0 ? total + ' kr' : '—',
-      mobilepay: 'INDSÆT MOBILEPAY NR HER',
-      bank_account: 'INDSÆT KONTONR HER',
-      order_date: new Date().toLocaleDateString('da-DK')
-    });
-  }).then(() => {
+  }).then(() => emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_CONFIRM, {
+    customer_name: name, customer_email: email, cart_summary: cartSummary,
+    cart_total: total > 0 ? total + ' kr' : '—',
+    mobilepay: 'INDSÆT MOBILEPAY NR HER', bank_account: 'INDSÆT KONTONR HER',
+    order_date: new Date().toLocaleDateString('da-DK')
+  })).then(() => {
     document.getElementById('formSuccess').style.display = 'block';
     btn.style.display = 'none';
-    cart = [];
-    updateCart();
+    cart = []; updateCart();
     document.getElementById('fname').value = '';
     document.getElementById('femail').value = '';
     document.getElementById('fphone').value = '';
@@ -813,12 +794,15 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1 });
 
-document.querySelectorAll('.product-card, .value-card, .faq-item').forEach(el => {
+document.querySelectorAll('.value-card, .faq-item').forEach(el => {
   el.style.opacity = '0';
   el.style.transform = 'translateY(20px)';
   el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
   observer.observe(el);
 });
+
+// ── START ──
+loadProducts();
 </script>
 </body>
 </html>
