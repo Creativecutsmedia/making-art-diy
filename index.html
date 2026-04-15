@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light only">
 <title>Making Art DIY – Kommer snart</title>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Georgia',serif;background:#FAF6EF;color:#2C1F0E;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:2rem;}
@@ -63,6 +64,17 @@ function setLang(lang) {
   document.getElementById('btnDa').classList.toggle('active', lang==='da');
   document.getElementById('btnEn').classList.toggle('active', lang==='en');
 }
+</script>
+<script>
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on("init", user => {
+      if (!user) {
+        window.netlifyIdentity.on("login", () => {
+          document.location.href = "/admin/";
+        });
+      }
+    });
+  }
 </script>
 </body>
 </html>
