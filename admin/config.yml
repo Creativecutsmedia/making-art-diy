@@ -1,0 +1,23 @@
+backend:
+  name: git-gateway
+  branch: master
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+locale: 'da'
+
+collections:
+  - name: "produkter"
+    label: "Produkter"
+    folder: "_products"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Navn", name: "title", widget: "string" }
+      - { label: "Pris (kr)", name: "price", widget: "number" }
+      - { label: "Kategori", name: "category", widget: "select",
+          options: ["Børn", "Voksne", "Erhverv"] }
+      - { label: "Beskrivelse", name: "description", widget: "text" }
+      - { label: "Billede", name: "image", widget: "image", required: false }
+      - { label: "Synlig på shop", name: "published", widget: "boolean", default: true }
