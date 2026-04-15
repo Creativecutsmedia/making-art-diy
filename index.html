@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>Making Art DIY – Kommer snart</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Georgia',serif;background:#FAF6EF;color:#2C1F0E;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:2rem;}
+.lang-toggle{position:fixed;top:1.5rem;right:1.5rem;display:flex;border:1px solid rgba(139,94,60,0.2);border-radius:20px;overflow:hidden;}
+.lang-toggle button{background:none;border:none;padding:6px 14px;font-size:0.8rem;cursor:pointer;color:#6B4F2E;font-family:'Georgia',serif;transition:all 0.2s;}
+.lang-toggle button.active{background:#C9963A;color:#fff;}
+.container{max-width:600px;}
+.logo{font-size:1.8rem;font-weight:700;color:#5C3D20;margin-bottom:0.5rem;}
+.logo span{color:#C9963A;}
+.tagline{color:#9C7A56;font-size:0.9rem;letter-spacing:0.08em;margin-bottom:3rem;}
+h1{font-size:clamp(2rem,5vw,3.2rem);color:#5C3D20;margin-bottom:1rem;line-height:1.3;}
+p{color:#6B4F2E;font-size:1rem;line-height:1.8;margin-bottom:2rem;}
+.date{display:inline-block;background:#C9963A;color:#fff;padding:12px 32px;border-radius:8px;font-size:1.1rem;font-weight:700;margin-bottom:2rem;}
+.divider{width:48px;height:3px;background:#C9963A;border-radius:2px;margin:2rem auto;}
+.notify{color:#9C7A56;font-size:0.85rem;}
+.notify a{color:#A07428;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="lang-toggle">
+  <button id="btnDa" class="active" onclick="setLang('da')">DA</button>
+  <button id="btnEn" onclick="setLang('en')">EN</button>
+</div>
+<div class="container">
+  <div class="logo">Making Art <span>DIY</span></div>
+  <div class="tagline" id="tagline">🌿 Håndlavet i Danmark</div>
+  <h1 id="headline">Noget smukt er på vej</h1>
+  <div class="divider"></div>
+  <p id="body">Vi arbejder på at åbne vores webshop med unikke håndlavede produkter i 3D-print og træ — skabt med kærlighed og omhu.</p>
+  <div class="date" id="date">🗓️ Åbner 1. juni 2026</div>
+  <p class="notify" id="notify">Spørgsmål? Skriv til os på <a href="mailto:makingartdiy@gmail.com">makingartdiy@gmail.com</a></p>
+</div>
+<script>
+const t = {
+  da: {
+    tagline: '🌿 Håndlavet i Danmark',
+    headline: 'Noget smukt er på vej',
+    body: 'Vi arbejder på at åbne vores webshop med unikke håndlavede produkter i 3D-print og træ — skabt med kærlighed og omhu.',
+    date: '🗓️ Åbner 1. juni 2026',
+    notify: 'Spørgsmål? Skriv til os på '
+  },
+  en: {
+    tagline: '🌿 Handmade in Denmark',
+    headline: 'Something beautiful is coming',
+    body: 'We are working on opening our webshop with unique handmade products in 3D-print and wood — crafted with love and care.',
+    date: '🗓️ Opens June 1st, 2026',
+    notify: 'Questions? Write to us at '
+  }
+};
+function setLang(lang) {
+  document.getElementById('tagline').textContent = t[lang].tagline;
+  document.getElementById('headline').textContent = t[lang].headline;
+  document.getElementById('body').textContent = t[lang].body;
+  document.getElementById('date').textContent = t[lang].date;
+  document.getElementById('notify').innerHTML = t[lang].notify + '<a href="mailto:makingartdiy@gmail.com">makingartdiy@gmail.com</a>';
+  document.getElementById('btnDa').classList.toggle('active', lang==='da');
+  document.getElementById('btnEn').classList.toggle('active', lang==='en');
+}
+</script>
+</body>
+</html>

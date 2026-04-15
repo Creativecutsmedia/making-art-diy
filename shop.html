@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light only">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Making Art DIY – Håndlavet med hjerte</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<style>
+:root {
+  --cream: #FAF6EF;
+  --cream-dark: #F0E8D8;
+  --warm-white: #FFFDF9;
+  --gold: #C9963A;
+  --gold-light: #F0D98A;
+  --gold-dark: #A07428;
+  --wood: #8B5E3C;
+  --wood-light: #C4956A;
+  --wood-dark: #5C3D20;
+  --text: #2C1F0E;
+  --text-muted: #6B4F2E;
+  --text-light: #9C7A56;
+  --border: rgba(139,94,60,0.15);
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Georgia',serif;background:var(--cream);color:var(--text);font-size:16px;line-height:1.75;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(250,246,239,0.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;}
+.nav-logo{font-size:1.2rem;font-weight:700;color:var(--wood-dark);text-decoration:none;letter-spacing:0.02em;}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:1.75rem;list-style:none;align-items:center;}
+.nav-links a{text-decoration:none;color:var(--text-muted);font-size:0.88rem;font-family:'Georgia',serif;transition:color 0.2s;}
+.nav-links a:hover{color:var(--gold-dark);}
+.nav-right{display:flex;align-items:center;gap:0.75rem;}
+.lang-toggle{display:flex;border:1px solid var(--border);border-radius:20px;overflow:hidden;}
+.lang-toggle button{background:none;border:none;padding:4px 12px;font-size:0.8rem;cursor:pointer;color:var(--text-muted);font-family:'Georgia',serif;transition:all 0.2s;}
+.lang-toggle button.active{background:var(--gold);color:#fff;}
+.cart-btn{background:none;border:1px solid var(--border);border-radius:20px;padding:6px 16px;cursor:pointer;font-family:'Georgia',serif;font-size:0.85rem;color:var(--text-muted);display:flex;align-items:center;gap:6px;transition:all 0.2s;}
+.cart-btn:hover{border-color:var(--gold);color:var(--gold-dark);}
+.cart-count{background:var(--gold);color:#fff;border-radius:50%;width:18px;height:18px;font-size:0.7rem;display:flex;align-items:center;justify-content:center;font-family:sans-serif;}
+.hamburger{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--wood);border-radius:2px;transition:all 0.3s;}
+.mobile-menu{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(250,246,239,0.98);border-bottom:1px solid var(--border);padding:1.5rem 2rem;z-index:199;flex-direction:column;gap:1rem;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{text-decoration:none;color:var(--text-muted);font-size:1rem;padding:0.5rem 0;border-bottom:1px solid var(--border);}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:6rem 2rem 4rem;background:linear-gradient(160deg,var(--cream) 60%,var(--cream-dark) 100%);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-100px;right:-100px;width:400px;height:400px;border-radius:50%;background:rgba(201,150,58,0.06);pointer-events:none;}
+.hero::after{content:'';position:absolute;bottom:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:rgba(139,94,60,0.05);pointer-events:none;}
+.hero-content{max-width:680px;position:relative;z-index:1;}
+.hero-badge{display:inline-block;background:rgba(201,150,58,0.12);color:var(--gold-dark);border:1px solid rgba(201,150,58,0.3);border-radius:20px;padding:6px 18px;font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1.5rem;}
+.hero h1{font-size:clamp(2.2rem,5vw,3.8rem);font-weight:700;color:var(--wood-dark);line-height:1.2;margin-bottom:1.25rem;}
+.hero h1 span{color:var(--gold);}
+.hero p{font-size:1.1rem;color:var(--text-muted);max-width:520px;margin:0 auto 2.5rem;line-height:1.8;}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.btn-primary{background:var(--gold);color:#fff;border:none;padding:14px 32px;border-radius:var(--radius-sm);font-size:1rem;font-family:'Georgia',serif;cursor:pointer;transition:all 0.25s;text-decoration:none;display:inline-block;}
+.btn-primary:hover{background:var(--gold-dark);transform:translateY(-1px);}
+.btn-secondary{background:transparent;color:var(--wood-dark);border:1.5px solid var(--wood-light);padding:14px 32px;border-radius:var(--radius-sm);font-size:1rem;font-family:'Georgia',serif;cursor:pointer;transition:all 0.25s;text-decoration:none;display:inline-block;}
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold-dark);}
+.hero-scroll{margin-top:4rem;color:var(--text-light);font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.hero-scroll::after{content:'';display:block;width:1px;height:40px;background:var(--gold-light);}
+
+/* SECTION BASE */
+section{padding:5rem 2rem;}
+.section-inner{max-width:1100px;margin:0 auto;}
+.section-label{display:inline-block;color:var(--gold-dark);font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.75rem;}
+.section-title{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:700;color:var(--wood-dark);margin-bottom:1rem;line-height:1.3;}
+.section-sub{color:var(--text-muted);font-size:1rem;max-width:560px;line-height:1.8;}
+.divider{width:48px;height:3px;background:var(--gold);border-radius:2px;margin:1.5rem 0;}
+
+/* CATEGORY FILTER */
+.filter-bar{display:flex;gap:0.75rem;margin:2.5rem 0;flex-wrap:wrap;}
+.filter-btn{background:none;border:1.5px solid var(--border);border-radius:20px;padding:8px 20px;font-size:0.88rem;font-family:'Georgia',serif;color:var(--text-muted);cursor:pointer;transition:all 0.2s;}
+.filter-btn:hover,.filter-btn.active{background:var(--gold);border-color:var(--gold);color:#fff;}
+
+/* PRODUCTS */
+.products-bg{background:var(--warm-white);}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:2rem;margin-top:2.5rem;}
+.product-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all 0.3s;cursor:pointer;}
+.product-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(139,94,60,0.12);}
+.product-img{width:100%;height:220px;object-fit:cover;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:0.85rem;}
+.product-img img{width:100%;height:100%;object-fit:cover;}
+.product-info{padding:1.25rem;}
+.product-badge{display:inline-block;background:rgba(201,150,58,0.1);color:var(--gold-dark);font-size:0.72rem;padding:3px 10px;border-radius:10px;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.5rem;}
+.product-name{font-size:1.05rem;font-weight:700;color:var(--wood-dark);margin-bottom:0.4rem;}
+.product-desc{font-size:0.88rem;color:var(--text-muted);line-height:1.6;margin-bottom:1rem;}
+.product-footer{display:flex;align-items:center;justify-content:space-between;}
+.product-price{font-size:1.15rem;font-weight:700;color:var(--gold-dark);}
+.add-to-cart{background:var(--gold);color:#fff;border:none;padding:8px 18px;border-radius:var(--radius-sm);font-size:0.85rem;font-family:'Georgia',serif;cursor:pointer;transition:all 0.2s;}
+.add-to-cart:hover{background:var(--gold-dark);}
+
+/* COLOR PICKER */
+.color-picker{display:flex;gap:6px;margin-bottom:0.75rem;flex-wrap:wrap;}
+.color-dot{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.2s;}
+.color-dot:hover,.color-dot.selected{border-color:var(--gold-dark);transform:scale(1.15);}
+
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;margin-top:3rem;}
+.about-img-placeholder{background:var(--cream-dark);border-radius:var(--radius);height:400px;display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:0.9rem;border:1px solid var(--border);}
+.about-values{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:2rem;}
+.value-card{background:var(--cream-dark);border-radius:var(--radius-sm);padding:1.25rem;border:1px solid var(--border);}
+.value-icon{font-size:1.5rem;margin-bottom:0.5rem;}
+.value-title{font-size:0.92rem;font-weight:700;color:var(--wood-dark);margin-bottom:0.25rem;}
+.value-text{font-size:0.82rem;color:var(--text-muted);line-height:1.6;}
+
+/* FAQ */
+.faq-bg{background:var(--cream-dark);}
+.faq-list{margin-top:2.5rem;display:flex;flex-direction:column;gap:1rem;max-width:720px;}
+.faq-item{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;}
+.faq-question{width:100%;background:none;border:none;padding:1.25rem 1.5rem;text-align:left;font-family:'Georgia',serif;font-size:0.95rem;font-weight:700;color:var(--wood-dark);cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:color 0.2s;}
+.faq-question:hover{color:var(--gold-dark);}
+.faq-icon{font-size:1.2rem;color:var(--gold);transition:transform 0.3s;font-style:normal;}
+.faq-answer{max-height:0;overflow:hidden;transition:max-height 0.4s ease,padding 0.3s;}
+.faq-answer.open{max-height:200px;padding:0 1.5rem 1.25rem;}
+.faq-answer p{font-size:0.9rem;color:var(--text-muted);line-height:1.75;}
+
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:4rem;align-items:start;margin-top:3rem;}
+.contact-info h3{font-size:1.1rem;color:var(--wood-dark);margin-bottom:0.5rem;}
+.contact-info p{font-size:0.9rem;color:var(--text-muted);line-height:1.75;margin-bottom:1.5rem;}
+.contact-detail{display:flex;align-items:center;gap:10px;color:var(--text-muted);font-size:0.88rem;margin-bottom:0.75rem;}
+.contact-detail strong{color:var(--wood-dark);}
+.order-form{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:2rem;}
+.order-form h3{font-size:1.1rem;font-weight:700;color:var(--wood-dark);margin-bottom:1.5rem;}
+.form-group{margin-bottom:1.25rem;}
+.form-group label{display:block;font-size:0.82rem;color:var(--text-muted);margin-bottom:0.4rem;letter-spacing:0.04em;}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Georgia',serif;font-size:0.92rem;color:var(--text);background:#fff;transition:border-color 0.2s;resize:vertical;}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:var(--gold);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.form-note{font-size:0.8rem;color:var(--text-light);margin-top:0.75rem;line-height:1.6;}
+.submit-btn{width:100%;background:var(--gold);color:#fff;border:none;padding:14px;border-radius:var(--radius-sm);font-size:1rem;font-family:'Georgia',serif;cursor:pointer;transition:all 0.25s;margin-top:0.5rem;}
+.submit-btn:hover{background:var(--gold-dark);}
+.submit-btn:disabled{opacity:0.6;cursor:not-allowed;}
+.form-success{display:none;background:rgba(52,168,83,0.08);border:1px solid rgba(52,168,83,0.25);border-radius:var(--radius-sm);padding:1.25rem;text-align:center;color:#2d7a3a;font-size:0.92rem;line-height:1.7;}
+
+/* CART SIDEBAR */
+.cart-overlay{position:fixed;inset:0;background:rgba(44,31,14,0.4);z-index:300;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.cart-overlay.open{opacity:1;pointer-events:all;}
+.cart-sidebar{position:fixed;top:0;right:0;bottom:0;width:360px;max-width:100vw;background:var(--warm-white);border-left:1px solid var(--border);z-index:301;transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;}
+.cart-sidebar.open{transform:translateX(0);}
+.cart-header{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);}
+.cart-header h2{font-size:1.05rem;font-weight:700;color:var(--wood-dark);}
+.cart-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text-muted);line-height:1;}
+.cart-items{flex:1;overflow-y:auto;padding:1rem 1.5rem;}
+.cart-empty{text-align:center;color:var(--text-light);font-size:0.9rem;padding:3rem 0;}
+.cart-item{display:flex;gap:12px;padding:1rem 0;border-bottom:1px solid var(--border);}
+.cart-item-img{width:60px;height:60px;border-radius:var(--radius-sm);background:var(--cream-dark);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--text-light);overflow:hidden;}
+.cart-item-img img{width:100%;height:100%;object-fit:cover;}
+.cart-item-info{flex:1;}
+.cart-item-name{font-size:0.9rem;font-weight:700;color:var(--wood-dark);margin-bottom:2px;}
+.cart-item-meta{font-size:0.78rem;color:var(--text-light);margin-bottom:6px;}
+.cart-item-controls{display:flex;align-items:center;gap:8px;}
+.qty-btn{background:var(--cream-dark);border:none;width:24px;height:24px;border-radius:4px;cursor:pointer;font-size:0.9rem;color:var(--wood-dark);transition:background 0.2s;}
+.qty-btn:hover{background:var(--gold-light);}
+.qty-num{font-size:0.88rem;color:var(--text);min-width:20px;text-align:center;}
+.cart-item-price{font-size:0.92rem;font-weight:700;color:var(--gold-dark);align-self:center;}
+.remove-item{background:none;border:none;color:var(--text-light);cursor:pointer;font-size:1rem;margin-left:auto;transition:color 0.2s;}
+.remove-item:hover{color:#c0392b;}
+.cart-footer{padding:1.25rem 1.5rem;border-top:1px solid var(--border);}
+.cart-total{display:flex;justify-content:space-between;font-size:1rem;font-weight:700;color:var(--wood-dark);margin-bottom:1rem;}
+.checkout-btn{width:100%;background:var(--gold);color:#fff;border:none;padding:14px;border-radius:var(--radius-sm);font-size:1rem;font-family:'Georgia',serif;cursor:pointer;transition:all 0.25s;}
+.checkout-btn:hover{background:var(--gold-dark);}
+
+/* FOOTER */
+footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:3rem 2rem 1.5rem;}
+.footer-inner{max-width:1100px;margin:0 auto;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;margin-bottom:2.5rem;}
+.footer-brand .nav-logo{color:#fff;display:block;margin-bottom:0.75rem;}
+.footer-brand .nav-logo span{color:var(--gold-light);}
+.footer-brand p{font-size:0.85rem;line-height:1.7;max-width:260px;}
+.footer-col h4{color:#fff;font-size:0.88rem;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1rem;}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:0.5rem;}
+.footer-col ul li a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.85rem;transition:color 0.2s;}
+.footer-col ul li a:hover{color:var(--gold-light);}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.footer-bottom p{font-size:0.8rem;}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--wood-dark);color:#fff;padding:12px 24px;border-radius:var(--radius-sm);font-size:0.88rem;z-index:500;transition:transform 0.3s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav{padding:0 1.25rem;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .hero{padding:5rem 1.25rem 3rem;}
+  .about-grid,.contact-grid{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr;}
+  .form-row{grid-template-columns:1fr;}
+  section{padding:3.5rem 1.25rem;}
+  .about-values{grid-template-columns:1fr;}
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+.fade-up{opacity:0;animation:fadeUp 0.6s ease forwards;}
+.delay-1{animation-delay:0.1s;}
+.delay-2{animation-delay:0.2s;}
+.delay-3{animation-delay:0.3s;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Making Art <span>DIY</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#produkter" data-da="Produkter" data-en="Products">Produkter</a></li>
+    <li><a href="#om-os" data-da="Om os" data-en="About">Om os</a></li>
+    <li><a href="#faq" data-da="FAQ" data-en="FAQ">FAQ</a></li>
+    <li><a href="#kontakt" data-da="Kontakt" data-en="Contact">Kontakt</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button id="btnDa" class="active" onclick="setLang('da')">DA</button>
+      <button id="btnEn" onclick="setLang('en')">EN</button>
+    </div>
+    <button class="cart-btn" onclick="toggleCart()">
+      🛒 <span data-da="Kurv" data-en="Cart">Kurv</span>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+    <button class="hamburger" id="hamburger" onclick="toggleMobile()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#produkter" onclick="toggleMobile()" data-da="Produkter" data-en="Products">Produkter</a>
+  <a href="#om-os" onclick="toggleMobile()" data-da="Om os" data-en="About">Om os</a>
+  <a href="#faq" onclick="toggleMobile()" data-da="FAQ" data-en="FAQ">FAQ</a>
+  <a href="#kontakt" onclick="toggleMobile()" data-da="Kontakt" data-en="Contact">Kontakt</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge fade-up" data-da="🌿 Håndlavet i Danmark" data-en="🌿 Handmade in Denmark">🌿 Håndlavet i Danmark</div>
+    <h1 class="fade-up delay-1">
+      <span data-da="Kunst du kan" data-en="Art you can">Kunst du kan</span><br>
+      <span data-da="røre ved" data-en="touch">røre ved</span>
+    </h1>
+    <p class="fade-up delay-2" data-da="Unikke håndlavede produkter i 3D-print og træ — skabt med kærlighed og omhu til dig og din familie." data-en="Unique handmade products in 3D-print and wood — crafted with love and care for you and your family.">
+      Unikke håndlavede produkter i 3D-print og træ — skabt med kærlighed og omhu til dig og din familie.
+    </p>
+    <div class="hero-btns fade-up delay-3">
+      <a href="#produkter" class="btn-primary" data-da="Se produkter" data-en="View products">Se produkter</a>
+      <a href="#om-os" class="btn-secondary" data-da="Læs mere" data-en="Learn more">Læs mere</a>
+    </div>
+    <div class="hero-scroll">
+      <span data-da="Scroll" data-en="Scroll">Scroll</span>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="produkter" class="products-bg">
+  <div class="section-inner">
+    <span class="section-label" data-da="Vores sortiment" data-en="Our collection">Vores sortiment</span>
+    <h2 class="section-title" data-da="Håndlavede produkter" data-en="Handmade products">Håndlavede produkter</h2>
+    <div class="divider"></div>
+    <p class="section-sub" data-da="Hvert produkt er lavet med omhu og kan tilpasses i farve og størrelse efter dine ønsker." data-en="Every product is crafted with care and can be customized in color and size to your wishes.">
+      Hvert produkt er lavet med omhu og kan tilpasses i farve og størrelse efter dine ønsker.
+    </p>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterProducts('alle')" data-da="Alle" data-en="All">Alle</button>
+      <button class="filter-btn" onclick="filterProducts('born')" data-da="Børn" data-en="Children">Børn</button>
+      <button class="filter-btn" onclick="filterProducts('voksne')" data-da="Voksne" data-en="Adults">Voksne</button>
+      <button class="filter-btn" onclick="filterProducts('erhverv')" data-da="Erhverv" data-en="Business">Erhverv</button>
+    </div>
+
+    <div class="products-grid" id="productsGrid">
+
+      <!-- PRODUCT: Fidget Tastatur -->
+      <div class="product-card" data-category="voksne born">
+        <div class="product-img">
+          <img src="fidget-keyboard.jpg" alt="Fidget Tastatur" onerror="this.parentElement.innerHTML='📸 Billede kommer snart'">
+        </div>
+        <div class="product-info">
+          <span class="product-badge" data-da="Bedst sælgende" data-en="Best seller">Bedst sælgende</span>
+          <div class="product-name" data-da="Fidget Tastatur" data-en="Fidget Keyboard">Fidget Tastatur</div>
+          <div class="product-desc" data-da="9 mekaniske keyboard-knapper i 3D-print. Perfekt til at holde hænderne beskæftiget. Vælg din yndlingsfarve." data-en="9 mechanical keyboard buttons in 3D-print. Perfect for keeping hands busy. Choose your favorite color.">
+            9 mekaniske keyboard-knapper i 3D-print. Perfekt til at holde hænderne beskæftiget. Vælg din yndlingsfarve.
+          </div>
+          <div class="color-picker" id="colorPicker-fidget">
+            <div class="color-dot selected" style="background:#e74c3c" data-color="Rød" title="Rød"></div>
+            <div class="color-dot" style="background:#3498db" data-color="Blå" title="Blå"></div>
+            <div class="color-dot" style="background:#2ecc71" data-color="Grøn" title="Grøn"></div>
+            <div class="color-dot" style="background:#f39c12" data-color="Orange" title="Orange"></div>
+            <div class="color-dot" style="background:#9b59b6" data-color="Lilla" title="Lilla"></div>
+            <div class="color-dot" style="background:#1abc9c" data-color="Turkis" title="Turkis"></div>
+            <div class="color-dot" style="background:#34495e" data-color="Sort" title="Sort"></div>
+            <div class="color-dot" style="background:#ecf0f1;border:1px solid #ccc" data-color="Hvid" title="Hvid"></div>
+          </div>
+          <div class="product-footer">
+            <span class="product-price">50 kr</span>
+            <button class="add-to-cart" onclick="addToCart('Fidget Tastatur', 50, 'colorPicker-fidget')">
+              <span data-da="Læg i kurv" data-en="Add to cart">Læg i kurv</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLACEHOLDER PRODUCTS -->
+      <div class="product-card" data-category="born">
+        <div class="product-img" style="background:var(--cream-dark);display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:0.85rem;">
+          <span data-da="Kommende produkt" data-en="Coming soon">Kommende produkt</span>
+        </div>
+        <div class="product-info">
+          <span class="product-badge" data-da="Børn" data-en="Children">Børn</span>
+          <div class="product-name" data-da="Nyt produkt kommer snart" data-en="New product coming soon">Nyt produkt kommer snart</div>
+          <div class="product-desc" data-da="Vi arbejder på nye spændende produkter til de mindste." data-en="We are working on exciting new products for the little ones.">Vi arbejder på nye spændende produkter til de mindste.</div>
+          <div class="product-footer">
+            <span class="product-price" data-da="Pris TBD" data-en="Price TBD">Pris TBD</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-category="erhverv">
+        <div class="product-img" style="background:var(--cream-dark);display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:0.85rem;">
+          <span data-da="Kommende produkt" data-en="Coming soon">Kommende produkt</span>
+        </div>
+        <div class="product-info">
+          <span class="product-badge" data-da="Erhverv" data-en="Business">Erhverv</span>
+          <div class="product-name" data-da="Erhvervsløsninger" data-en="Business solutions">Erhvervsløsninger</div>
+          <div class="product-desc" data-da="Skræddersyede produkter til virksomheder. Kontakt os for et tilbud." data-en="Tailored products for businesses. Contact us for a quote.">Skræddersyede produkter til virksomheder. Kontakt os for et tilbud.</div>
+          <div class="product-footer">
+            <span class="product-price" data-da="Efter aftale" data-en="By agreement">Efter aftale</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="om-os">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div>
+        <span class="section-label" data-da="Vores historie" data-en="Our story">Vores historie</span>
+        <h2 class="section-title" data-da="Lavet med hjerte og hænder" data-en="Made with heart and hands">Lavet med hjerte og hænder</h2>
+        <div class="divider"></div>
+        <p style="color:var(--text-muted);line-height:1.85;margin-bottom:1.25rem;" data-da="Making Art DIY er en lille dansk håndværksbutik, der specialiserer sig i unikke 3D-printede produkter og træarbejde. Hvert eneste produkt laves med omsorg og dedikation." data-en="Making Art DIY is a small Danish craft shop specializing in unique 3D-printed products and woodwork. Every single product is made with care and dedication.">
+          Making Art DIY er en lille dansk håndværksbutik, der specialiserer sig i unikke 3D-printede produkter og træarbejde. Hvert eneste produkt laves med omsorg og dedikation.
+        </p>
+        <p style="color:var(--text-muted);line-height:1.85;" data-da="Vi tror på, at de bedste ting i livet er dem, der er lavet med egne hænder — og vi elsker at bringe den fornemmelse ind i dit hjem." data-en="We believe the best things in life are those made by hand — and we love bringing that feeling into your home.">
+          Vi tror på, at de bedste ting i livet er dem, der er lavet med egne hænder — og vi elsker at bringe den fornemmelse ind i dit hjem.
+        </p>
+        <div class="about-values">
+          <div class="value-card">
+            <div class="value-icon">🌿</div>
+            <div class="value-title" data-da="Bæredygtigt" data-en="Sustainable">Bæredygtigt</div>
+            <div class="value-text" data-da="Vi bruger miljøvenlige materialer i vores produktion." data-en="We use eco-friendly materials in our production.">Vi bruger miljøvenlige materialer i vores produktion.</div>
+          </div>
+          <div class="value-card">
+            <div class="value-icon">✋</div>
+            <div class="value-title" data-da="Håndlavet" data-en="Handmade">Håndlavet</div>
+            <div class="value-text" data-da="Hvert produkt laves individuelt med omhu." data-en="Each product is made individually with care.">Hvert produkt laves individuelt med omhu.</div>
+          </div>
+          <div class="value-card">
+            <div class="value-icon">🎨</div>
+            <div class="value-title" data-da="Tilpasses dig" data-en="Customizable">Tilpasses dig</div>
+            <div class="value-text" data-da="Vælg farver og størrelser efter dine ønsker." data-en="Choose colors and sizes to your wishes.">Vælg farver og størrelser efter dine ønsker.</div>
+          </div>
+          <div class="value-card">
+            <div class="value-icon">💛</div>
+            <div class="value-title" data-da="Med kærlighed" data-en="With love">Med kærlighed</div>
+            <div class="value-text" data-da="Kærlighed og passion går ind i hvert eneste produkt." data-en="Love and passion goes into every single product.">Kærlighed og passion går ind i hvert eneste produkt.</div>
+          </div>
+        </div>
+      </div>
+      <div class="about-img-placeholder">
+        <span data-da="📸 Billede af værksted kommer snart" data-en="📸 Workshop photo coming soon">📸 Billede af værksted kommer snart</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="faq-bg">
+  <div class="section-inner">
+    <span class="section-label" data-da="Spørgsmål & svar" data-en="Questions & answers">Spørgsmål & svar</span>
+    <h2 class="section-title" data-da="Ofte stillede spørgsmål" data-en="Frequently asked questions">Ofte stillede spørgsmål</h2>
+    <div class="divider"></div>
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span data-da="Hvordan bestiller jeg?" data-en="How do I order?">Hvordan bestiller jeg?</span>
+          <i class="faq-icon">+</i>
+        </button>
+        <div class="faq-answer">
+          <p data-da="Du vælger dit produkt, lægger det i kurven og udfylder bestillingsformularen med dine kontaktoplysninger. Herefter modtager du en bekræftelsesemail med betalingsinformation." data-en="You choose your product, add it to the cart and fill out the order form with your contact details. You will then receive a confirmation email with payment information.">
+            Du vælger dit produkt, lægger det i kurven og udfylder bestillingsformularen med dine kontaktoplysninger. Herefter modtager du en bekræftelsesemail med betalingsinformation.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span data-da="Hvordan betaler jeg?" data-en="How do I pay?">Hvordan betaler jeg?</span>
+          <i class="faq-icon">+</i>
+        </button>
+        <div class="faq-answer">
+          <p data-da="Vi modtager betaling via MobilePay eller bankoverførsel. Betalingsinformation sendes i bekræftelsesmailen. Betaling skal ske inden 48 timer for at bekræfte din ordre." data-en="We accept payment via MobilePay or bank transfer. Payment information is sent in the confirmation email. Payment must be made within 48 hours to confirm your order.">
+            Vi modtager betaling via MobilePay eller bankoverførsel. Betalingsinformation sendes i bekræftelsesmailen. Betaling skal ske inden 48 timer for at bekræfte din ordre.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span data-da="Kan jeg vælge farver?" data-en="Can I choose colors?">Kan jeg vælge farver?</span>
+          <i class="faq-icon">+</i>
+        </button>
+        <div class="faq-answer">
+          <p data-da="Ja! De fleste af vores produkter fås i alle farver. Du vælger din ønskede farve direkte på produktsiden, eller skriver den i kommentarfeltet ved bestilling." data-en="Yes! Most of our products are available in all colors. You select your desired color directly on the product page, or write it in the comment field when ordering.">
+            Ja! De fleste af vores produkter fås i alle farver. Du vælger din ønskede farve direkte på produktsiden, eller skriver den i kommentarfeltet ved bestilling.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span data-da="Hvor lang er leveringstiden?" data-en="What is the delivery time?">Hvor lang er leveringstiden?</span>
+          <i class="faq-icon">+</i>
+        </button>
+        <div class="faq-answer">
+          <p data-da="Leveringstiden er typisk 3-7 hverdage efter bekræftet betaling. Vi sender med PostNord. Du kan også arrangere afhentning lokalt — kontakt os for nærmere aftale." data-en="Delivery time is typically 3-7 business days after confirmed payment. We ship with PostNord. You can also arrange local pickup — contact us for details.">
+            Leveringstiden er typisk 3-7 hverdage efter bekræftet betaling. Vi sender med PostNord. Du kan også arrangere afhentning lokalt — kontakt os for nærmere aftale.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span data-da="Kan jeg returnere et produkt?" data-en="Can I return a product?">Kan jeg returnere et produkt?</span>
+          <i class="faq-icon">+</i>
+        </button>
+        <div class="faq-answer">
+          <p data-da="Da alle produkter er håndlavet og ofte personaliserede, tager vi ikke retur på varen. Er der fejl ved produktet ved modtagelsen, kontakter du os inden 48 timer, så finder vi en løsning." data-en="Since all products are handmade and often personalized, we do not accept returns. If there is a defect upon receipt, contact us within 48 hours and we will find a solution.">
+            Da alle produkter er håndlavet og ofte personaliserede, tager vi ikke retur på varen. Er der fejl ved produktet ved modtagelsen, kontakter du os inden 48 timer, så finder vi en løsning.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT / ORDER -->
+<section id="kontakt">
+  <div class="section-inner">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <span class="section-label" data-da="Skriv til os" data-en="Get in touch">Skriv til os</span>
+        <h2 class="section-title" data-da="Bestil eller stil et spørgsmål" data-en="Order or ask a question">Bestil eller stil et spørgsmål</h2>
+        <div class="divider"></div>
+        <p data-da="Har du spørgsmål til et produkt, vil du bestille noget særligt, eller ønsker du et tilpasset produkt? Skriv til os — vi svarer inden for 24 timer." data-en="Have questions about a product, want to order something special, or wish for a customized product? Write to us — we reply within 24 hours.">
+          Har du spørgsmål til et produkt, vil du bestille noget særligt, eller ønsker du et tilpasset produkt? Skriv til os — vi svarer inden for 24 timer.
+        </p>
+        <div class="contact-detail">
+          <span>📧</span>
+          <span><strong data-da="Email:" data-en="Email:">Email:</strong> din@email.dk</span>
+        </div>
+        <div class="contact-detail">
+          <span>⏱️</span>
+          <span data-da="Svartid: Inden for 24 timer" data-en="Response time: Within 24 hours">Svartid: Inden for 24 timer</span>
+        </div>
+        <div class="contact-detail">
+          <span>📦</span>
+          <span data-da="Levering: 3-7 hverdage" data-en="Delivery: 3-7 business days">Levering: 3-7 hverdage</span>
+        </div>
+        <div class="contact-detail">
+          <span>💛</span>
+          <span data-da="Betaling: MobilePay eller bank" data-en="Payment: MobilePay or bank transfer">Betaling: MobilePay eller bank</span>
+        </div>
+      </div>
+
+      <div class="order-form">
+        <h3 data-da="Send en besked eller bestilling" data-en="Send a message or order">Send en besked eller bestilling</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label data-da="Navn *" data-en="Name *">Navn *</label>
+            <input type="text" id="fname" placeholder="Dit navn" required>
+          </div>
+          <div class="form-group">
+            <label data-da="Telefon" data-en="Phone">Telefon</label>
+            <input type="tel" id="fphone" placeholder="+45 12 34 56 78">
+          </div>
+        </div>
+        <div class="form-group">
+          <label data-da="Email *" data-en="Email *">Email *</label>
+          <input type="email" id="femail" placeholder="din@email.dk" required>
+        </div>
+        <div class="form-group">
+          <label data-da="Besked / bestilling *" data-en="Message / order *">Besked / bestilling *</label>
+          <textarea id="fmessage" rows="4" placeholder="Beskriv dit ønske eller din bestilling..." required></textarea>
+        </div>
+        <div class="form-note" data-da="* Din besked sendes direkte til os. Du modtager en bekræftelsesemail med betalingsinfo (MobilePay + kontonr). Betaling skal ske inden 48 timer." data-en="* Your message is sent directly to us. You will receive a confirmation email with payment info (MobilePay + account number). Payment must be made within 48 hours.">
+          * Din besked sendes direkte til os. Du modtager en bekræftelsesemail med betalingsinfo (MobilePay + kontonr). Betaling skal ske inden 48 timer.
+        </div>
+        <button class="submit-btn" id="submitBtn" onclick="sendOrder()">
+          <span data-da="Send bestilling" data-en="Send order">Send bestilling</span>
+        </button>
+        <div class="form-success" id="formSuccess">
+          <strong data-da="Tak for din bestilling! 🎉" data-en="Thank you for your order! 🎉">Tak for din bestilling! 🎉</strong><br>
+          <span data-da="Vi vender tilbage inden for 24 timer med betalingsinformation." data-en="We will get back to you within 24 hours with payment information.">Vi vender tilbage inden for 24 timer med betalingsinformation.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo">Making Art <span>DIY</span></a>
+        <p data-da="Håndlavede produkter i 3D-print og træ — lavet med kærlighed i Danmark." data-en="Handmade products in 3D-print and wood — made with love in Denmark.">
+          Håndlavede produkter i 3D-print og træ — lavet med kærlighed i Danmark.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h4 data-da="Navigation" data-en="Navigation">Navigation</h4>
+        <ul>
+          <li><a href="#produkter" data-da="Produkter" data-en="Products">Produkter</a></li>
+          <li><a href="#om-os" data-da="Om os" data-en="About us">Om os</a></li>
+          <li><a href="#faq" data-da="FAQ" data-en="FAQ">FAQ</a></li>
+          <li><a href="#kontakt" data-da="Kontakt" data-en="Contact">Kontakt</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-da="Information" data-en="Information">Information</h4>
+        <ul>
+          <li><a href="#" data-da="Handelsbetingelser" data-en="Terms">Handelsbetingelser</a></li>
+          <li><a href="#" data-da="Privatlivspolitik" data-en="Privacy policy">Privatlivspolitik</a></li>
+          <li><a href="#" data-da="Levering & retur" data-en="Shipping & returns">Levering & retur</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Making Art DIY. <span data-da="Alle rettigheder forbeholdes." data-en="All rights reserved.">Alle rettigheder forbeholdes.</span></p>
+      <p data-da="Håndlavet i Danmark 🇩🇰" data-en="Handmade in Denmark 🇩🇰">Håndlavet i Danmark 🇩🇰</p>
+    </div>
+  </div>
+</footer>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h2 data-da="Din kurv" data-en="Your cart">Din kurv</h2>
+    <button class="cart-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty" id="cartEmpty">
+      <p data-da="Din kurv er tom" data-en="Your cart is empty">Din kurv er tom</p>
+    </div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span data-da="Total:" data-en="Total:">Total:</span>
+      <span id="cartTotal">0 kr</span>
+    </div>
+    <button class="checkout-btn" onclick="goToCheckout()" data-da="Gå til bestilling" data-en="Go to order">Gå til bestilling</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── EMAILJS SETUP ──
+// TODO: Replace with your actual EmailJS credentials
+const EMAILJS_SERVICE_ID = 'service_7tcloei';
+const EMAILJS_TEMPLATE_ID_ORDER = 'template_uhrxw7l';
+const EMAILJS_TEMPLATE_ID_CONFIRM = 'template_2tg7pck';
+const EMAILJS_PUBLIC_KEY = 'g5mNCLcsDEOxH_i3o';
+
+emailjs.init(EMAILJS_PUBLIC_KEY);
+
+// ── LANGUAGE ──
+let currentLang = 'da';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-' + lang + ']').forEach(el => {
+    el.textContent = el.getAttribute('data-' + lang);
+  });
+  document.getElementById('btnDa').classList.toggle('active', lang === 'da');
+  document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+  // Update placeholders
+  if (lang === 'en') {
+    document.getElementById('fname').placeholder = 'Your name';
+    document.getElementById('fphone').placeholder = '+45 12 34 56 78';
+    document.getElementById('femail').placeholder = 'your@email.com';
+    document.getElementById('fmessage').placeholder = 'Describe your wish or order...';
+  } else {
+    document.getElementById('fname').placeholder = 'Dit navn';
+    document.getElementById('fphone').placeholder = '+45 12 34 56 78';
+    document.getElementById('femail').placeholder = 'din@email.dk';
+    document.getElementById('fmessage').placeholder = 'Beskriv dit ønske eller din bestilling...';
+  }
+}
+
+// ── MOBILE MENU ──
+function toggleMobile() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// ── CART ──
+let cart = [];
+
+function toggleCart() {
+  document.getElementById('cartSidebar').classList.toggle('open');
+  document.getElementById('cartOverlay').classList.toggle('open');
+}
+
+function addToCart(name, price, colorPickerId) {
+  const picker = document.getElementById(colorPickerId);
+  const selected = picker ? picker.querySelector('.color-dot.selected') : null;
+  const color = selected ? selected.getAttribute('data-color') : '';
+  const existing = cart.find(i => i.name === name && i.color === color);
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ name, price, color, qty: 1 });
+  }
+  updateCart();
+  showToast(currentLang === 'da' ? name + ' tilføjet til kurven! 🛒' : name + ' added to cart! 🛒');
+}
+
+function updateCart() {
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const count = cart.reduce((s, i) => s + i.qty, 0);
+  document.getElementById('cartCount').textContent = count;
+  document.getElementById('cartTotal').textContent = total + ' kr';
+  const itemsEl = document.getElementById('cartItems');
+  const emptyEl = document.getElementById('cartEmpty');
+  if (cart.length === 0) {
+    emptyEl.style.display = 'block';
+    const existing = itemsEl.querySelectorAll('.cart-item');
+    existing.forEach(e => e.remove());
+    return;
+  }
+  emptyEl.style.display = 'none';
+  itemsEl.querySelectorAll('.cart-item').forEach(e => e.remove());
+  cart.forEach((item, idx) => {
+    const div = document.createElement('div');
+    div.className = 'cart-item';
+    div.innerHTML = `
+      <div class="cart-item-img">🛍️</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-meta">${item.color ? (currentLang==='da'?'Farve: ':'Color: ') + item.color : ''}</div>
+        <div class="cart-item-controls">
+          <button class="qty-btn" onclick="changeQty(${idx},-1)">−</button>
+          <span class="qty-num">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${idx},1)">+</button>
+        </div>
+      </div>
+      <span class="cart-item-price">${item.price * item.qty} kr</span>
+      <button class="remove-item" onclick="removeItem(${idx})">✕</button>
+    `;
+    itemsEl.appendChild(div);
+  });
+}
+
+function changeQty(idx, delta) {
+  cart[idx].qty += delta;
+  if (cart[idx].qty <= 0) cart.splice(idx, 1);
+  updateCart();
+}
+
+function removeItem(idx) {
+  cart.splice(idx, 1);
+  updateCart();
+}
+
+function goToCheckout() {
+  toggleCart();
+  document.getElementById('kontakt').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ── COLOR PICKER ──
+document.querySelectorAll('.color-picker').forEach(picker => {
+  picker.querySelectorAll('.color-dot').forEach(dot => {
+    dot.addEventListener('click', () => {
+      picker.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+      dot.classList.add('selected');
+    });
+  });
+});
+
+// ── CATEGORY FILTER ──
+function filterProducts(cat) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.product-card').forEach(card => {
+    if (cat === 'alle' || card.dataset.category.includes(cat)) {
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+// ── FAQ ──
+function toggleFaq(btn) {
+  const answer = btn.nextElementSibling;
+  const icon = btn.querySelector('.faq-icon');
+  const isOpen = answer.classList.contains('open');
+  document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+  document.querySelectorAll('.faq-icon').forEach(i => i.textContent = '+');
+  if (!isOpen) {
+    answer.classList.add('open');
+    icon.textContent = '−';
+  }
+}
+
+// ── ORDER FORM ──
+function buildCartSummary() {
+  if (cart.length === 0) return currentLang === 'da' ? 'Ingen kurv-varer' : 'No cart items';
+  return cart.map(i => `${i.name}${i.color ? ' (' + i.color + ')' : ''} x${i.qty} = ${i.price * i.qty} kr`).join('\n');
+}
+
+function sendOrder() {
+  const name = document.getElementById('fname').value.trim();
+  const email = document.getElementById('femail').value.trim();
+  const phone = document.getElementById('fphone').value.trim();
+  const message = document.getElementById('fmessage').value.trim();
+
+  if (!name || !email || !message) {
+    showToast(currentLang === 'da' ? '⚠️ Udfyld venligst alle påkrævede felter' : '⚠️ Please fill in all required fields');
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = currentLang === 'da' ? 'Sender...' : 'Sending...';
+
+  const cartSummary = buildCartSummary();
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+
+  // Send order notification to shop owner
+  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_ORDER, {
+    customer_name: name,
+    customer_email: email,
+    customer_phone: phone || '—',
+    customer_message: message,
+    cart_summary: cartSummary,
+    cart_total: total > 0 ? total + ' kr' : '—',
+    order_date: new Date().toLocaleDateString('da-DK')
+  }).then(() => {
+    // Send confirmation to customer
+    return emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_CONFIRM, {
+      customer_name: name,
+      customer_email: email,
+      cart_summary: cartSummary,
+      cart_total: total > 0 ? total + ' kr' : '—',
+      mobilepay: 'INDSÆT MOBILEPAY NR HER',
+      bank_account: 'INDSÆT KONTONR HER',
+      order_date: new Date().toLocaleDateString('da-DK')
+    });
+  }).then(() => {
+    document.getElementById('formSuccess').style.display = 'block';
+    btn.style.display = 'none';
+    cart = [];
+    updateCart();
+    document.getElementById('fname').value = '';
+    document.getElementById('femail').value = '';
+    document.getElementById('fphone').value = '';
+    document.getElementById('fmessage').value = '';
+  }).catch(err => {
+    console.error('EmailJS error:', err);
+    btn.disabled = false;
+    btn.textContent = currentLang === 'da' ? 'Send bestilling' : 'Send order';
+    showToast(currentLang === 'da' ? '❌ Noget gik galt. Prøv igen.' : '❌ Something went wrong. Try again.');
+  });
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── SCROLL ANIMATIONS ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.product-card, .value-card, .faq-item').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
