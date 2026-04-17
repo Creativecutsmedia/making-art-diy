@@ -358,14 +358,23 @@ function setLang(lang) {
   btnEn.classList.toggle('active', lang === 'en');
   btnDa.setAttribute('aria-pressed', lang === 'da' ? 'true' : 'false');
   btnEn.setAttribute('aria-pressed', lang === 'en' ? 'true' : 'false');
-  // Sync document title + breadcrumb with product (if loaded)
+  // Sync product content with current language (if loaded)
   if (currentProduct) {
     const p = currentProduct;
     const titleDa = (p.title || '').trim();
     const titleEn = (p.title_en || '').trim() || titleDa;
+    const descDa = (p.description || '').trim();
+    const descEn = (p.description_en || '').trim() || descDa;
+    const categoryDa = (p.category || '').trim();
+    const categoryEn = CATEGORY_EN[categoryDa] || categoryDa;
     const t = lang === 'en' ? titleEn : titleDa;
+    const d = lang === 'en' ? descEn : descDa;
+    const c = lang === 'en' ? categoryEn : categoryDa;
     document.title = t + ' – Making Art DIY';
     document.getElementById('breadcrumbTitle').textContent = t;
+    document.getElementById('pTitle').textContent = t;
+    document.getElementById('pDesc').textContent = d;
+    document.getElementById('pBadge').textContent = c;
   }
 }
 
@@ -534,16 +543,6 @@ function renderProduct(p) {
     ? p.images
     : (p.image ? [p.image] : []);
   const images = imagesRaw.map(s => resolveImage((s || '').trim())).filter(Boolean);
-
-  const tEl = document.getElementById('pTitle');
-  tEl.setAttribute('data-da', titleDa);
-  tEl.setAttribute('data-en', titleEn);
-  const bEl = document.getElementById('pBadge');
-  bEl.setAttribute('data-da', categoryDa);
-  bEl.setAttribute('data-en', categoryEn);
-  const dEl = document.getElementById('pDesc');
-  dEl.setAttribute('data-da', descDa);
-  dEl.setAttribute('data-en', descEn);
 
   document.getElementById('pPrice').textContent = price + ' kr';
 
