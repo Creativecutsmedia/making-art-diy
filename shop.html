@@ -606,8 +606,12 @@ document.addEventListener('click', e => {
 
 // ── LANGUAGE ──
 let currentLang = 'da';
+try {
+  if (localStorage.getItem('madiy_lang') === 'en') currentLang = 'en';
+} catch {}
 function setLang(lang) {
   currentLang = lang;
+  try { localStorage.setItem('madiy_lang', lang); } catch {}
   document.documentElement.lang = lang;
   document.querySelectorAll('[data-' + lang + ']').forEach(el => {
     el.textContent = el.getAttribute('data-' + lang);
@@ -882,6 +886,7 @@ document.addEventListener('click', e => {
 
 // Initialize cart display from localStorage on load
 updateCart();
+setLang(currentLang);
 </script>
 </body>
 </html>

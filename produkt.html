@@ -34,7 +34,7 @@ body{font-family:'Georgia',serif;background:var(--cream);color:var(--text);font-
 button:focus-visible,a:focus-visible{outline:2px solid var(--gold-dark);outline-offset:3px;}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(250,246,239,0.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;}
+body > nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(250,246,239,0.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;}
 .nav-logo{font-size:1.2rem;font-weight:700;color:var(--wood-dark);text-decoration:none;letter-spacing:0.02em;}
 .nav-logo span{color:var(--gold);}
 .nav-links{display:flex;gap:1.75rem;list-style:none;align-items:center;}
@@ -342,9 +342,13 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:3rem 2re
 // ── LANGUAGE ──
 const CATEGORY_EN = { 'Børn': 'Children', 'Voksne': 'Adults', 'Erhverv': 'Business' };
 let currentLang = 'da';
+try {
+  if (localStorage.getItem('madiy_lang') === 'en') currentLang = 'en';
+} catch {}
 
 function setLang(lang) {
   currentLang = lang;
+  try { localStorage.setItem('madiy_lang', lang); } catch {}
   document.documentElement.lang = lang;
   document.querySelectorAll('[data-' + lang + ']').forEach(el => {
     el.textContent = el.getAttribute('data-' + lang);
@@ -634,6 +638,7 @@ async function loadProduct() {
 
 // Init
 updateCart();
+setLang(currentLang);
 loadProduct();
 </script>
 </body>
