@@ -15,9 +15,12 @@ collections:
     slug: "{{slug}}"
     fields:
       - { label: "Navn", name: "title", widget: "string" }
+      - { label: "Navn (engelsk)", name: "title_en", widget: "string", required: false, hint: "Tomt = vis dansk navn" }
       - { label: "Pris (kr)", name: "price", widget: "number" }
       - { label: "Kategori", name: "category", widget: "select",
           options: ["Børn", "Voksne", "Erhverv"] }
       - { label: "Beskrivelse", name: "description", widget: "text" }
+      - { label: "Beskrivelse (engelsk)", name: "description_en", widget: "text", required: false, hint: "Tomt = vis dansk beskrivelse" }
       - { label: "Billede", name: "image", widget: "image", required: false }
+      - { label: "Ekstra billeder (galleri)", name: "extra_images", widget: "list", required: false, hint: "Tilføj flere billeder til produktsiden. Hovedbilledet vises først.", field: { label: "Billede", name: "image", widget: "image" } }
       - { label: "Synlig på shop", name: "published", widget: "boolean", default: true }

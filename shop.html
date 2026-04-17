@@ -28,13 +28,22 @@
 html{scroll-behavior:smooth;}
 body{font-family:'Georgia',serif;background:var(--cream);color:var(--text);font-size:16px;line-height:1.75;}
 
+/* ACCESSIBILITY */
+.skip-link{position:absolute;top:-48px;left:0;background:var(--gold-dark);color:#fff;padding:10px 20px;z-index:1000;text-decoration:none;border-radius:0 0 var(--radius-sm) 0;font-family:'Georgia',serif;transition:top 0.2s;}
+.skip-link:focus{top:0;}
+:focus-visible{outline:2px solid var(--gold-dark);outline-offset:2px;border-radius:2px;}
+button:focus-visible,a:focus-visible{outline:2px solid var(--gold-dark);outline-offset:3px;}
+
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(250,246,239,0.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;}
 .nav-logo{font-size:1.2rem;font-weight:700;color:var(--wood-dark);text-decoration:none;letter-spacing:0.02em;}
 .nav-logo span{color:var(--gold);}
 .nav-links{display:flex;gap:1.75rem;list-style:none;align-items:center;}
-.nav-links a{text-decoration:none;color:var(--text-muted);font-size:0.88rem;font-family:'Georgia',serif;transition:color 0.2s;}
+.nav-links a{text-decoration:none;color:var(--text-muted);font-size:0.88rem;font-family:'Georgia',serif;transition:color 0.2s;position:relative;}
 .nav-links a:hover{color:var(--gold-dark);}
+.nav-links a.active{color:var(--gold-dark);}
+.nav-links a.active::after{content:'';position:absolute;left:0;right:0;bottom:-6px;height:2px;background:var(--gold);border-radius:2px;}
+.mobile-menu a.active{color:var(--gold-dark);}
 .nav-right{display:flex;align-items:center;gap:0.75rem;}
 .lang-toggle{display:flex;border:1px solid var(--border);border-radius:20px;overflow:hidden;}
 .lang-toggle button{background:none;border:none;padding:4px 12px;font-size:0.8rem;cursor:pointer;color:var(--text-muted);font-family:'Georgia',serif;transition:all 0.2s;}
@@ -83,8 +92,8 @@ section{padding:5rem 2rem;}
 .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:2rem;margin-top:2.5rem;}
 .product-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all 0.3s;cursor:pointer;}
 .product-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(139,94,60,0.12);}
-.product-img{width:100%;height:220px;object-fit:contain;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:0.85rem;overflow:hidden;}
-.product-img img{width:100%;height:100%;object-fit:contain;}
+.product-img{width:100%;aspect-ratio:1/1;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:0.85rem;overflow:hidden;}
+.product-img img{width:100%;height:100%;object-fit:cover;}
 .product-info{padding:1.25rem;}
 .product-badge{display:inline-block;background:rgba(201,150,58,0.1);color:var(--gold-dark);font-size:0.72rem;padding:3px 10px;border-radius:10px;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.5rem;}
 .product-name{font-size:1.05rem;font-weight:700;color:var(--wood-dark);margin-bottom:0.4rem;}
@@ -93,6 +102,19 @@ section{padding:5rem 2rem;}
 .product-price{font-size:1.15rem;font-weight:700;color:var(--gold-dark);}
 .add-to-cart{background:var(--gold);color:#fff;border:none;padding:8px 18px;border-radius:var(--radius-sm);font-size:0.85rem;font-family:'Georgia',serif;cursor:pointer;transition:all 0.2s;}
 .add-to-cart:hover{background:var(--gold-dark);}
+.add-to-cart.added{background:#2d7a3a;color:#fff;pointer-events:none;}
+@keyframes cartPulse{0%{transform:scale(1);}40%{transform:scale(1.35);}100%{transform:scale(1);}}
+.cart-count.pulse{animation:cartPulse 0.5s ease;}
+.product-card-link,.product-name-link{text-decoration:none;color:inherit;display:block;}
+.product-card .product-img img{transition:transform 0.5s ease;}
+.product-card:hover .product-img img{transform:scale(1.05);}
+.product-name-link:hover .product-name{color:var(--gold-dark);transition:color 0.2s;}
+
+/* EMPTY STATES */
+.products-empty{text-align:center;padding:3rem 2rem;}
+.products-empty .empty-icon{font-size:3rem;margin-bottom:1rem;opacity:0.65;}
+.products-empty .empty-title{font-size:1.1rem;font-weight:700;color:var(--wood-dark);margin-bottom:0.4rem;}
+.products-empty .empty-sub{font-size:0.92rem;color:var(--text-muted);line-height:1.7;}
 
 /* LOADING */
 .products-loading{text-align:center;padding:3rem;color:var(--text-light);font-size:0.95rem;}
@@ -129,14 +151,16 @@ section{padding:5rem 2rem;}
 .order-form h3{font-size:1.1rem;font-weight:700;color:var(--wood-dark);margin-bottom:1.5rem;}
 .form-group{margin-bottom:1.25rem;}
 .form-group label{display:block;font-size:0.82rem;color:var(--text-muted);margin-bottom:0.4rem;letter-spacing:0.04em;}
-.form-group input,.form-group textarea,.form-group select{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Georgia',serif;font-size:0.92rem;color:var(--text);background:#fff;transition:border-color 0.2s;resize:vertical;}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Georgia',serif;font-size:1rem;color:var(--text);background:#fff;transition:border-color 0.2s;resize:vertical;}
 .form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:var(--gold);}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
 .form-note{font-size:0.8rem;color:var(--text-light);margin-top:0.75rem;line-height:1.6;}
 .submit-btn{width:100%;background:var(--gold);color:#fff;border:none;padding:14px;border-radius:var(--radius-sm);font-size:1rem;font-family:'Georgia',serif;cursor:pointer;transition:all 0.25s;margin-top:0.5rem;}
 .submit-btn:hover{background:var(--gold-dark);}
 .submit-btn:disabled{opacity:0.6;cursor:not-allowed;}
-.form-success{display:none;background:rgba(52,168,83,0.08);border:1px solid rgba(52,168,83,0.25);border-radius:var(--radius-sm);padding:1.25rem;text-align:center;color:#2d7a3a;font-size:0.92rem;line-height:1.7;}
+.form-success{display:none;background:rgba(52,168,83,0.08);border:1px solid rgba(52,168,83,0.25);border-radius:var(--radius-sm);padding:2rem 1.25rem;text-align:center;color:#2d7a3a;font-size:0.92rem;line-height:1.7;}
+.form-success .success-icon{font-size:2.6rem;display:block;margin-bottom:0.75rem;}
+.form-success strong{display:block;font-size:1.05rem;margin-bottom:0.4rem;color:#1f5a28;}
 
 /* CART SIDEBAR */
 .cart-overlay{position:fixed;inset:0;background:rgba(44,31,14,0.4);z-index:300;opacity:0;pointer-events:none;transition:opacity 0.3s;}
@@ -145,9 +169,13 @@ section{padding:5rem 2rem;}
 .cart-sidebar.open{transform:translateX(0);}
 .cart-header{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);}
 .cart-header h2{font-size:1.05rem;font-weight:700;color:var(--wood-dark);}
-.cart-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text-muted);line-height:1;}
+.cart-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text-muted);line-height:1;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background 0.2s;}
+.cart-close:hover{background:var(--cream-dark);}
 .cart-items{flex:1;overflow-y:auto;padding:1rem 1.5rem;}
-.cart-empty{text-align:center;color:var(--text-light);font-size:0.9rem;padding:3rem 0;}
+.cart-empty{text-align:center;padding:3rem 1rem;}
+.cart-empty .empty-icon{font-size:2.8rem;margin-bottom:1rem;opacity:0.65;}
+.cart-empty .empty-title{font-size:1rem;font-weight:700;color:var(--wood-dark);margin-bottom:0.35rem;}
+.cart-empty .empty-sub{font-size:0.85rem;color:var(--text-light);line-height:1.6;}
 .cart-item{display:flex;gap:12px;padding:1rem 0;border-bottom:1px solid var(--border);}
 .cart-item-img{width:60px;height:60px;border-radius:var(--radius-sm);background:var(--cream-dark);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:var(--text-light);overflow:hidden;}
 .cart-item-img img{width:100%;height:100%;object-fit:contain;}
@@ -155,7 +183,7 @@ section{padding:5rem 2rem;}
 .cart-item-name{font-size:0.9rem;font-weight:700;color:var(--wood-dark);margin-bottom:2px;}
 .cart-item-meta{font-size:0.78rem;color:var(--text-light);margin-bottom:6px;}
 .cart-item-controls{display:flex;align-items:center;gap:8px;}
-.qty-btn{background:var(--cream-dark);border:none;width:24px;height:24px;border-radius:4px;cursor:pointer;font-size:0.9rem;color:var(--wood-dark);transition:background 0.2s;}
+.qty-btn{background:var(--cream-dark);border:none;width:32px;height:32px;border-radius:4px;cursor:pointer;font-size:1rem;color:var(--wood-dark);transition:background 0.2s;}
 .qty-btn:hover{background:var(--gold-light);}
 .qty-num{font-size:0.88rem;color:var(--text);min-width:20px;text-align:center;}
 .cart-item-price{font-size:0.92rem;font-weight:700;color:var(--gold-dark);align-self:center;}
@@ -206,8 +234,10 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:3rem 2re
 </head>
 <body>
 
+<a href="#produkter" class="skip-link" data-da="Gå til indhold" data-en="Skip to content">Gå til indhold</a>
+
 <!-- NAV -->
-<nav>
+<nav aria-label="Hovedmenu">
   <a href="#" class="nav-logo">Making Art <span>DIY</span></a>
   <ul class="nav-links" id="navLinks">
     <li><a href="#produkter" data-da="Produkter" data-en="Products">Produkter</a></li>
@@ -216,15 +246,15 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:3rem 2re
     <li><a href="#kontakt" data-da="Kontakt" data-en="Contact">Kontakt</a></li>
   </ul>
   <div class="nav-right">
-    <div class="lang-toggle">
-      <button id="btnDa" class="active" onclick="setLang('da')">DA</button>
-      <button id="btnEn" onclick="setLang('en')">EN</button>
+    <div class="lang-toggle" role="group" aria-label="Sprogvalg">
+      <button id="btnDa" class="active" onclick="setLang('da')" aria-pressed="true" aria-label="Dansk">DA</button>
+      <button id="btnEn" onclick="setLang('en')" aria-pressed="false" aria-label="English">EN</button>
     </div>
-    <button class="cart-btn" onclick="toggleCart()">
-      🛒 <span data-da="Kurv" data-en="Cart">Kurv</span>
-      <span class="cart-count" id="cartCount">0</span>
+    <button class="cart-btn" onclick="toggleCart()" aria-controls="cartSidebar" aria-expanded="false">
+      <span aria-hidden="true">🛒</span> <span data-da="Kurv" data-en="Cart">Kurv</span>
+      <span class="cart-count" id="cartCount" aria-label="Antal varer i kurv">0</span>
     </button>
-    <button class="hamburger" id="hamburger" onclick="toggleMobile()">
+    <button class="hamburger" id="hamburger" onclick="toggleMobile()" aria-controls="mobileMenu" aria-expanded="false" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
   </div>
@@ -268,14 +298,28 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:3rem 2re
     <p class="section-sub" data-da="Hvert produkt er lavet med omhu og kan tilpasses i farve og størrelse efter dine ønsker." data-en="Every product is crafted with care and can be customized in color and size to your wishes.">
       Hvert produkt er lavet med omhu og kan tilpasses i farve og størrelse efter dine ønsker.
     </p>
-    <div class="filter-bar">
-      <button class="filter-btn active" onclick="filterProducts('alle', event)" data-da="Alle" data-en="All">Alle</button>
-      <button class="filter-btn" onclick="filterProducts('born', event)" data-da="Børn" data-en="Children">Børn</button>
-      <button class="filter-btn" onclick="filterProducts('voksne', event)" data-da="Voksne" data-en="Adults">Voksne</button>
-      <button class="filter-btn" onclick="filterProducts('erhverv', event)" data-da="Erhverv" data-en="Business">Erhverv</button>
+    <div class="filter-bar" role="group" aria-label="Filtrér produkter efter kategori">
+      <button class="filter-btn active" onclick="filterProducts('alle', event)" aria-pressed="true" data-da="Alle" data-en="All">Alle</button>
+      <button class="filter-btn" onclick="filterProducts('born', event)" aria-pressed="false" data-da="Børn" data-en="Children">Børn</button>
+      <button class="filter-btn" onclick="filterProducts('voksne', event)" aria-pressed="false" data-da="Voksne" data-en="Adults">Voksne</button>
+      <button class="filter-btn" onclick="filterProducts('erhverv', event)" aria-pressed="false" data-da="Erhverv" data-en="Business">Erhverv</button>
+    </div>
+    <div class="products-empty" id="productsEmpty" hidden>
+      <div class="empty-icon" aria-hidden="true">✨</div>
+      <p class="empty-title" data-da="Ingen produkter her endnu" data-en="No products here yet">Ingen produkter her endnu</p>
+      <p class="empty-sub" data-da="Vi arbejder på nye produkter — kom tilbage snart!" data-en="We're working on new products — check back soon!">Vi arbejder på nye produkter — kom tilbage snart!</p>
     </div>
     <div class="products-grid" id="productsGrid">
-      <div class="products-loading" id="productsLoading">Henter produkter...</div>
+      <!-- PRODUCTS-START -->
+<article class="product-card" data-category="voksne" data-slug="3d-printet-vase"><a href="produkt.html?slug=3d-printet-vase" class="product-card-link" tabindex="-1" aria-hidden="true"><div class="product-img"><img src="/images/uploads/vase-til-lego-eller-plastik-blomster.jpeg" alt="3D Printet Vase" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='📸 Billede kommer snart'"></div></a><div class="product-info"><span class="product-badge" data-da="Voksne" data-en="Adults">Voksne</span><a href="produkt.html?slug=3d-printet-vase" class="product-name-link"><h3 class="product-name" data-da="3D Printet Vase" data-en="3D Printed Vase">3D Printet Vase</h3></a><p class="product-desc" data-da="Fin og tidløs vase til Lego eller plastik blomster - kan sikkert have rigtige blomster i også - fås i forskellige farver." data-en="A timeless vase for Lego or plastic flowers — could probably hold real flowers too. Available in different colors.">Fin og tidløs vase til Lego eller plastik blomster - kan sikkert have rigtige blomster i også - fås i forskellige farver.</p><div class="product-footer"><span class="product-price">59 kr</span><button type="button" class="add-to-cart" data-title="3D Printet Vase" data-price="59">Læg i kurv</button></div></div></article>
+<article class="product-card" data-category="born" data-slug="fidget-tastatur"><a href="produkt.html?slug=fidget-tastatur" class="product-card-link" tabindex="-1" aria-hidden="true"><div class="product-img"><img src="/images/uploads/whatsapp-image-2026-04-15-at-21.25.34.jpeg" alt="Fidget Tastatur" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='📸 Billede kommer snart'"></div></a><div class="product-info"><span class="product-badge" data-da="Børn" data-en="Children">Børn</span><a href="produkt.html?slug=fidget-tastatur" class="product-name-link"><h3 class="product-name" data-da="Fidget Tastatur" data-en="Fidget Keyboard">Fidget Tastatur</h3></a><p class="product-desc" data-da="Fidget med mekaniske tastatur knapper til stress og koncentrationsbesvær.
+
+Yderst tilfredsstillende at trykke på!" data-en="Fidget toy with mechanical keyboard switches for stress and focus issues.
+
+Extremely satisfying to click!">Fidget med mekaniske tastatur knapper til stress og koncentrationsbesvær.
+
+Yderst tilfredsstillende at trykke på!</p><div class="product-footer"><span class="product-price">50 kr</span><button type="button" class="add-to-cart" data-title="Fidget Tastatur" data-price="50">Læg i kurv</button></div></div></article>
+<!-- PRODUCTS-END -->
     </div>
   </div>
 </section>
@@ -332,55 +376,55 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:3rem 2re
     <div class="divider"></div>
     <div class="faq-list">
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
+        <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-1">
           <span data-da="Hvordan bestiller jeg?" data-en="How do I order?">Hvordan bestiller jeg?</span>
-          <i class="faq-icon">+</i>
+          <i class="faq-icon" aria-hidden="true">+</i>
         </button>
-        <div class="faq-answer">
+        <div class="faq-answer" id="faq-1" role="region">
           <p data-da="Du vælger dit produkt, lægger det i kurven og udfylder bestillingsformularen. Herefter modtager du en bekræftelsesemail med betalingsinformation." data-en="You choose your product, add it to the cart and fill out the order form. You will then receive a confirmation email with payment information.">
             Du vælger dit produkt, lægger det i kurven og udfylder bestillingsformularen. Herefter modtager du en bekræftelsesemail med betalingsinformation.
           </p>
         </div>
       </div>
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
+        <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-2">
           <span data-da="Hvordan betaler jeg?" data-en="How do I pay?">Hvordan betaler jeg?</span>
-          <i class="faq-icon">+</i>
+          <i class="faq-icon" aria-hidden="true">+</i>
         </button>
-        <div class="faq-answer">
+        <div class="faq-answer" id="faq-2" role="region">
           <p data-da="Vi modtager betaling via MobilePay eller bankoverførsel. Betalingsinformation sendes i bekræftelsesmailen. Betaling skal ske inden 48 timer." data-en="We accept payment via MobilePay or bank transfer. Payment information is sent in the confirmation email. Payment must be made within 48 hours.">
             Vi modtager betaling via MobilePay eller bankoverførsel. Betalingsinformation sendes i bekræftelsesmailen. Betaling skal ske inden 48 timer.
           </p>
         </div>
       </div>
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
+        <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-3">
           <span data-da="Kan jeg vælge farver?" data-en="Can I choose colors?">Kan jeg vælge farver?</span>
-          <i class="faq-icon">+</i>
+          <i class="faq-icon" aria-hidden="true">+</i>
         </button>
-        <div class="faq-answer">
+        <div class="faq-answer" id="faq-3" role="region">
           <p data-da="Ja! De fleste produkter fås i alle farver. Du skriver din ønskede farve i kommentarfeltet ved bestilling." data-en="Yes! Most products are available in all colors. Write your desired color in the comment field when ordering.">
             Ja! De fleste produkter fås i alle farver. Du skriver din ønskede farve i kommentarfeltet ved bestilling.
           </p>
         </div>
       </div>
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
+        <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-4">
           <span data-da="Hvor lang er leveringstiden?" data-en="What is the delivery time?">Hvor lang er leveringstiden?</span>
-          <i class="faq-icon">+</i>
+          <i class="faq-icon" aria-hidden="true">+</i>
         </button>
-        <div class="faq-answer">
+        <div class="faq-answer" id="faq-4" role="region">
           <p data-da="Leveringstiden er typisk 3-7 hverdage efter bekræftet betaling. Vi sender med PostNord." data-en="Delivery time is typically 3-7 business days after confirmed payment. We ship with PostNord.">
             Leveringstiden er typisk 3-7 hverdage efter bekræftet betaling. Vi sender med PostNord.
           </p>
         </div>
       </div>
       <div class="faq-item">
-        <button class="faq-question" onclick="toggleFaq(this)">
+        <button class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-5">
           <span data-da="Kan jeg returnere et produkt?" data-en="Can I return a product?">Kan jeg returnere et produkt?</span>
-          <i class="faq-icon">+</i>
+          <i class="faq-icon" aria-hidden="true">+</i>
         </button>
-        <div class="faq-answer">
+        <div class="faq-answer" id="faq-5" role="region">
           <p data-da="Da alle produkter er håndlavet og personaliserede, tager vi ikke retur. Er der fejl ved produktet, kontakt os inden 48 timer." data-en="Since all products are handmade and personalized, we do not accept returns. If there is a defect, contact us within 48 hours.">
             Da alle produkter er håndlavet og personaliserede, tager vi ikke retur. Er der fejl ved produktet, kontakt os inden 48 timer.
           </p>
@@ -422,21 +466,21 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:3rem 2re
         <h3 data-da="Send en besked eller bestilling" data-en="Send a message or order">Send en besked eller bestilling</h3>
         <div class="form-row">
           <div class="form-group">
-            <label data-da="Navn *" data-en="Name *">Navn *</label>
-            <input type="text" id="fname" placeholder="Dit navn" required>
+            <label for="fname" data-da="Navn *" data-en="Name *">Navn *</label>
+            <input type="text" id="fname" name="name" placeholder="Dit navn" autocomplete="name" required>
           </div>
           <div class="form-group">
-            <label data-da="Telefon" data-en="Phone">Telefon</label>
-            <input type="tel" id="fphone" placeholder="+45 12 34 56 78">
+            <label for="fphone" data-da="Telefon" data-en="Phone">Telefon</label>
+            <input type="tel" id="fphone" name="phone" placeholder="+45 12 34 56 78" autocomplete="tel">
           </div>
         </div>
         <div class="form-group">
-          <label data-da="Email *" data-en="Email *">Email *</label>
-          <input type="email" id="femail" placeholder="din@email.dk" required>
+          <label for="femail" data-da="Email *" data-en="Email *">Email *</label>
+          <input type="email" id="femail" name="email" placeholder="din@email.dk" autocomplete="email" required>
         </div>
         <div class="form-group">
-          <label data-da="Besked / bestilling *" data-en="Message / order *">Besked / bestilling *</label>
-          <textarea id="fmessage" rows="4" placeholder="Beskriv dit ønske eller din bestilling..." required></textarea>
+          <label for="fmessage" data-da="Besked / bestilling *" data-en="Message / order *">Besked / bestilling *</label>
+          <textarea id="fmessage" name="message" rows="4" placeholder="Beskriv dit ønske eller din bestilling..." required></textarea>
         </div>
         <div class="form-note" data-da="* Din besked sendes direkte til os. Du modtager en bekræftelsesemail med betalingsinfo. Betaling skal ske inden 48 timer." data-en="* Your message is sent directly to us. You will receive a confirmation email with payment info. Payment must be made within 48 hours.">
           * Din besked sendes direkte til os. Du modtager en bekræftelsesemail med betalingsinfo. Betaling skal ske inden 48 timer.
@@ -445,7 +489,8 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:3rem 2re
           <span data-da="Send bestilling" data-en="Send order">Send bestilling</span>
         </button>
         <div class="form-success" id="formSuccess">
-          <strong data-da="Tak for din bestilling! 🎉" data-en="Thank you for your order! 🎉">Tak for din bestilling! 🎉</strong><br>
+          <div class="success-icon" aria-hidden="true">✅</div>
+          <strong data-da="Tak for din bestilling!" data-en="Thank you for your order!">Tak for din bestilling!</strong>
           <span data-da="Vi vender tilbage inden for 24 timer med betalingsinformation." data-en="We will get back to you within 24 hours with payment information.">Vi vender tilbage inden for 24 timer med betalingsinformation.</span>
         </div>
       </div>
@@ -490,14 +535,16 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:3rem 2re
 
 <!-- CART SIDEBAR -->
 <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
-<div class="cart-sidebar" id="cartSidebar">
+<div class="cart-sidebar" id="cartSidebar" role="dialog" aria-labelledby="cartTitle" aria-hidden="true">
   <div class="cart-header">
-    <h2 data-da="Din kurv" data-en="Your cart">Din kurv</h2>
-    <button class="cart-close" onclick="toggleCart()">✕</button>
+    <h2 id="cartTitle" data-da="Din kurv" data-en="Your cart">Din kurv</h2>
+    <button class="cart-close" onclick="toggleCart()" aria-label="Luk kurv" data-da-aria="Luk kurv" data-en-aria="Close cart"><span aria-hidden="true">✕</span></button>
   </div>
   <div class="cart-items" id="cartItems">
     <div class="cart-empty" id="cartEmpty">
-      <p data-da="Din kurv er tom" data-en="Your cart is empty">Din kurv er tom</p>
+      <div class="empty-icon" aria-hidden="true">🛍️</div>
+      <p class="empty-title" data-da="Din kurv er tom" data-en="Your cart is empty">Din kurv er tom</p>
+      <p class="empty-sub" data-da="Find noget smukt i shoppen" data-en="Find something beautiful in the shop">Find noget smukt i shoppen</p>
     </div>
   </div>
   <div class="cart-footer">
@@ -510,7 +557,7 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:3rem 2re
 </div>
 
 <!-- TOAST -->
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 // ── EMAILJS ──
@@ -520,129 +567,42 @@ const EMAILJS_TEMPLATE_ID_CONFIRM = 'template_2tg7pck';
 const EMAILJS_PUBLIC_KEY = 'g5mNCLcsDEOxH_i3o';
 emailjs.init(EMAILJS_PUBLIC_KEY);
 
-// ── GITHUB PRODUKTER ──
-const GITHUB_USER = 'Creativecutsmedia';
-const GITHUB_REPO = 'making-art-diy';
-const GITHUB_BRANCH = 'master';
-const GITHUB_PRODUCTS_PATH = '_products';
-
-let allProducts = [];
-let currentFilter = 'alle';
-
-function parseMarkdown(text) {
-  const lines = text.split('\n');
-  const data = {};
-  let descLines = [];
-  let inDesc = false;
-
-  for (const line of lines) {
-    if (line.trim() === '---') continue;
-    if (line.startsWith('description: |-') || line.startsWith('description: |')) {
-      inDesc = true; continue;
-    }
-    if (inDesc) {
-      if (line.startsWith('  ') || line.startsWith('\t')) {
-        descLines.push(line.trim()); continue;
-      } else {
-        inDesc = false;
-        data.description = descLines.join(' ');
-      }
-    }
-    if (line.includes(':') && !inDesc) {
-      const idx = line.indexOf(':');
-      const key = line.substring(0, idx).trim();
-      const val = line.substring(idx + 1).trim();
-      if (key && val) data[key] = val;
-    }
-  }
-  if (descLines.length && !data.description) {
-    data.description = descLines.join(' ');
-  }
-  return data;
-}
-
-async function loadProducts() {
-  const grid = document.getElementById('productsGrid');
-  try {
-    const apiUrl = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${GITHUB_PRODUCTS_PATH}?ref=${GITHUB_BRANCH}`;
-    const res = await fetch(apiUrl);
-    if (!res.ok) throw new Error('Kunne ikke hente produkter');
-    const files = await res.json();
-
-    const mdFiles = files.filter(f => f.name.endsWith('.md'));
-    const products = [];
-
-    for (const file of mdFiles) {
-      const fileRes = await fetch(file.download_url);
-      const text = await fileRes.text();
-      const data = parseMarkdown(text);
-      if (data.published === 'true' || data.published === true) {
-        products.push(data);
-      }
-    }
-
-    allProducts = products;
-    renderProducts(products);
-  } catch (err) {
-    grid.innerHTML = '<p style="color:var(--text-light);padding:2rem;">Kunne ikke hente produkter. Prøv igen senere.</p>';
-    console.error(err);
-  }
-}
-
-function getCategoryKey(cat) {
-  const map = { 'børn': 'born', 'born': 'born', 'voksne': 'voksne', 'erhverv': 'erhverv' };
-  return map[(cat || '').toLowerCase()] || 'voksne';
-}
-
-function renderProducts(products) {
-  const grid = document.getElementById('productsGrid');
-  if (products.length === 0) {
-    grid.innerHTML = '<p style="color:var(--text-light);padding:2rem;text-align:center;">Ingen produkter fundet.</p>';
-    return;
-  }
-
-  grid.innerHTML = products.map((p, idx) => {
-    const catKey = getCategoryKey(p.category);
-    const imgHtml = p.image
-      ? `<img src="${p.image}" alt="${p.title}" onerror="this.parentElement.innerHTML='📸 Billede kommer snart'">`
-      : '📸 Billede kommer snart';
-    const price = parseInt(p.price) || 0;
-    const titleSafe = (p.title || '').replace(/'/g, "\\'");
-
-    return `
-      <div class="product-card" data-category="${catKey}">
-        <div class="product-img">${imgHtml}</div>
-        <div class="product-info">
-          <span class="product-badge">${p.category || ''}</span>
-          <div class="product-name">${p.title || ''}</div>
-          <div class="product-desc">${p.description || ''}</div>
-          <div class="product-footer">
-            <span class="product-price">${price} kr</span>
-            <button class="add-to-cart" onclick="addToCart('${titleSafe}', ${price})">Læg i kurv</button>
-          </div>
-        </div>
-      </div>`;
-  }).join('');
-
-  // Genaktiver scroll animation
-  document.querySelectorAll('.product-card').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-    observer.observe(el);
-  });
-}
-
+// ── FILTER ──
 function filterProducts(cat, event) {
-  currentFilter = cat;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  if (event) event.target.classList.add('active');
-
-  const filtered = cat === 'alle'
-    ? allProducts
-    : allProducts.filter(p => getCategoryKey(p.category) === cat);
-  renderProducts(filtered);
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.remove('active');
+    b.setAttribute('aria-pressed', 'false');
+  });
+  event.currentTarget.classList.add('active');
+  event.currentTarget.setAttribute('aria-pressed', 'true');
+  let visible = 0;
+  document.querySelectorAll('.product-card').forEach(card => {
+    const show = cat === 'alle' || card.dataset.category === cat;
+    card.hidden = !show;
+    if (show) visible++;
+  });
+  document.getElementById('productsEmpty').hidden = visible > 0;
 }
+
+// ── ADD-TO-CART DELEGATION ──
+function pulseCart() {
+  const el = document.getElementById('cartCount');
+  if (!el) return;
+  el.classList.remove('pulse');
+  void el.offsetWidth; // restart CSS animation
+  el.classList.add('pulse');
+}
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.add-to-cart');
+  if (!btn) return;
+  addToCart(btn.dataset.title, Number(btn.dataset.price));
+  pulseCart();
+  const orig = btn.textContent;
+  btn.classList.add('added');
+  btn.textContent = currentLang === 'da' ? '✓ Tilføjet' : '✓ Added';
+  setTimeout(() => { btn.classList.remove('added'); btn.textContent = orig; }, 1200);
+});
 
 // ── LANGUAGE ──
 let currentLang = 'da';
@@ -652,8 +612,15 @@ function setLang(lang) {
   document.querySelectorAll('[data-' + lang + ']').forEach(el => {
     el.textContent = el.getAttribute('data-' + lang);
   });
-  document.getElementById('btnDa').classList.toggle('active', lang === 'da');
-  document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+  document.querySelectorAll('[data-' + lang + '-aria]').forEach(el => {
+    el.setAttribute('aria-label', el.getAttribute('data-' + lang + '-aria'));
+  });
+  const btnDa = document.getElementById('btnDa');
+  const btnEn = document.getElementById('btnEn');
+  btnDa.classList.toggle('active', lang === 'da');
+  btnEn.classList.toggle('active', lang === 'en');
+  btnDa.setAttribute('aria-pressed', lang === 'da' ? 'true' : 'false');
+  btnEn.setAttribute('aria-pressed', lang === 'en' ? 'true' : 'false');
   if (lang === 'en') {
     document.getElementById('fname').placeholder = 'Your name';
     document.getElementById('femail').placeholder = 'your@email.com';
@@ -667,20 +634,47 @@ function setLang(lang) {
 
 // ── MOBILE MENU ──
 function toggleMobile() {
-  document.getElementById('mobileMenu').classList.toggle('open');
+  const menu = document.getElementById('mobileMenu');
+  const btn = document.getElementById('hamburger');
+  const isOpen = menu.classList.toggle('open');
+  btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 }
 
 // ── CART ──
-let cart = [];
-function toggleCart() {
-  document.getElementById('cartSidebar').classList.toggle('open');
-  document.getElementById('cartOverlay').classList.toggle('open');
+const CART_KEY = 'madiy_cart_v1';
+
+function loadCart() {
+  try {
+    const raw = localStorage.getItem(CART_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch { return []; }
+}
+function saveCart() {
+  try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch {}
 }
 
-function addToCart(name, price) {
+let cart = loadCart();
+
+window.addEventListener('storage', e => {
+  if (e.key === CART_KEY) { cart = loadCart(); updateCart(); }
+});
+
+function toggleCart() {
+  const sidebar = document.getElementById('cartSidebar');
+  const cartBtn = document.querySelector('.cart-btn');
+  const isOpen = sidebar.classList.toggle('open');
+  document.getElementById('cartOverlay').classList.toggle('open');
+  sidebar.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+  if (cartBtn) cartBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+}
+
+function addToCart(name, price, qty) {
+  const addQty = Number(qty) > 0 ? Number(qty) : 1;
   const existing = cart.find(i => i.name === name);
-  if (existing) { existing.qty++; }
-  else { cart.push({ name, price, qty: 1 }); }
+  if (existing) { existing.qty += addQty; }
+  else { cart.push({ name, price, qty: addQty }); }
+  saveCart();
   updateCart();
   showToast(currentLang === 'da' ? name + ' tilføjet til kurven! 🛒' : name + ' added to cart! 🛒');
 }
@@ -715,9 +709,10 @@ function updateCart() {
 function changeQty(idx, delta) {
   cart[idx].qty += delta;
   if (cart[idx].qty <= 0) cart.splice(idx, 1);
+  saveCart();
   updateCart();
 }
-function removeItem(idx) { cart.splice(idx, 1); updateCart(); }
+function removeItem(idx) { cart.splice(idx, 1); saveCart(); updateCart(); }
 function goToCheckout() { toggleCart(); document.getElementById('kontakt').scrollIntoView({ behavior: 'smooth' }); }
 
 // ── FAQ ──
@@ -727,8 +722,22 @@ function toggleFaq(btn) {
   const isOpen = answer.classList.contains('open');
   document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
   document.querySelectorAll('.faq-icon').forEach(i => i.textContent = '+');
-  if (!isOpen) { answer.classList.add('open'); icon.textContent = '−'; }
+  document.querySelectorAll('.faq-question').forEach(q => q.setAttribute('aria-expanded', 'false'));
+  if (!isOpen) {
+    answer.classList.add('open');
+    icon.textContent = '−';
+    btn.setAttribute('aria-expanded', 'true');
+  }
 }
+
+// ── KEYBOARD: ESC closes cart and mobile menu ──
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  const sidebar = document.getElementById('cartSidebar');
+  const menu = document.getElementById('mobileMenu');
+  if (sidebar.classList.contains('open')) toggleCart();
+  else if (menu.classList.contains('open')) toggleMobile();
+});
 
 // ── ORDER FORM ──
 function buildCartSummary() {
@@ -763,7 +772,7 @@ function sendOrder() {
   })).then(() => {
     document.getElementById('formSuccess').style.display = 'block';
     btn.style.display = 'none';
-    cart = []; updateCart();
+    cart = []; saveCart(); updateCart();
     document.getElementById('fname').value = '';
     document.getElementById('femail').value = '';
     document.getElementById('fphone').value = '';
@@ -794,15 +803,85 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1 });
 
-document.querySelectorAll('.value-card, .faq-item').forEach(el => {
+document.querySelectorAll('.value-card, .faq-item, .product-card').forEach(el => {
   el.style.opacity = '0';
   el.style.transform = 'translateY(20px)';
   el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
   observer.observe(el);
 });
 
-// ── START ──
-loadProducts();
+// ── WHOLE-CARD CLICK + SCROLL RESTORE SAVE ──
+document.addEventListener('click', e => {
+  if (e.target.closest('.add-to-cart')) return;
+  const card = e.target.closest('.product-card');
+  if (!card) return;
+  const slug = card.dataset.slug || '';
+  if (!slug) return;
+  try {
+    sessionStorage.setItem('madiy_last_card', JSON.stringify({
+      slug,
+      scrollY: window.scrollY
+    }));
+  } catch {}
+  if (e.target.closest('a[href]')) return;
+  window.location.href = 'produkt.html?slug=' + encodeURIComponent(slug);
+});
+
+// ── SCROLL RESTORE: on load, if returning from a product page, scroll back ──
+(function() {
+  let raw;
+  try { raw = sessionStorage.getItem('madiy_last_card'); } catch { return; }
+  if (!raw) return;
+  try { sessionStorage.removeItem('madiy_last_card'); } catch {}
+  if (window.location.hash) return;
+  let data;
+  try { data = JSON.parse(raw); } catch { return; }
+  if (!data || typeof data !== 'object') return;
+  const card = data.slug ? document.querySelector('.product-card[data-slug="' + data.slug + '"]') : null;
+  const htmlEl = document.documentElement;
+  const prev = htmlEl.style.scrollBehavior;
+  htmlEl.style.scrollBehavior = 'auto';
+  if (card) {
+    const rect = card.getBoundingClientRect();
+    window.scrollTo(0, window.scrollY + rect.top - 100);
+  } else if (typeof data.scrollY === 'number') {
+    window.scrollTo(0, data.scrollY);
+  }
+  requestAnimationFrame(() => { htmlEl.style.scrollBehavior = prev; });
+})();
+
+// ── ACTIVE NAV HIGHLIGHTING ──
+(function() {
+  const ordered = ['produkter', 'om-os', 'faq', 'kontakt'];
+  const sections = ordered.map(id => document.getElementById(id)).filter(Boolean);
+  if (sections.length === 0) return;
+  const linkMap = new Map();
+  document.querySelectorAll('.nav-links a[href^="#"], .mobile-menu a[href^="#"]').forEach(a => {
+    const id = a.getAttribute('href').slice(1);
+    if (!linkMap.has(id)) linkMap.set(id, []);
+    linkMap.get(id).push(a);
+  });
+  const visibleIds = new Set();
+  let current = null;
+  function setActive(id) {
+    if (current === id) return;
+    current = id;
+    document.querySelectorAll('.nav-links a.active, .mobile-menu a.active').forEach(a => a.classList.remove('active'));
+    if (id) (linkMap.get(id) || []).forEach(a => a.classList.add('active'));
+  }
+  const navObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) visibleIds.add(e.target.id);
+      else visibleIds.delete(e.target.id);
+    });
+    const active = ordered.find(id => visibleIds.has(id));
+    setActive(active || null);
+  }, { rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+  sections.forEach(s => navObs.observe(s));
+})();
+
+// Initialize cart display from localStorage on load
+updateCart();
 </script>
 </body>
 </html>
