@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<title>Handelsbetingelser – Making Art DIY</title>
+<meta name="description" content="Handelsbetingelser for Making Art DIY — sælger, priser, betaling, levering, fortrydelsesret og reklamation.">
+<!--
+================================================================
+TODO FØR LAUNCH
+================================================================
+Før siden sættes offentligt live, skal følgende udfyldes:
+
+  1. [ADRESSE INDSÆTTES FØR LAUNCH]   – i sektion 1 "Sælger"
+  2. [TELEFON INDSÆTTES FØR LAUNCH]   – i sektion 1 "Sælger"
+  3. Datoen i "Senest opdateret"      – opdater ved hver ændring
+
+OBS – hvis forretningsgrundlaget ændrer sig, skal teksten også opdateres:
+  - Hvis du begynder at sælge færdigproducerede lagervarer (ikke made-to-order),
+    SKAL sektion 4 ændres, så 14 dages fortrydelsesret gælder,
+    og den lovpligtige standard fortrydelsesformular (bilag 2 til
+    Forbrugeraftaleloven) skal tilføjes nederst på siden.
+  - Hvis omsætningen overstiger 50.000 kr/år, SKAL du momsregistreres;
+    opdater sektion 1 (CVR-nr) og sektion 2 ("alle priser er inkl. moms").
+================================================================
+-->
+<style>
+:root{
+  --cream:#FAF6EF;--cream-dark:#F2EBDE;--warm-white:#FFFDF9;
+  --wood:#8B5E3C;--wood-dark:#5C3D20;--wood-light:#A07458;
+  --gold:#C9963A;--gold-dark:#A07428;
+  --text:#3D2E1E;--text-muted:#6B4F2E;--text-light:#9C7A56;
+  --border:rgba(139,94,60,0.15);
+  --radius:16px;--radius-sm:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Georgia',serif;background:var(--cream);color:var(--text);line-height:1.7;}
+a{color:var(--gold-dark);}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(250,246,239,0.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;}
+.nav-logo{font-size:1.1rem;font-weight:700;color:var(--wood-dark);text-decoration:none;}
+.nav-logo span{color:var(--gold);}
+.nav-back{font-size:0.85rem;color:var(--text-muted);text-decoration:none;}
+.nav-back:hover{color:var(--gold-dark);}
+.legal-wrap{max-width:760px;margin:0 auto;padding:7rem 2rem 4rem;}
+.legal-wrap h1{font-size:clamp(1.7rem,4vw,2.4rem);color:var(--wood-dark);margin-bottom:0.5rem;}
+.legal-wrap .updated{color:var(--text-light);font-size:0.85rem;margin-bottom:2rem;}
+.english-note{background:var(--cream-dark);border-left:3px solid var(--gold);padding:1rem 1.25rem;border-radius:var(--radius-sm);font-size:0.9rem;color:var(--text-muted);margin-bottom:2.5rem;}
+.legal-wrap h2{font-size:1.2rem;color:var(--wood-dark);margin:2.5rem 0 0.75rem;}
+.legal-wrap h3{font-size:1rem;color:var(--wood-dark);margin:1.5rem 0 0.5rem;}
+.legal-wrap p{margin-bottom:1rem;}
+.legal-wrap ul,.legal-wrap ol{padding-left:1.5rem;margin-bottom:1rem;}
+.legal-wrap li{margin-bottom:0.4rem;}
+.callout{background:rgba(201,150,58,0.08);border-left:3px solid var(--gold);padding:1rem 1.25rem;border-radius:var(--radius-sm);margin:1.5rem 0;}
+footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:2.5rem 2rem 1.5rem;margin-top:3rem;}
+.footer-inner{max-width:1100px;margin:0 auto;}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;font-size:0.8rem;}
+.footer-bottom a{color:rgba(255,255,255,0.75);text-decoration:none;margin:0 0.5rem;}
+.footer-bottom a:hover{color:#fff;}
+@media (max-width:600px){
+  .legal-wrap{padding:6rem 1.25rem 3rem;}
+  nav{padding:0 1.25rem;}
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="shop.html" class="nav-logo">Making Art <span>DIY</span></a>
+  <a href="shop.html" class="nav-back">← Tilbage til butikken</a>
+</nav>
+
+<main class="legal-wrap">
+  <h1>Handelsbetingelser</h1>
+  <p class="updated">Senest opdateret: 2026-04-18</p>
+
+  <div class="english-note">
+    🇬🇧 This page is in Danish. An English version is available on request —
+    please email <a href="mailto:makingartdiy@gmail.com">makingartdiy@gmail.com</a>.
+  </div>
+
+  <h2 id="saelger">1. Sælger</h2>
+  <p>
+    Making Art DIY (privat sælger)<br>
+    Adresse: [ADRESSE INDSÆTTES FØR LAUNCH]<br>
+    Email: <a href="mailto:makingartdiy@gmail.com">makingartdiy@gmail.com</a><br>
+    Telefon: [TELEFON INDSÆTTES FØR LAUNCH]
+  </p>
+  <p>
+    Making Art DIY drives som privat hobbyvirksomhed. Der er ikke tildelt CVR-nr., da
+    den årlige omsætning forventes at ligge under 50.000 kr., og sælger er derfor ikke
+    momsregistreret (jf. momslovens § 49).
+  </p>
+
+  <h2 id="priser">2. Priser og betaling</h2>
+  <p>
+    Alle priser på siden er i danske kroner (DKK). Da sælger ikke er momsregistreret,
+    er priserne momsfri.
+  </p>
+
+  <h3>Betalingsmetoder</h3>
+  <ul>
+    <li>MobilePay</li>
+    <li>Bankoverførsel</li>
+  </ul>
+  <p>
+    Når du har sendt din bestilling, modtager du en bekræftelsesmail med et ordrenummer
+    samt betalingsoplysninger (MobilePay-nummer eller kontonummer). Betaling skal ske
+    inden <strong>48 timer</strong> efter du har modtaget bekræftelsesmailen. Produktionen
+    af dit produkt starter først, når betalingen er registreret.
+  </p>
+  <p>
+    Sker betalingen ikke inden for 48 timer, kan ordren annulleres uden yderligere varsel.
+  </p>
+
+  <h2 id="levering">3. Levering</h2>
+  <ul>
+    <li><strong>Fragtomkostning:</strong> 49 kr. Gratis fragt ved køb over 500 kr.</li>
+    <li><strong>Transportør:</strong> PostNord</li>
+    <li><strong>Leveringstid:</strong> 3-7 hverdage fra produktet er færdigproduceret og betalt.</li>
+    <li><strong>Leveringssted:</strong> Leverance sker kun inden for Danmarks grænser.</li>
+  </ul>
+  <p>
+    Da produkterne er håndlavede efter bestilling, kan produktionstiden i travle perioder
+    være længere end normalt. Du vil i så fald blive orienteret pr. email.
+  </p>
+
+  <h2 id="fortrydelsesret">4. Fortrydelsesret — undtagelse</h2>
+  <div class="callout">
+    <strong>Bemærk:</strong> Produkterne hos Making Art DIY er håndlavede specielt efter
+    din bestilling (made-to-order). Der er derfor <strong>ikke 14 dages fortrydelsesret</strong>
+    efter Forbrugeraftaleloven § 18 stk. 2 nr. 3, som undtager varer, der er fremstillet
+    efter forbrugerens specifikationer eller har fået et tydeligt personligt præg.
+  </div>
+  <p>
+    Når du sender din bestilling og godkender disse handelsbetingelser, bekræfter du,
+    at du er indforstået med, at fortrydelsesretten bortfalder, og at produktionen
+    begynder så snart betalingen er modtaget.
+  </p>
+
+  <h2 id="reklamationsret">5. Reklamationsret</h2>
+  <p>
+    Du har <strong>24 måneders reklamationsret</strong> efter Købeloven §§ 78-83.
+    Reklamationsretten dækker oprindelige fejl og mangler ved produktet, men ikke
+    skader som følge af forkert brug, slid eller uheld.
+  </p>
+  <p>
+    Opdager du en mangel, skal du kontakte os så hurtigt som muligt — og senest inden
+    2 måneder efter du har opdaget manglen — på
+    <a href="mailto:makingartdiy@gmail.com">makingartdiy@gmail.com</a>. Beskriv fejlen
+    så præcist som muligt og vedlæg gerne billeder.
+  </p>
+  <p>
+    Er reklamationen berettiget, vil du alt efter situation få tilbudt reparation,
+    ombytning, prisafslag eller ophævelse af købet. Rimelige forsendelsesomkostninger
+    ved retur i forbindelse med en berettiget reklamation refunderes.
+  </p>
+
+  <h2 id="klagemuligheder">6. Klagemuligheder</h2>
+  <p>
+    Er du som forbruger utilfreds med en vare eller service, og kan vi ikke finde en
+    løsning sammen, kan du indgive en klage til:
+  </p>
+  <ul>
+    <li>
+      <strong>Nævnenes Hus — Center for Klageløsning / Forbrugerklagenævnet</strong><br>
+      Toldboden 2, 8800 Viborg<br>
+      <a href="https://naevneneshus.dk/" target="_blank" rel="noopener">naevneneshus.dk</a>
+    </li>
+    <li>
+      Du kan også benytte EU's online tvistløsningsplatform (ODR):<br>
+      <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a><br>
+      Oplys vores e-mail i platformen: makingartdiy@gmail.com
+    </li>
+  </ul>
+
+  <h2 id="aendringer">7. Ændringer i handelsbetingelserne</h2>
+  <p>
+    Making Art DIY kan til enhver tid opdatere disse handelsbetingelser. Du er altid
+    omfattet af de betingelser, der var gældende på tidspunktet for din bestilling.
+  </p>
+
+  <h2 id="lovvalg">8. Lovvalg og værneting</h2>
+  <p>
+    Eventuelle tvister afgøres efter dansk ret ved danske domstole.
+  </p>
+
+  <h2 id="kontakt">9. Kontakt</h2>
+  <p>
+    Har du spørgsmål til disse betingelser, er du altid velkommen til at skrive til
+    <a href="mailto:makingartdiy@gmail.com">makingartdiy@gmail.com</a>.
+  </p>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-bottom">
+      <p>© 2026 Making Art DIY. Alle rettigheder forbeholdes.</p>
+      <p>
+        <a href="vilkaar.html">Handelsbetingelser</a> ·
+        <a href="privatliv.html">Privatlivspolitik</a> ·
+        <a href="shop.html">Butik</a>
+      </p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

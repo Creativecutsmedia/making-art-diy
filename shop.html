@@ -155,6 +155,11 @@ section{padding:5rem 2rem;}
 .form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:var(--gold);}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
 .form-note{font-size:0.8rem;color:var(--text-light);margin-top:0.75rem;line-height:1.6;}
+.legal-notice{background:rgba(201,150,58,0.08);border-left:3px solid var(--gold);padding:0.85rem 1rem;border-radius:var(--radius-sm);font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;line-height:1.6;}
+.form-consent{display:flex;gap:10px;align-items:flex-start;margin-bottom:1rem;font-size:0.85rem;color:var(--text-muted);line-height:1.5;}
+.form-consent input[type=checkbox]{width:auto;margin-top:3px;flex-shrink:0;cursor:pointer;}
+.form-consent label{cursor:pointer;}
+.form-consent a{color:var(--gold-dark);}
 .submit-btn{width:100%;background:var(--gold);color:#fff;border:none;padding:14px;border-radius:var(--radius-sm);font-size:1rem;font-family:'Georgia',serif;cursor:pointer;transition:all 0.25s;margin-top:0.5rem;}
 .submit-btn:hover{background:var(--gold-dark);}
 .submit-btn:disabled{opacity:0.6;cursor:not-allowed;}
@@ -190,7 +195,8 @@ section{padding:5rem 2rem;}
 .remove-item{background:none;border:none;color:var(--text-light);cursor:pointer;font-size:1rem;margin-left:auto;transition:color 0.2s;}
 .remove-item:hover{color:#c0392b;}
 .cart-footer{padding:1.25rem 1.5rem;border-top:1px solid var(--border);}
-.cart-total{display:flex;justify-content:space-between;font-size:1rem;font-weight:700;color:var(--wood-dark);margin-bottom:1rem;}
+.cart-row{display:flex;justify-content:space-between;font-size:0.9rem;color:var(--text-muted);margin-bottom:0.35rem;}
+.cart-total{display:flex;justify-content:space-between;font-size:1rem;font-weight:700;color:var(--wood-dark);margin-bottom:1rem;border-top:1px solid var(--border);padding-top:0.6rem;margin-top:0.35rem;}
 .checkout-btn{width:100%;background:var(--gold);color:#fff;border:none;padding:14px;border-radius:var(--radius-sm);font-size:1rem;font-family:'Georgia',serif;cursor:pointer;transition:all 0.25s;}
 .checkout-btn:hover{background:var(--gold-dark);}
 
@@ -485,6 +491,18 @@ Yderst tilfredsstillende at trykke på!</p><div class="product-footer"><span cla
         <div class="form-note" data-da="* Din besked sendes direkte til os. Du modtager en bekræftelsesemail med betalingsinfo. Betaling skal ske inden 48 timer." data-en="* Your message is sent directly to us. You will receive a confirmation email with payment info. Payment must be made within 48 hours.">
           * Din besked sendes direkte til os. Du modtager en bekræftelsesemail med betalingsinfo. Betaling skal ske inden 48 timer.
         </div>
+        <div class="legal-notice" data-da="⚠️ Bemærk: Produkterne er håndlavede efter din bestilling. Der er derfor ikke 14 dages fortrydelsesret (jf. Forbrugeraftaleloven § 18 stk. 2 nr. 3). Reklamationsretten på 2 år gælder fortsat." data-en="⚠️ Note: Products are handmade to order. The 14-day right of withdrawal therefore does not apply (per Danish Consumer Contracts Act § 18(2)(3)). The 2-year warranty still applies.">
+          ⚠️ Bemærk: Produkterne er håndlavede efter din bestilling. Der er derfor ikke 14 dages fortrydelsesret (jf. Forbrugeraftaleloven § 18 stk. 2 nr. 3). Reklamationsretten på 2 år gælder fortsat.
+        </div>
+        <div class="form-consent">
+          <input type="checkbox" id="fconsent" name="consent" required>
+          <label for="fconsent">
+            <span data-da="Jeg accepterer" data-en="I accept the">Jeg accepterer</span>
+            <a href="vilkaar.html" target="_blank" rel="noopener" data-da="handelsbetingelserne" data-en="terms of sale">handelsbetingelserne</a>
+            <span data-da="og" data-en="and the">og</span>
+            <a href="privatliv.html" target="_blank" rel="noopener" data-da="privatlivspolitikken" data-en="privacy policy">privatlivspolitikken</a><span data-da="." data-en=".">.</span>
+          </label>
+        </div>
         <button class="submit-btn" id="submitBtn" onclick="sendOrder()">
           <span data-da="Send bestilling" data-en="Send order">Send bestilling</span>
         </button>
@@ -492,6 +510,10 @@ Yderst tilfredsstillende at trykke på!</p><div class="product-footer"><span cla
           <div class="success-icon" aria-hidden="true">✅</div>
           <strong data-da="Tak for din bestilling!" data-en="Thank you for your order!">Tak for din bestilling!</strong>
           <span data-da="Vi vender tilbage inden for 24 timer med betalingsinformation." data-en="We will get back to you within 24 hours with payment information.">Vi vender tilbage inden for 24 timer med betalingsinformation.</span>
+          <div style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-muted);">
+            <span data-da="Ordrenummer:" data-en="Order ID:">Ordrenummer:</span>
+            <strong id="orderIdOut" style="font-family:monospace;color:var(--wood-dark);"></strong>
+          </div>
         </div>
       </div>
     </div>
@@ -520,9 +542,9 @@ Yderst tilfredsstillende at trykke på!</p><div class="product-footer"><span cla
       <div class="footer-col">
         <h4 data-da="Information" data-en="Information">Information</h4>
         <ul>
-          <li><a href="#" data-da="Handelsbetingelser" data-en="Terms">Handelsbetingelser</a></li>
-          <li><a href="#" data-da="Privatlivspolitik" data-en="Privacy policy">Privatlivspolitik</a></li>
-          <li><a href="#" data-da="Levering & retur" data-en="Shipping & returns">Levering & retur</a></li>
+          <li><a href="vilkaar.html" data-da="Handelsbetingelser" data-en="Terms">Handelsbetingelser</a></li>
+          <li><a href="privatliv.html" data-da="Privatlivspolitik" data-en="Privacy policy">Privatlivspolitik</a></li>
+          <li><a href="vilkaar.html#levering" data-da="Levering & retur" data-en="Shipping & returns">Levering & retur</a></li>
         </ul>
       </div>
     </div>
@@ -548,6 +570,14 @@ Yderst tilfredsstillende at trykke på!</p><div class="product-footer"><span cla
     </div>
   </div>
   <div class="cart-footer">
+    <div class="cart-row">
+      <span data-da="Subtotal:" data-en="Subtotal:">Subtotal:</span>
+      <span id="cartSubtotal">0 kr</span>
+    </div>
+    <div class="cart-row">
+      <span data-da="Fragt:" data-en="Shipping:">Fragt:</span>
+      <span id="cartShipping">Gratis</span>
+    </div>
     <div class="cart-total">
       <span data-da="Total:" data-en="Total:">Total:</span>
       <span id="cartTotal">0 kr</span>
@@ -565,6 +595,7 @@ const EMAILJS_SERVICE_ID = 'service_7tcloei';
 const EMAILJS_TEMPLATE_ID_ORDER = 'template_uhrxw7l';
 const EMAILJS_TEMPLATE_ID_CONFIRM = 'template_2tg7pck';
 const EMAILJS_PUBLIC_KEY = 'g5mNCLcsDEOxH_i3o';
+const EMAIL_BASE_URL = 'https://making-art-diy.netlify.app';
 emailjs.init(EMAILJS_PUBLIC_KEY);
 
 // ── FILTER ──
@@ -596,7 +627,11 @@ function pulseCart() {
 document.addEventListener('click', e => {
   const btn = e.target.closest('.add-to-cart');
   if (!btn) return;
-  addToCart(btn.dataset.title, Number(btn.dataset.price));
+  const card = btn.closest('.product-card');
+  const slug = card ? (card.dataset.slug || '') : '';
+  const imgEl = card ? card.querySelector('.product-img img') : null;
+  const image = imgEl ? (imgEl.getAttribute('src') || '') : '';
+  addToCart(btn.dataset.title, Number(btn.dataset.price), 1, slug, image);
   pulseCart();
   const orig = btn.textContent;
   btn.classList.add('added');
@@ -634,6 +669,7 @@ function setLang(lang) {
     document.getElementById('femail').placeholder = 'din@email.dk';
     document.getElementById('fmessage').placeholder = 'Beskriv dit ønske eller din bestilling...';
   }
+  if (typeof updateCart === 'function' && typeof cart !== 'undefined') updateCart();
 }
 
 // ── MOBILE MENU ──
@@ -646,6 +682,15 @@ function toggleMobile() {
 
 // ── CART ──
 const CART_KEY = 'madiy_cart_v1';
+const SHIPPING_FLAT = 49;
+const FREE_SHIPPING_THRESHOLD = 500;
+
+function computeTotals() {
+  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const freeShipping = subtotal === 0 || subtotal >= FREE_SHIPPING_THRESHOLD;
+  const shipping = freeShipping ? 0 : SHIPPING_FLAT;
+  return { subtotal, shipping, total: subtotal + shipping, freeShipping };
+}
 
 function loadCart() {
   try {
@@ -664,6 +709,28 @@ window.addEventListener('storage', e => {
   if (e.key === CART_KEY) { cart = loadCart(); updateCart(); }
 });
 
+// One-time self-healing: older cart entries may be missing slug/image.
+// Backfill by matching the stored name against products.json titles (DA or EN).
+async function migrateCart() {
+  if (cart.length === 0) return;
+  if (cart.every(i => i.slug && i.image)) return;
+  try {
+    const res = await fetch('products.json', { cache: 'no-cache' });
+    if (!res.ok) return;
+    const products = await res.json();
+    let changed = false;
+    for (const item of cart) {
+      if (item.slug && item.image) continue;
+      const p = products.find(x => x.title === item.name || x.title_en === item.name);
+      if (!p) continue;
+      if (!item.slug && p.slug) { item.slug = p.slug; changed = true; }
+      if (!item.image && p.image) { item.image = p.image; changed = true; }
+    }
+    if (changed) { saveCart(); updateCart(); }
+  } catch {}
+}
+migrateCart();
+
 function toggleCart() {
   const sidebar = document.getElementById('cartSidebar');
   const cartBtn = document.querySelector('.cart-btn');
@@ -673,31 +740,43 @@ function toggleCart() {
   if (cartBtn) cartBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 }
 
-function addToCart(name, price, qty) {
+function addToCart(name, price, qty, slug, image) {
   const addQty = Number(qty) > 0 ? Number(qty) : 1;
   const existing = cart.find(i => i.name === name);
-  if (existing) { existing.qty += addQty; }
-  else { cart.push({ name, price, qty: addQty }); }
+  if (existing) {
+    existing.qty += addQty;
+    if (slug && !existing.slug) existing.slug = slug;
+    if (image && !existing.image) existing.image = image;
+  } else {
+    cart.push({ name, price, qty: addQty, slug: slug || '', image: image || '' });
+  }
   saveCart();
   updateCart();
   showToast(currentLang === 'da' ? name + ' tilføjet til kurven! 🛒' : name + ' added to cart! 🛒');
 }
 
 function updateCart() {
-  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const t = computeTotals();
   const count = cart.reduce((s, i) => s + i.qty, 0);
   document.getElementById('cartCount').textContent = count;
-  document.getElementById('cartTotal').textContent = total + ' kr';
+  document.getElementById('cartSubtotal').textContent = t.subtotal + ' kr';
+  document.getElementById('cartShipping').textContent = t.freeShipping
+    ? (currentLang === 'da' ? 'Gratis' : 'Free')
+    : t.shipping + ' kr';
+  document.getElementById('cartTotal').textContent = t.total + ' kr';
   const itemsEl = document.getElementById('cartItems');
   itemsEl.querySelectorAll('.cart-item').forEach(e => e.remove());
   document.getElementById('cartEmpty').style.display = cart.length === 0 ? 'block' : 'none';
   cart.forEach((item, idx) => {
     const div = document.createElement('div');
     div.className = 'cart-item';
+    const imgInner = item.image
+      ? `<img src="${item.image}" alt="">`
+      : '🛍️';
     div.innerHTML = `
-      <div class="cart-item-img">🛍️</div>
+      <div class="cart-item-img">${imgInner}</div>
       <div class="cart-item-info">
-        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-name"></div>
         <div class="cart-item-controls">
           <button class="qty-btn" onclick="changeQty(${idx},-1)">−</button>
           <span class="qty-num">${item.qty}</span>
@@ -706,6 +785,7 @@ function updateCart() {
       </div>
       <span class="cart-item-price">${item.price * item.qty} kr</span>
       <button class="remove-item" onclick="removeItem(${idx})">✕</button>`;
+    div.querySelector('.cart-item-name').textContent = item.name;
     itemsEl.appendChild(div);
   });
 }
@@ -744,9 +824,79 @@ document.addEventListener('keydown', e => {
 });
 
 // ── ORDER FORM ──
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+}
+
+function generateOrderId() {
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const ymd = `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`;
+  const hm = `${pad(d.getHours())}${pad(d.getMinutes())}`;
+  const rand = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
+  return `MAD-${ymd}-${hm}-${rand}`;
+}
+
+function absoluteUrl(path) {
+  if (!path) return '';
+  if (/^https?:\/\//i.test(path)) return path;
+  return EMAIL_BASE_URL + (path.startsWith('/') ? path : '/' + path);
+}
+
 function buildCartSummary() {
   if (cart.length === 0) return currentLang === 'da' ? 'Ingen kurv-varer' : 'No cart items';
-  return cart.map(i => `${i.name} x${i.qty} = ${i.price * i.qty} kr`).join('\n');
+  const t = computeTotals();
+  const lines = cart.map(i => `${i.name} x${i.qty} = ${i.price * i.qty} kr`);
+  lines.push('—');
+  lines.push(`Subtotal: ${t.subtotal} kr`);
+  lines.push(`Fragt: ${t.freeShipping ? 'Gratis' : t.shipping + ' kr'}`);
+  lines.push(`Total: ${t.total} kr`);
+  return lines.join('\n');
+}
+
+function buildCartHtml() {
+  if (cart.length === 0) return '<p>—</p>';
+  const t = computeTotals();
+  const rows = cart.map(i => {
+    const productUrl = i.slug
+      ? `${EMAIL_BASE_URL}/produkt.html?slug=${encodeURIComponent(i.slug)}`
+      : '';
+    const imageUrl = absoluteUrl(i.image);
+    const safeName = escapeHtml(i.name);
+    const imgTag = imageUrl
+      ? `<img src="${imageUrl}" alt="${safeName}" width="80" height="80" style="width:80px;height:80px;object-fit:cover;border-radius:6px;display:block;border:0;">`
+      : '';
+    const imgCell = productUrl && imgTag
+      ? `<a href="${productUrl}" style="text-decoration:none;">${imgTag}</a>`
+      : imgTag;
+    const nameCell = productUrl
+      ? `<a href="${productUrl}" style="color:#8b5e3c;text-decoration:none;font-weight:700;">${safeName}</a>`
+      : `<strong>${safeName}</strong>`;
+    return `<tr>`
+      + `<td style="padding:8px;vertical-align:middle;width:96px;">${imgCell}</td>`
+      + `<td style="padding:8px;vertical-align:middle;font-family:Georgia,serif;">`
+      + `${nameCell}<br>`
+      + `<span style="color:#666;font-size:0.9em;">x${i.qty} &middot; ${i.price * i.qty} kr</span>`
+      + `</td></tr>`;
+  }).join('');
+  const shippingLabel = t.freeShipping ? 'Gratis' : (t.shipping + ' kr');
+  const summary = `
+    <tr><td colspan="2" style="padding:12px 8px 4px;border-top:1px solid #e5dccd;"></td></tr>
+    <tr>
+      <td style="padding:4px 8px;font-family:Georgia,serif;color:#666;" align="left">Subtotal</td>
+      <td style="padding:4px 8px;font-family:Georgia,serif;color:#666;" align="right">${t.subtotal} kr</td>
+    </tr>
+    <tr>
+      <td style="padding:4px 8px;font-family:Georgia,serif;color:#666;" align="left">Fragt</td>
+      <td style="padding:4px 8px;font-family:Georgia,serif;color:#666;" align="right">${shippingLabel}</td>
+    </tr>
+    <tr>
+      <td style="padding:8px;font-family:Georgia,serif;color:#2c1f0e;font-weight:700;font-size:1.05em;" align="left">Total</td>
+      <td style="padding:8px;font-family:Georgia,serif;color:#2c1f0e;font-weight:700;font-size:1.05em;" align="right">${t.total} kr</td>
+    </tr>`;
+  return `<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;width:100%;max-width:480px;">${rows}${summary}</table>`;
 }
 
 function sendOrder() {
@@ -754,26 +904,44 @@ function sendOrder() {
   const email = document.getElementById('femail').value.trim();
   const phone = document.getElementById('fphone').value.trim();
   const message = document.getElementById('fmessage').value.trim();
+  const consent = document.getElementById('fconsent').checked;
   if (!name || !email || !message) {
     showToast(currentLang === 'da' ? '⚠️ Udfyld venligst alle påkrævede felter' : '⚠️ Please fill in all required fields');
+    return;
+  }
+  if (!consent) {
+    showToast(currentLang === 'da' ? '⚠️ Du skal acceptere handelsbetingelser og privatlivspolitik' : '⚠️ You must accept the terms and privacy policy');
     return;
   }
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.textContent = currentLang === 'da' ? 'Sender...' : 'Sending...';
+  const orderId = generateOrderId();
   const cartSummary = buildCartSummary();
-  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const cartHtml = buildCartHtml();
+  const t = computeTotals();
+  const hasItems = t.subtotal > 0;
+  const subtotalStr = hasItems ? t.subtotal + ' kr' : '—';
+  const shippingStr = !hasItems ? '—' : (t.freeShipping ? 'Gratis' : t.shipping + ' kr');
+  const totalStr = hasItems ? t.total + ' kr' : '—';
+  const orderDate = new Date().toLocaleDateString('da-DK');
   emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_ORDER, {
+    order_id: orderId,
     customer_name: name, customer_email: email, customer_phone: phone || '—',
-    customer_message: message, cart_summary: cartSummary,
-    cart_total: total > 0 ? total + ' kr' : '—',
-    order_date: new Date().toLocaleDateString('da-DK')
+    customer_message: message,
+    cart_summary: cartSummary, cart_html: cartHtml,
+    cart_subtotal: subtotalStr, cart_shipping: shippingStr, cart_total: totalStr,
+    order_date: orderDate
   }).then(() => emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_CONFIRM, {
-    customer_name: name, customer_email: email, cart_summary: cartSummary,
-    cart_total: total > 0 ? total + ' kr' : '—',
+    order_id: orderId,
+    customer_name: name, customer_email: email,
+    cart_summary: cartSummary, cart_html: cartHtml,
+    cart_subtotal: subtotalStr, cart_shipping: shippingStr, cart_total: totalStr,
     mobilepay: 'INDSÆT MOBILEPAY NR HER', bank_account: 'INDSÆT KONTONR HER',
-    order_date: new Date().toLocaleDateString('da-DK')
+    order_date: orderDate
   })).then(() => {
+    const out = document.getElementById('orderIdOut');
+    if (out) out.textContent = orderId;
     document.getElementById('formSuccess').style.display = 'block';
     btn.style.display = 'none';
     cart = []; saveCart(); updateCart();
