@@ -129,6 +129,9 @@ exports.handler = async (event) => {
     return jsonResponse(200, { url: session.url });
   } catch (err) {
     console.error('Stripe session error:', err);
-    return jsonResponse(500, { error: 'Payment session could not be created' });
+    return jsonResponse(500, {
+      error: 'Payment session could not be created',
+      debug: { type: err.type, code: err.code, message: err.message }
+    });
   }
 };
