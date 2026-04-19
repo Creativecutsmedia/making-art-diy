@@ -398,8 +398,8 @@ Yderst tilfredsstillende at trykke på!</p><div class="product-footer"><span cla
           <i class="faq-icon" aria-hidden="true">+</i>
         </button>
         <div class="faq-answer" id="faq-2" role="region">
-          <p data-da="Vi modtager betaling via MobilePay eller bankoverførsel. Betalingsinformation sendes i bekræftelsesmailen. Betaling skal ske inden 48 timer." data-en="We accept payment via MobilePay or bank transfer. Payment information is sent in the confirmation email. Payment must be made within 48 hours.">
-            Vi modtager betaling via MobilePay eller bankoverførsel. Betalingsinformation sendes i bekræftelsesmailen. Betaling skal ske inden 48 timer.
+          <p data-da="Betaling sker via vores sikre checkout. Du kan betale med kort (Visa, Mastercard, American Express), Apple Pay eller Google Pay." data-en="Payment is handled via our secure checkout. You can pay by card (Visa, Mastercard, American Express), Apple Pay, or Google Pay.">
+            Betaling sker via vores sikre checkout. Du kan betale med kort (Visa, Mastercard, American Express), Apple Pay eller Google Pay.
           </p>
         </div>
       </div>
@@ -465,7 +465,7 @@ Yderst tilfredsstillende at trykke på!</p><div class="product-footer"><span cla
         </div>
         <div class="contact-detail">
           <span>💛</span>
-          <span data-da="Betaling: MobilePay eller bank" data-en="Payment: MobilePay or bank transfer">Betaling: MobilePay eller bank</span>
+          <span data-da="Betaling via sikker checkout" data-en="Payment via secure checkout">Betaling via sikker checkout</span>
         </div>
       </div>
       <div class="order-form">
@@ -488,8 +488,8 @@ Yderst tilfredsstillende at trykke på!</p><div class="product-footer"><span cla
           <label for="fmessage" data-da="Besked / bestilling *" data-en="Message / order *">Besked / bestilling *</label>
           <textarea id="fmessage" name="message" rows="4" placeholder="Beskriv dit ønske eller din bestilling..." required></textarea>
         </div>
-        <div class="form-note" data-da="* Din besked sendes direkte til os. Du modtager en bekræftelsesemail med betalingsinfo. Betaling skal ske inden 48 timer." data-en="* Your message is sent directly to us. You will receive a confirmation email with payment info. Payment must be made within 48 hours.">
-          * Din besked sendes direkte til os. Du modtager en bekræftelsesemail med betalingsinfo. Betaling skal ske inden 48 timer.
+        <div class="form-note" data-da="* Din besked sendes direkte til os, og vi svarer inden for 24 timer. Bestillinger gennemføres via kurven og vores sikre checkout." data-en="* Your message is sent directly to us, and we reply within 24 hours. Orders are placed via the cart and our secure checkout.">
+          * Din besked sendes direkte til os, og vi svarer inden for 24 timer. Bestillinger gennemføres via kurven og vores sikre checkout.
         </div>
         <div class="legal-notice" data-da="⚠️ Bemærk: Produkterne er håndlavede efter din bestilling. Der er derfor ikke 14 dages fortrydelsesret (jf. Forbrugeraftaleloven § 18 stk. 2 nr. 3). Reklamationsretten på 2 år gælder fortsat." data-en="⚠️ Note: Products are handmade to order. The 14-day right of withdrawal therefore does not apply (per Danish Consumer Contracts Act § 18(2)(3)). The 2-year warranty still applies.">
           ⚠️ Bemærk: Produkterne er håndlavede efter din bestilling. Der er derfor ikke 14 dages fortrydelsesret (jf. Forbrugeraftaleloven § 18 stk. 2 nr. 3). Reklamationsretten på 2 år gælder fortsat.
@@ -582,7 +582,16 @@ Yderst tilfredsstillende at trykke på!</p><div class="product-footer"><span cla
       <span data-da="Total:" data-en="Total:">Total:</span>
       <span id="cartTotal">0 kr</span>
     </div>
-    <button class="checkout-btn" onclick="goToCheckout()" data-da="Gå til bestilling" data-en="Go to order">Gå til bestilling</button>
+    <div class="form-consent" style="margin-top:1rem;">
+      <input type="checkbox" id="cartConsent">
+      <label for="cartConsent">
+        <span data-da="Jeg accepterer" data-en="I accept the">Jeg accepterer</span>
+        <a href="vilkaar.html" target="_blank" rel="noopener" data-da="handelsbetingelserne" data-en="terms of sale">handelsbetingelserne</a>
+        <span data-da="og" data-en="and the">og</span>
+        <a href="privatliv.html" target="_blank" rel="noopener" data-da="privatlivspolitikken" data-en="privacy policy">privatlivspolitikken</a><span data-da="." data-en=".">.</span>
+      </label>
+    </div>
+    <button class="checkout-btn" id="checkoutBtn" onclick="goToCheckout()" data-da="Gå til betaling" data-en="Go to payment">Gå til betaling</button>
   </div>
 </div>
 
@@ -593,7 +602,6 @@ Yderst tilfredsstillende at trykke på!</p><div class="product-footer"><span cla
 // ── EMAILJS ──
 const EMAILJS_SERVICE_ID = 'service_7tcloei';
 const EMAILJS_TEMPLATE_ID_ORDER = 'template_uhrxw7l';
-const EMAILJS_TEMPLATE_ID_CONFIRM = 'template_2tg7pck';
 const EMAILJS_PUBLIC_KEY = 'g5mNCLcsDEOxH_i3o';
 const EMAIL_BASE_URL = 'https://making-art-diy.netlify.app';
 emailjs.init(EMAILJS_PUBLIC_KEY);
@@ -682,13 +690,22 @@ function toggleMobile() {
 
 // ── CART ──
 const CART_KEY = 'madiy_cart_v1';
-const SHIPPING_FLAT = 49;
-const FREE_SHIPPING_THRESHOLD = 500;
+let shippingConfig = { flat_cost_dkk: 49, free_threshold_dkk: 500 };
+
+(async () => {
+  try {
+    const res = await fetch('shipping-config.json', { cache: 'no-cache' });
+    if (!res.ok) return;
+    const cfg = await res.json();
+    shippingConfig = cfg;
+    if (typeof updateCart === 'function' && typeof cart !== 'undefined') updateCart();
+  } catch {}
+})();
 
 function computeTotals() {
   const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  const freeShipping = subtotal === 0 || subtotal >= FREE_SHIPPING_THRESHOLD;
-  const shipping = freeShipping ? 0 : SHIPPING_FLAT;
+  const freeShipping = subtotal === 0 || subtotal >= shippingConfig.free_threshold_dkk;
+  const shipping = freeShipping ? 0 : shippingConfig.flat_cost_dkk;
   return { subtotal, shipping, total: subtotal + shipping, freeShipping };
 }
 
@@ -797,7 +814,44 @@ function changeQty(idx, delta) {
   updateCart();
 }
 function removeItem(idx) { cart.splice(idx, 1); saveCart(); updateCart(); }
-function goToCheckout() { toggleCart(); document.getElementById('kontakt').scrollIntoView({ behavior: 'smooth' }); }
+async function goToCheckout() {
+  if (cart.length === 0) {
+    showToast(currentLang === 'da' ? '⚠️ Din kurv er tom' : '⚠️ Your cart is empty');
+    return;
+  }
+  const consent = document.getElementById('cartConsent');
+  if (!consent.checked) {
+    showToast(currentLang === 'da' ? '⚠️ Accepter handelsbetingelser og privatlivspolitik' : '⚠️ You must accept the terms and privacy policy');
+    consent.focus();
+    return;
+  }
+  const btn = document.getElementById('checkoutBtn');
+  const originalLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = currentLang === 'da' ? 'Viderestiller…' : 'Redirecting…';
+  try {
+    const res = await fetch('/.netlify/functions/create-checkout-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        items: cart.map(i => ({ slug: i.slug, quantity: i.qty })),
+        locale: currentLang,
+      }),
+    });
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(txt || 'Checkout request failed');
+    }
+    const data = await res.json();
+    if (!data.url) throw new Error('No checkout URL returned');
+    window.location.href = data.url;
+  } catch (err) {
+    console.error('Checkout error:', err);
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+    showToast(currentLang === 'da' ? '❌ Noget gik galt. Prøv igen.' : '❌ Something went wrong. Try again.');
+  }
+}
 
 // ── FAQ ──
 function toggleFaq(btn) {
@@ -932,14 +986,7 @@ function sendOrder() {
     cart_summary: cartSummary, cart_html: cartHtml,
     cart_subtotal: subtotalStr, cart_shipping: shippingStr, cart_total: totalStr,
     order_date: orderDate
-  }).then(() => emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_CONFIRM, {
-    order_id: orderId,
-    customer_name: name, customer_email: email,
-    cart_summary: cartSummary, cart_html: cartHtml,
-    cart_subtotal: subtotalStr, cart_shipping: shippingStr, cart_total: totalStr,
-    mobilepay: 'INDSÆT MOBILEPAY NR HER', bank_account: 'INDSÆT KONTONR HER',
-    order_date: orderDate
-  })).then(() => {
+  }).then(() => {
     const out = document.getElementById('orderIdOut');
     if (out) out.textContent = orderId;
     document.getElementById('formSuccess').style.display = 'block';

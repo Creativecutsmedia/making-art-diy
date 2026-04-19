@@ -1,0 +1,6 @@
+{
+  "flat_cost_dkk": 49,
+  "free_threshold_dkk": 500,
+  "delivery_min_business_days": 3,
+  "delivery_max_business_days": 7
+}

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tak for din ordre – Making Art DIY</title>
+<meta name="robots" content="noindex">
+<style>
+  :root {
+    --cream: #FAF6EF; --gold: #C9963A; --gold-dark: #A07428;
+    --wood-dark: #5C3D20; --text: #2C1F0E; --text-muted: #6B4F2E;
+    --border: #E5DCCD;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Georgia', serif; background: var(--cream); color: var(--text);
+    min-height: 100vh; display: flex; flex-direction: column; line-height: 1.75;
+  }
+  .nav {
+    padding: 1.25rem 2rem; background: #fff; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: center;
+  }
+  .nav-logo {
+    font-size: 1.2rem; font-weight: 700; color: var(--wood-dark);
+    text-decoration: none; letter-spacing: 0.02em;
+  }
+  .nav-logo span { color: var(--gold); }
+  main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
+  .card {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px;
+    padding: 3rem 2.5rem; text-align: center; max-width: 540px; width: 100%;
+  }
+  .icon { font-size: 3.5rem; margin-bottom: 1rem; line-height: 1; }
+  h1 { font-size: 1.75rem; color: var(--wood-dark); margin-bottom: 1rem; font-weight: 700; }
+  p { color: var(--text-muted); margin-bottom: 1rem; font-size: 1rem; }
+  .ref {
+    background: var(--cream); padding: 0.75rem 1rem; border-radius: 8px;
+    font-family: monospace; font-size: 0.8rem; color: var(--text);
+    margin: 1.5rem 0; word-break: break-all; display: none;
+  }
+  .btn {
+    display: inline-block; background: var(--gold); color: #fff;
+    text-decoration: none; padding: 12px 28px; border-radius: 8px;
+    font-size: 1rem; font-family: 'Georgia', serif; margin-top: 1rem;
+    transition: background 0.2s;
+  }
+  .btn:hover { background: var(--gold-dark); }
+  footer {
+    padding: 1rem 2rem; text-align: center; font-size: 0.8rem;
+    color: var(--text-muted); border-top: 1px solid var(--border);
+  }
+  @media (max-width: 520px) {
+    .card { padding: 2rem 1.25rem; }
+    h1 { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="shop.html" class="nav-logo">Making Art <span>DIY</span></a>
+  </nav>
+  <main>
+    <div class="card">
+      <div class="icon" aria-hidden="true">✅</div>
+      <h1 data-da="Tak for din ordre!" data-en="Thank you for your order!">Tak for din ordre!</h1>
+      <p data-da="Din betaling er gennemført. Du modtager snart en kvittering fra Stripe på den email du angav ved checkout." data-en="Your payment has been received. You will shortly receive a receipt from Stripe at the email address you provided.">
+        Din betaling er gennemført. Du modtager snart en kvittering fra Stripe på den email du angav ved checkout.
+      </p>
+      <p data-da="Vi bekræfter din ordre og vender tilbage med opdatering om produktion og levering inden for 24 timer." data-en="We will confirm your order and get back to you with an update on production and delivery within 24 hours.">
+        Vi bekræfter din ordre og vender tilbage med opdatering om produktion og levering inden for 24 timer.
+      </p>
+      <div class="ref" id="sessionRef"></div>
+      <a href="shop.html" class="btn" data-da="Tilbage til shoppen" data-en="Back to the shop">Tilbage til shoppen</a>
+    </div>
+  </main>
+  <footer>
+    <span data-da="© 2026 Making Art DIY. Håndlavet i Danmark 🇩🇰" data-en="© 2026 Making Art DIY. Handmade in Denmark 🇩🇰">© 2026 Making Art DIY. Håndlavet i Danmark 🇩🇰</span>
+  </footer>
+  <script>
+    // Sprogvalg fra shop-siden
+    try {
+      const lang = localStorage.getItem('madiy_lang') === 'en' ? 'en' : 'da';
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-' + lang + ']').forEach(el => {
+        el.textContent = el.getAttribute('data-' + lang);
+      });
+    } catch {}
+
+    // Ryd kurv kun hvis vi kom fra en rigtig Stripe-redirect
+    try {
+      const params = new URLSearchParams(location.search);
+      const sid = params.get('session_id');
+      if (sid) {
+        localStorage.removeItem('madiy_cart_v1');
+        const ref = document.getElementById('sessionRef');
+        const lang = localStorage.getItem('madiy_lang') === 'en' ? 'en' : 'da';
+        ref.textContent = (lang === 'en' ? 'Order reference: ' : 'Ordre-reference: ') + sid;
+        ref.style.display = 'block';
+      }
+    } catch {}
+  </script>
+</body>
+</html>

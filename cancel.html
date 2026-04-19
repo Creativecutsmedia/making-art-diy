@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Betaling afbrudt – Making Art DIY</title>
+<meta name="robots" content="noindex">
+<style>
+  :root {
+    --cream: #FAF6EF; --gold: #C9963A; --gold-dark: #A07428;
+    --wood-dark: #5C3D20; --text: #2C1F0E; --text-muted: #6B4F2E;
+    --border: #E5DCCD;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Georgia', serif; background: var(--cream); color: var(--text);
+    min-height: 100vh; display: flex; flex-direction: column; line-height: 1.75;
+  }
+  .nav {
+    padding: 1.25rem 2rem; background: #fff; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: center;
+  }
+  .nav-logo {
+    font-size: 1.2rem; font-weight: 700; color: var(--wood-dark);
+    text-decoration: none; letter-spacing: 0.02em;
+  }
+  .nav-logo span { color: var(--gold); }
+  main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
+  .card {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px;
+    padding: 3rem 2.5rem; text-align: center; max-width: 540px; width: 100%;
+  }
+  .icon { font-size: 3.25rem; margin-bottom: 1rem; line-height: 1; }
+  h1 { font-size: 1.75rem; color: var(--wood-dark); margin-bottom: 1rem; font-weight: 700; }
+  p { color: var(--text-muted); margin-bottom: 1rem; font-size: 1rem; }
+  .btn {
+    display: inline-block; background: var(--gold); color: #fff;
+    text-decoration: none; padding: 12px 28px; border-radius: 8px;
+    font-size: 1rem; font-family: 'Georgia', serif; margin-top: 1rem;
+    transition: background 0.2s;
+  }
+  .btn:hover { background: var(--gold-dark); }
+  footer {
+    padding: 1rem 2rem; text-align: center; font-size: 0.8rem;
+    color: var(--text-muted); border-top: 1px solid var(--border);
+  }
+  @media (max-width: 520px) {
+    .card { padding: 2rem 1.25rem; }
+    h1 { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="shop.html" class="nav-logo">Making Art <span>DIY</span></a>
+  </nav>
+  <main>
+    <div class="card">
+      <div class="icon" aria-hidden="true">🛒</div>
+      <h1 data-da="Betalingen blev afbrudt" data-en="Payment cancelled">Betalingen blev afbrudt</h1>
+      <p data-da="Ingen beløb er trukket. Din kurv er bevaret — du kan vende tilbage til shoppen og prøve igen når du er klar." data-en="No amount has been charged. Your cart has been preserved — you can return to the shop and try again whenever you're ready.">
+        Ingen beløb er trukket. Din kurv er bevaret — du kan vende tilbage til shoppen og prøve igen når du er klar.
+      </p>
+      <a href="shop.html" class="btn" data-da="Tilbage til kurven" data-en="Back to the cart">Tilbage til kurven</a>
+    </div>
+  </main>
+  <footer>
+    <span data-da="© 2026 Making Art DIY. Håndlavet i Danmark 🇩🇰" data-en="© 2026 Making Art DIY. Handmade in Denmark 🇩🇰">© 2026 Making Art DIY. Håndlavet i Danmark 🇩🇰</span>
+  </footer>
+  <script>
+    try {
+      const lang = localStorage.getItem('madiy_lang') === 'en' ? 'en' : 'da';
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-' + lang + ']').forEach(el => {
+        el.textContent = el.getAttribute('data-' + lang);
+      });
+    } catch {}
+  </script>
+</body>
+</html>

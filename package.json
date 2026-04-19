@@ -1,0 +1,9 @@
+{
+  "name": "making-art-diy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Netlify Functions for Making Art DIY shop (Stripe checkout)",
+  "dependencies": {
+    "stripe": "^18.0.0"
+  }
+}
