@@ -129,22 +129,6 @@ exports.handler = async (event) => {
     return jsonResponse(200, { url: session.url });
   } catch (err) {
     console.error('Stripe session error:', err);
-    const k = process.env.STRIPE_SECRET_KEY;
-    const envDebug = {
-      defined: typeof k !== 'undefined',
-      isString: typeof k === 'string',
-      length: typeof k === 'string' ? k.length : null,
-      trimmedLength: typeof k === 'string' ? k.trim().length : null,
-      hasLeadingWhitespace: typeof k === 'string' ? /^\s/.test(k) : null,
-      hasTrailingWhitespace: typeof k === 'string' ? /\s$/.test(k) : null,
-      startsWithSkTest: typeof k === 'string' ? k.startsWith('sk_test_') : null,
-      startsWithSkLive: typeof k === 'string' ? k.startsWith('sk_live_') : null,
-      first7: typeof k === 'string' ? k.slice(0, 7) : null,
-      last4: typeof k === 'string' ? k.slice(-4) : null,
-    };
-    return jsonResponse(500, {
-      error: 'Payment session could not be created',
-      debug: { type: err.type, code: err.code, message: err.message, env: envDebug }
-    });
+    return jsonResponse(500, { error: 'Payment session could not be created' });
   }
 };
