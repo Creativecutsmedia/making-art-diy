@@ -1,4 +1,6 @@
 const Stripe = require('stripe');
+const products = require('../../products.json');
+const shipping = require('../../shipping-config.json');
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -6,26 +8,7 @@ const BASE_URL = 'https://makingartdiy.dk';
 const MAX_CART_ITEMS = 20;
 const MAX_QTY_PER_ITEM = 10;
 
-const DEFAULT_SHIPPING = {
-  flat_cost_dkk: 49,
-  free_threshold_dkk: 500,
-  delivery_min_business_days: 3,
-  delivery_max_business_days: 7,
-};
-
-async function loadCatalogue() {
-  const [productsRes, shippingRes] = await Promise.all([
-    fetch(`${BASE_URL}/products.json`),
-    fetch(`${BASE_URL}/shipping-config.json`),
-  ]);
-  if (!productsRes.ok) throw new Error(`products.json fetch failed: ${productsRes.status}`);
-  const products = await productsRes.json();
-  const shipping = shippingRes.ok ? await shippingRes.json() : DEFAULT_SHIPPING;
-  return {
-    productsBySlug: Object.fromEntries(products.map(p => [p.slug, p])),
-    shipping,
-  };
-}
+const productsBySlug = Object.fromEntries(products.map(p => [p.slug, p]));
 
 function jsonResponse(statusCode, payload) {
   return {
@@ -49,14 +32,6 @@ exports.handler = async (event) => {
 
   if (items.length === 0) return jsonResponse(400, { error: 'Cart is empty' });
   if (items.length > MAX_CART_ITEMS) return jsonResponse(400, { error: 'Too many items in cart' });
-
-  let productsBySlug, shipping;
-  try {
-    ({ productsBySlug, shipping } = await loadCatalogue());
-  } catch (err) {
-    console.error('Catalogue load error:', err);
-    return jsonResponse(500, { error: 'Could not load product catalogue' });
-  }
 
   const lineItems = [];
   let subtotalCents = 0;
