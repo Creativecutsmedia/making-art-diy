@@ -43,15 +43,20 @@ function PageSettings({ t, lang }) {
       <div className="form-section">
         <h3 className="form-section-title">{t('settings_payment')}</h3>
         <p className="form-section-desc">{lang === 'da' ? 'Hvordan dine kunder betaler' : 'How your customers pay'}</p>
-        {['MobilePay', 'Dankort / Visa', 'Apple Pay', 'Bankoverførsel'].map((m, i) => (
+        {['Dankort / Visa', 'Apple Pay'].map((m) => (
           <div key={m} className="flex between items-center" style={{
             padding: '12px 14px', background: 'var(--input-bg)', border: '1px solid var(--border)',
             borderRadius: 'var(--radius-inner)', marginBottom: 8
           }}>
             <span className="bold">{m}</span>
-            <Toggle on={i < 3} onChange={() => {}} />
+            <Toggle on={true} onChange={() => {}} />
           </div>
         ))}
+        <p className="small muted" style={{ marginTop: 10, lineHeight: 1.5 }}>
+          {lang === 'da'
+            ? 'Manuelle betalingsmetoder (MobilePay, bankoverførsel, kontant, bytte, gratis) administreres pr. ordre i Ordrestyring → Opret manuel ordre.'
+            : 'Manual payment methods (MobilePay, bank transfer, cash, barter, free) are managed per-order in Order management → Create manual order.'}
+        </p>
       </div>
 
       <div className="form-section">
