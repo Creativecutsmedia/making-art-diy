@@ -473,6 +473,11 @@ const T = {
   // stats additions
   stats_revenue_cc_note: { da: 'Alle omsætningstal er kun for kreditkort-ordrer', en: 'All revenue figures are credit card only' },
   manual_orders_chart: { da: 'Manuelle ordrer pr. betalingsmetode', en: 'Manual orders by payment method' },
+  pay_mobilepay: { da: 'MobilePay', en: 'MobilePay' },
+  pay_bank: { da: 'Bankoverførsel', en: 'Bank transfer' },
+  pay_cash: { da: 'Kontant', en: 'Cash' },
+  pay_barter: { da: 'Bytte', en: 'Barter' },
+  pay_free: { da: 'Gratis', en: 'Free' },
   gifts_given: { da: 'Gaver givet', en: 'Gifts given' },
   gifts_given_sub: { da: 'Gratis-ordrer i denne måned', en: 'Free orders this month' },
 

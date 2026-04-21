@@ -90,7 +90,10 @@ function PageStats({ t, lang }) {
           <h3 className="card-title">{t('manual_orders_chart')}</h3>
           <span className="card-sub">{t('manual_orders_30d_sub')}</span>
         </div>
-        <StackedBarChart data={window.MAD_DATA.MANUAL_ORDERS_12M.map(d => ({ label: lang === 'da' ? d.m_da : d.m_en, ...d }))} />
+        <StackedBarChart
+          data={window.MAD_DATA.MANUAL_ORDERS_12M.map(d => ({ label: lang === 'da' ? d.m_da : d.m_en, ...d }))}
+          labels={{ mobilepay: t('pay_mobilepay'), bank: t('pay_bank'), cash: t('pay_cash'), barter: t('pay_barter'), free: t('pay_free') }}
+        />
       </div>
 
       <div className="card" style={{ marginTop: 20 }}>
@@ -103,11 +106,12 @@ function PageStats({ t, lang }) {
   );
 }
 
-function StackedBarChart({ data }) {
+function StackedBarChart({ data, labels }) {
   const W = 640, H = 260, pad = { t: 20, r: 16, b: 28, l: 16 };
   const innerW = W - pad.l - pad.r, innerH = H - pad.t - pad.b;
   const keys = ['mobilepay', 'bank', 'cash', 'barter', 'free'];
   const colors = { mobilepay: '#6fa3d6', bank: '#a78bd4', cash: '#6aba8a', barter: '#9e968a', free: '#d78caa' };
+  const L = labels || { mobilepay: 'MobilePay', bank: 'Bankoverførsel', cash: 'Kontant', barter: 'Bytte', free: 'Gratis' };
   const max = Math.max(...data.map(d => keys.reduce((s, k) => s + (d[k] || 0), 0))) * 1.15 || 1;
   const barW = innerW / data.length * 0.6;
   const step = innerW / data.length;
@@ -136,7 +140,7 @@ function StackedBarChart({ data }) {
       </svg>
       <div className="stack-legend">
         {keys.map(k => (
-          <span key={k}><span className="sw" style={{ background: colors[k] }} />{k === 'mobilepay' ? 'MobilePay' : k === 'bank' ? (window.MAD_DATA && 'Bank') : k[0].toUpperCase() + k.slice(1)}</span>
+          <span key={k}><span className="sw" style={{ background: colors[k] }} />{L[k]}</span>
         ))}
       </div>
     </>
