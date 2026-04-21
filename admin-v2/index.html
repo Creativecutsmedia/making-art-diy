@@ -12,7 +12,7 @@
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <style>
   #auth-gate {
-    position: fixed; inset: 0; z-index: 9999;
+    position: fixed; inset: 0; z-index: 10;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     gap: 16px; background: #0E1014; color: #F7F5EF;
     font-family: Inter, system-ui, sans-serif;
@@ -36,50 +36,65 @@
 
   <script>
   (function() {
-    const root = document.getElementById('root');
-    const gate = document.getElementById('auth-gate');
-    const msg = document.getElementById('auth-message');
-    const btn = document.getElementById('auth-login-btn');
+    function start() {
+      const root = document.getElementById('root');
+      const gate = document.getElementById('auth-gate');
+      const msg = document.getElementById('auth-message');
+      const btn = document.getElementById('auth-login-btn');
 
-    function hasAdminRole(user) {
-      return !!(user && user.app_metadata
-        && Array.isArray(user.app_metadata.roles)
-        && user.app_metadata.roles.includes('admin'));
-    }
+      function hasAdminRole(user) {
+        return !!(user && user.app_metadata
+          && Array.isArray(user.app_metadata.roles)
+          && user.app_metadata.roles.includes('admin'));
+      }
 
-    function render(user) {
-      if (hasAdminRole(user)) {
-        root.style.display = '';
-        gate.style.display = 'none';
+      function render(user) {
+        if (hasAdminRole(user)) {
+          root.style.display = '';
+          gate.style.display = 'none';
+          return;
+        }
+        root.style.display = 'none';
+        gate.style.display = 'flex';
+        if (user) {
+          msg.textContent = 'Adgang nægtet. Din konto har ikke admin-rolle.';
+          btn.textContent = 'Log ud';
+          btn.onclick = function() { window.netlifyIdentity.logout(); };
+        } else {
+          msg.textContent = 'Log ind for at fortsætte.';
+          btn.textContent = 'Log ind';
+          btn.onclick = function() {
+            gate.style.display = 'none';
+            window.netlifyIdentity.open();
+          };
+        }
+        btn.style.display = 'block';
+      }
+
+      if (!window.netlifyIdentity) {
+        msg.textContent = 'Netlify Identity kunne ikke indlæses.';
         return;
       }
-      root.style.display = 'none';
-      gate.style.display = 'flex';
-      if (user) {
-        msg.textContent = 'Adgang nægtet. Din konto har ikke admin-rolle.';
-        btn.textContent = 'Log ud';
-        btn.onclick = function() { window.netlifyIdentity.logout(); };
-      } else {
-        msg.textContent = 'Log ind for at fortsætte.';
-        btn.textContent = 'Log ind';
-        btn.onclick = function() { window.netlifyIdentity.open(); };
-      }
-      btn.style.display = 'block';
+      window.netlifyIdentity.on('init', render);
+      window.netlifyIdentity.on('login', function(user) {
+        render(user);
+        window.netlifyIdentity.close();
+      });
+      window.netlifyIdentity.on('logout', function() { render(null); });
+      window.netlifyIdentity.on('close', function() {
+        const user = window.netlifyIdentity.currentUser();
+        if (!hasAdminRole(user)) render(user);
+      });
+      window.netlifyIdentity.init({
+        APIUrl: 'https://makingartdiy.dk/.netlify/identity'
+      });
     }
 
-    if (!window.netlifyIdentity) {
-      msg.textContent = 'Netlify Identity kunne ikke indlæses.';
-      return;
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', start);
+    } else {
+      start();
     }
-    window.netlifyIdentity.on('init', render);
-    window.netlifyIdentity.on('login', function(user) {
-      render(user);
-      window.netlifyIdentity.close();
-    });
-    window.netlifyIdentity.on('logout', function() { render(null); });
-    window.netlifyIdentity.init({
-      APIUrl: 'https://makingartdiy.dk/.netlify/identity'
-    });
   })();
   </script>
 
