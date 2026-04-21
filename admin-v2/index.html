@@ -77,7 +77,9 @@
       window.netlifyIdentity.close();
     });
     window.netlifyIdentity.on('logout', function() { render(null); });
-    window.netlifyIdentity.init();
+    window.netlifyIdentity.init({
+      APIUrl: 'https://makingartdiy.dk/.netlify/identity'
+    });
   })();
   </script>
 
