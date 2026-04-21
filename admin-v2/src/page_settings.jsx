@@ -43,7 +43,7 @@ function PageSettings({ t, lang }) {
       <div className="form-section">
         <h3 className="form-section-title">{t('settings_payment')}</h3>
         <p className="form-section-desc">{lang === 'da' ? 'Hvordan dine kunder betaler' : 'How your customers pay'}</p>
-        {['Dankort / Visa', 'Apple Pay'].map((m) => (
+        {['Dankort / Visa', 'Apple Pay', 'Google Pay', 'Klarna'].map((m) => (
           <div key={m} className="flex between items-center" style={{
             padding: '12px 14px', background: 'var(--input-bg)', border: '1px solid var(--border)',
             borderRadius: 'var(--radius-inner)', marginBottom: 8
