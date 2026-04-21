@@ -8,9 +8,77 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v=3">
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<style>
+  #auth-gate {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 16px; background: #0E1014; color: #F7F5EF;
+    font-family: Inter, system-ui, sans-serif;
+  }
+  #auth-gate h1 { margin: 0; font-weight: 600; font-size: 20px; }
+  #auth-gate p { margin: 0; color: #999; font-size: 14px; }
+  #auth-login-btn {
+    padding: 10px 24px; background: #C9963A; color: #0E1014;
+    border: none; border-radius: 8px; font-weight: 600; cursor: pointer;
+  }
+  #auth-login-btn:hover { background: #D9A64A; }
+</style>
 </head>
 <body data-theme="dark" data-lang="da">
-  <div id="root"></div>
+  <div id="auth-gate">
+    <h1>Making Art DIY — Admin</h1>
+    <p id="auth-message">Indlæser…</p>
+    <button id="auth-login-btn" style="display:none;">Log ind</button>
+  </div>
+  <div id="root" style="display:none;"></div>
+
+  <script>
+  (function() {
+    const root = document.getElementById('root');
+    const gate = document.getElementById('auth-gate');
+    const msg = document.getElementById('auth-message');
+    const btn = document.getElementById('auth-login-btn');
+
+    function hasAdminRole(user) {
+      return !!(user && user.app_metadata
+        && Array.isArray(user.app_metadata.roles)
+        && user.app_metadata.roles.includes('admin'));
+    }
+
+    function render(user) {
+      if (hasAdminRole(user)) {
+        root.style.display = '';
+        gate.style.display = 'none';
+        return;
+      }
+      root.style.display = 'none';
+      gate.style.display = 'flex';
+      if (user) {
+        msg.textContent = 'Adgang nægtet. Din konto har ikke admin-rolle.';
+        btn.textContent = 'Log ud';
+        btn.onclick = function() { window.netlifyIdentity.logout(); };
+      } else {
+        msg.textContent = 'Log ind for at fortsætte.';
+        btn.textContent = 'Log ind';
+        btn.onclick = function() { window.netlifyIdentity.open(); };
+      }
+      btn.style.display = 'block';
+    }
+
+    if (!window.netlifyIdentity) {
+      msg.textContent = 'Netlify Identity kunne ikke indlæses.';
+      return;
+    }
+    window.netlifyIdentity.on('init', render);
+    window.netlifyIdentity.on('login', function(user) {
+      render(user);
+      window.netlifyIdentity.close();
+    });
+    window.netlifyIdentity.on('logout', function() { render(null); });
+    window.netlifyIdentity.init();
+  })();
+  </script>
 
   <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
