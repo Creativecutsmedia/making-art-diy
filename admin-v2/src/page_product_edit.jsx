@@ -114,12 +114,19 @@ function PageProductEdit({ t, lang, navigate, params }) {
         <p className="form-section-desc">{t('images_desc')}</p>
 
         <div className="image-grid">
-          {galleryImages.map((img, i) => (
-            <div key={i} className={`image-tile ${img.primary ? 'primary' : ''} thumb ${img.kind}`}
-              style={{ borderRadius: 'var(--radius-inner)' }}>
-              {img.primary && <span className="primary-tag">{t('primary')}</span>}
-            </div>
-          ))}
+          {galleryImages.map((img, i) => {
+            const label = i === 0
+              ? (lang === 'da' ? 'Hovedbillede' : 'Primary image')
+              : (lang === 'da' ? `Galleri ${i}` : `Gallery ${i}`);
+            return (
+              <div key={i}>
+                <div className={`image-tile ${img.primary ? 'primary' : ''} thumb ${img.kind}`}
+                  style={{ borderRadius: 'var(--radius-inner)' }} title={label}>
+                </div>
+                <div className="small muted" style={{ marginTop: 6, textAlign: 'center' }}>{label}</div>
+              </div>
+            );
+          })}
         </div>
 
         <div className="dropzone">
