@@ -16,7 +16,7 @@ collections:
     fields:
       - { label: "Navn", name: "title", widget: "string" }
       - { label: "Navn (engelsk)", name: "title_en", widget: "string", required: false, hint: "Tomt = vis dansk navn" }
-      - { label: "SKU", name: "sku", widget: "string", pattern: ["^MAD-[A-Z0-9]+-[0-9]{3}$", "Format: MAD-XXXX-001"], hint: "Unik ID — må ikke ændres efter oprettelse. Format: MAD-XXXX-001" }
+      - { label: "SKU", name: "sku", widget: "string", hint: "Unik ID — må ikke ændres efter oprettelse. Format: MAD-XXXX-001 (valideres ved build)" }
       - { label: "Pris (kr)", name: "price", widget: "number" }
       - { label: "Kategori", name: "category", widget: "select",
           options: ["Børn", "Voksne", "Erhverv"] }

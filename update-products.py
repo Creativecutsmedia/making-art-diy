@@ -11,6 +11,8 @@ CATEGORY_EN = {'Børn': 'Children', 'Voksne': 'Adults', 'Erhverv': 'Business'}
 
 INTERNAL_KEYS = {'internal_files', 'internal_notes'}
 
+SKU_PATTERN = re.compile(r'^MAD-[A-Z0-9]+-[0-9]{3}$')
+
 
 def load_products():
     out = []
@@ -33,6 +35,11 @@ def load_products():
         sku = str(data.get('sku') or '').strip()
         if not sku:
             raise ValueError(f"Produkt '{slug}' mangler påkrævet SKU")
+        if not SKU_PATTERN.match(sku):
+            raise ValueError(
+                f"Produkt '{slug}' har ugyldig SKU '{sku}' — "
+                f"forventet format: MAD-XXXX-001 (fx MAD-VASE-001)"
+            )
         if sku in seen_skus:
             raise ValueError(
                 f"Duplikeret SKU '{sku}' — bruges af både '{slug}' og '{seen_skus[sku]}'"
