@@ -32,5 +32,5 @@ collections:
         hint: "KUN for internt brug — fx STL-filer, print-indstillinger. Vises aldrig på shoppen."
         fields:
           - { label: "Beskrivelse", name: "label", widget: "string" }
-          - { label: "Sti (blob-nøgle)", name: "path", widget: "string", hint: "Upload-UI kommer senere. Skriv foreløbig fx blob://MAD-VASE-001/filnavn.stl" }
-      - { label: "Interne noter", name: "internal_notes", widget: "text", required: false, hint: "KUN for internt brug — vises aldrig på shoppen. Skriv IKKE følsomme data (koden er i privat repo, men noterne filtreres kun ud på build-tid)." }
+          - { label: "Sti (blob-nøgle)", name: "path", widget: "string", hint: "Upload-UI kommer senere. Skriv foreløbig fx blob://MAD-VASE-001/filnavn.stl. Skriv IKKE følsomme data — feltet er synligt på github.com." }
+      - { label: "Interne noter", name: "internal_notes", widget: "text", required: false, hint: "KUN for internt brug — vises aldrig på shoppen. Skriv IKKE følsomme data — feltet er synligt på github.com." }

@@ -21,6 +21,11 @@ Markér afsluttede punkter med `[x]`. Tilføj flere efter behov.
 - [ ] Byg admin "Slet kunde"-funktion (GDPR Art. 17 — retten til at blive glemt)
 - [ ] Byg admin "Eksportér kundedata"-funktion (GDPR Art. 20 — dataportabilitet)
 
+## Sikkerhed
+
+- [ ] Flyt `internal_notes` og `internal_files` fra markdown-frontmatter til
+      Netlify Blobs (fase 3 opgave — fjerner GitHub-lækage-risiko)
+
 ## Stripe Test → Live (før 1. juni 2026)
 
 - [ ] Rotér Stripe Test-nøgle til Live-nøgle
