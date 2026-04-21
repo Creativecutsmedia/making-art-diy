@@ -1,6 +1,7 @@
 ---
 title: Fidget Tastatur
 title_en: Fidget Keyboard
+sku: MAD-FIDG-001
 price: 50
 category: Børn
 description: |-

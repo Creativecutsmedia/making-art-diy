@@ -16,6 +16,7 @@ collections:
     fields:
       - { label: "Navn", name: "title", widget: "string" }
       - { label: "Navn (engelsk)", name: "title_en", widget: "string", required: false, hint: "Tomt = vis dansk navn" }
+      - { label: "SKU", name: "sku", widget: "string", pattern: ["^MAD-[A-Z0-9]+-[0-9]{3}$", "Format: MAD-XXXX-001"], hint: "Unik ID — må ikke ændres efter oprettelse. Format: MAD-XXXX-001" }
       - { label: "Pris (kr)", name: "price", widget: "number" }
       - { label: "Kategori", name: "category", widget: "select",
           options: ["Børn", "Voksne", "Erhverv"] }
@@ -24,3 +25,12 @@ collections:
       - { label: "Billede", name: "image", widget: "image", required: false }
       - { label: "Ekstra billeder (galleri)", name: "extra_images", widget: "list", required: false, hint: "Tilføj flere billeder til produktsiden. Hovedbilledet vises først.", field: { label: "Billede", name: "image", widget: "image" } }
       - { label: "Synlig på shop", name: "published", widget: "boolean", default: true }
+      - label: "Interne filer"
+        name: "internal_files"
+        widget: "list"
+        required: false
+        hint: "KUN for internt brug — fx STL-filer, print-indstillinger. Vises aldrig på shoppen."
+        fields:
+          - { label: "Beskrivelse", name: "label", widget: "string" }
+          - { label: "Sti (blob-nøgle)", name: "path", widget: "string", hint: "Upload-UI kommer senere. Skriv foreløbig fx blob://MAD-VASE-001/filnavn.stl" }
+      - { label: "Interne noter", name: "internal_notes", widget: "text", required: false, hint: "KUN for internt brug — vises aldrig på shoppen. Skriv IKKE følsomme data (koden er i privat repo, men noterne filtreres kun ud på build-tid)." }

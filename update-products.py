@@ -9,28 +9,47 @@ import yaml
 CATEGORY_KEY = {'børn': 'born', 'voksne': 'voksne', 'erhverv': 'erhverv'}
 CATEGORY_EN = {'Børn': 'Children', 'Voksne': 'Adults', 'Erhverv': 'Business'}
 
+INTERNAL_KEYS = {'internal_files', 'internal_notes'}
+
 
 def load_products():
     out = []
-    seen = set()
+    seen_slugs = set()
+    seen_skus = {}
     for fname in sorted(os.listdir('_products')):
         if not fname.endswith('.md'):
             continue
         slug = fname[:-3]
-        if slug in seen:
+        if slug in seen_slugs:
             raise ValueError(f'Duplicate slug: {slug}')
-        seen.add(slug)
+        seen_slugs.add(slug)
         with open(f'_products/{fname}', encoding='utf-8') as f:
             raw = f.read()
         m = re.match(r'^---\s*\n(.*?)\n---\s*', raw, re.DOTALL)
         if not m:
             continue
         data = yaml.safe_load(m.group(1)) or {}
+
+        sku = str(data.get('sku') or '').strip()
+        if not sku:
+            raise ValueError(f"Produkt '{slug}' mangler påkrævet SKU")
+        if sku in seen_skus:
+            raise ValueError(
+                f"Duplikeret SKU '{sku}' — bruges af både '{slug}' og '{seen_skus[sku]}'"
+            )
+        seen_skus[sku] = slug
+
         if data.get('published', True):
+            data['sku'] = sku
             data['slug'] = slug
             data['images'] = collect_images(data)
+            data['internal_files_count'] = len(data.get('internal_files') or [])
             out.append(data)
     return out
+
+
+def public_product(p):
+    return {k: v for k, v in p.items() if k not in INTERNAL_KEYS}
 
 
 def collect_images(data):
@@ -115,7 +134,7 @@ def main():
     with open('shop.html', 'w', encoding='utf-8') as f:
         f.write(new)
     with open('products.json', 'w', encoding='utf-8') as f:
-        json.dump(products, f, ensure_ascii=False, indent=2)
+        json.dump([public_product(p) for p in products], f, ensure_ascii=False, indent=2)
     print(f'✅ {len(products)} produkter opdateret!')
 
 
