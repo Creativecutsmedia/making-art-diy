@@ -47,18 +47,21 @@ async function handleCheckoutSessionCompleted(stripeEvent) {
 
   const customerEmail = session.customer_details?.email;
   const customerName = session.customer_details?.name || session.shipping_details?.name || null;
+  const locale = session.metadata?.locale === 'en' ? 'en' : 'da';
 
   if (!customerEmail) {
     console.error(`[webhook] no customer email — ref=${orderRef} session=${sessionId}`);
     return jsonResponse(200, { received: true, skipped: 'no-email' });
   }
 
+  const unknownProductLabel = locale === 'en' ? '(unknown product)' : '(ukendt produkt)';
+
   const items = lineItemsList.data.map(li => {
     const slug = li.price?.product?.metadata?.slug;
     const product = slug ? productsBySlug[slug] : null;
     const imageUrl = product?.image ? BASE_URL + product.image : null;
     return {
-      name: li.price?.product?.name || li.description || '(ukendt produkt)',
+      name: li.price?.product?.name || li.description || unknownProductLabel,
       quantity: li.quantity || 1,
       priceCents: li.price?.unit_amount ?? 0,
       imageUrl,
@@ -89,9 +92,10 @@ async function handleCheckoutSessionCompleted(stripeEvent) {
     shippingCents,
     totalCents,
     shippingAddress,
+    locale,
   });
 
-  console.log(`[webhook] sending email to=${maskEmail(customerEmail)} ref=${orderRef} items=${items.length} total=${totalCents}`);
+  console.log(`[webhook] sending email to=${maskEmail(customerEmail)} ref=${orderRef} locale=${locale} items=${items.length} total=${totalCents}`);
 
   const resend = new Resend(process.env.RESEND_API_KEY);
   const result = await resend.emails.send({

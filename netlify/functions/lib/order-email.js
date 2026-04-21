@@ -5,6 +5,65 @@ const TEXT = '#2b2b2b';
 const MUTED = '#666';
 const BORDER = '#e5e0d6';
 
+const STRINGS = {
+  da: {
+    htmlLang: 'da',
+    subject: (ref) => `Tak for din ordre hos Making Art DIY — ordre #${ref}`,
+    headerTitle: 'Tak for din ordre!',
+    greetingWithName: (name) => `Hej ${name},`,
+    greetingAnonymous: 'Hej,',
+    bodyIntro: 'Tak for din ordre hos Making Art DIY. Vi har modtaget din betaling og går i gang med at gøre pakken klar.',
+    orderNumberLabel: 'Ordrenummer',
+    quantityLabel: 'Antal',
+    subtotalLabel: 'Subtotal',
+    shippingLabel: 'Fragt',
+    shippingFree: 'Gratis',
+    totalLabel: 'Total',
+    shippingAddressHeader: 'Leveringsadresse',
+    deliveryNote: 'Levering forventes inden for 3-7 hverdage. Du hører fra os når pakken er afsendt.',
+    vatNote: 'Priserne er ikke tillagt moms (jf. momslovens § 48).',
+    supportLineHtml: `Spørgsmål? Svar bare på denne mail eller skriv til <a href="mailto:info@makingartdiy.dk" style="color:${BRAND_DARK};">info@makingartdiy.dk</a>.`,
+    supportLineText: 'Spørgsmål? Svar bare på denne mail eller skriv til info@makingartdiy.dk.',
+    unknownProduct: '(ukendt produkt)',
+    footerTagline: 'Making Art DIY · makingartdiy.dk',
+    plaintextIntro: 'Tak for din ordre hos Making Art DIY!',
+    plaintextBodyIntro: 'Vi har modtaget din betaling og går i gang med at gøre pakken klar.',
+    plaintextItemsHeader: '--- DINE VARER ---',
+    plaintextAddressHeader: '--- LEVERINGSADRESSE ---',
+    plaintextDeliveryNote: 'Levering forventes inden for 3-7 hverdage.',
+    plaintextSignatureLine1: 'Making Art DIY',
+    plaintextSignatureLine2: 'makingartdiy.dk',
+  },
+  en: {
+    htmlLang: 'en',
+    subject: (ref) => `Thank you for your order at Making Art DIY — order #${ref}`,
+    headerTitle: 'Thank you for your order!',
+    greetingWithName: (name) => `Hi ${name},`,
+    greetingAnonymous: 'Hi,',
+    bodyIntro: 'Thank you for your order at Making Art DIY. We have received your payment and will start preparing your package.',
+    orderNumberLabel: 'Order number',
+    quantityLabel: 'Quantity',
+    subtotalLabel: 'Subtotal',
+    shippingLabel: 'Shipping',
+    shippingFree: 'Free',
+    totalLabel: 'Total',
+    shippingAddressHeader: 'Shipping address',
+    deliveryNote: 'Delivery is expected within 3-7 business days. We will notify you when your package has been shipped.',
+    vatNote: 'Prices are not subject to VAT (Danish VAT Act § 48).',
+    supportLineHtml: `Questions? Just reply to this email or write to <a href="mailto:info@makingartdiy.dk" style="color:${BRAND_DARK};">info@makingartdiy.dk</a>.`,
+    supportLineText: 'Questions? Just reply to this email or write to info@makingartdiy.dk.',
+    unknownProduct: '(unknown product)',
+    footerTagline: 'Making Art DIY · makingartdiy.dk',
+    plaintextIntro: 'Thank you for your order at Making Art DIY!',
+    plaintextBodyIntro: 'We have received your payment and will start preparing your package.',
+    plaintextItemsHeader: '--- YOUR ITEMS ---',
+    plaintextAddressHeader: '--- SHIPPING ADDRESS ---',
+    plaintextDeliveryNote: 'Delivery is expected within 3-7 business days.',
+    plaintextSignatureLine1: 'Making Art DIY',
+    plaintextSignatureLine2: 'makingartdiy.dk',
+  },
+};
+
 function esc(str) {
   return String(str ?? '')
     .replace(/&/g, '&amp;')
@@ -14,15 +73,21 @@ function esc(str) {
     .replace(/'/g, '&#39;');
 }
 
-function formatDKK(cents) {
-  const kr = cents / 100;
-  if (Number.isInteger(kr)) {
-    return `${kr.toLocaleString('da-DK')} kr`;
+function formatPrice(cents, locale) {
+  const amount = cents / 100;
+  if (locale === 'en') {
+    if (Number.isInteger(amount)) {
+      return `${amount.toLocaleString('en-US')} DKK`;
+    }
+    return amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' DKK';
   }
-  return kr.toLocaleString('da-DK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' kr';
+  if (Number.isInteger(amount)) {
+    return `${amount.toLocaleString('da-DK')} kr`;
+  }
+  return amount.toLocaleString('da-DK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' kr';
 }
 
-function renderItemsHtml(items) {
+function renderItemsHtml(items, locale, t) {
   return items.map(item => `
     <tr>
       <td width="80" style="padding:16px 16px 16px 0;vertical-align:top;">
@@ -30,20 +95,20 @@ function renderItemsHtml(items) {
       </td>
       <td style="padding:16px 0;vertical-align:top;">
         <div style="font-size:15px;font-weight:bold;color:${TEXT};">${esc(item.name)}</div>
-        <div style="font-size:13px;color:${MUTED};margin-top:4px;">Antal: ${item.quantity}</div>
+        <div style="font-size:13px;color:${MUTED};margin-top:4px;">${t.quantityLabel}: ${item.quantity}</div>
       </td>
       <td style="padding:16px 0;vertical-align:top;text-align:right;white-space:nowrap;">
-        <div style="font-size:15px;color:${TEXT};">${formatDKK(item.priceCents * item.quantity)}</div>
+        <div style="font-size:15px;color:${TEXT};">${formatPrice(item.priceCents * item.quantity, locale)}</div>
       </td>
     </tr>
   `).join('');
 }
 
-function renderAddressHtml(addr) {
+function renderAddressHtml(addr, t) {
   if (!addr) return '';
   return `
     <tr><td style="padding:24px 32px 16px 32px;">
-      <div style="font-size:13px;text-transform:uppercase;letter-spacing:1px;color:${BRAND_GOLD};font-weight:bold;margin-bottom:8px;">Leveringsadresse</div>
+      <div style="font-size:13px;text-transform:uppercase;letter-spacing:1px;color:${BRAND_GOLD};font-weight:bold;margin-bottom:8px;">${t.shippingAddressHeader}</div>
       <div style="font-size:15px;line-height:1.5;color:${TEXT};">
         ${addr.name ? esc(addr.name) + '<br>' : ''}
         ${esc(addr.line1)}<br>
@@ -63,12 +128,17 @@ function buildOrderEmail({
   shippingCents,
   totalCents,
   shippingAddress,
+  locale,
 }) {
-  const subject = `Tak for din ordre hos Making Art DIY — ordre #${orderRef}`;
-  const greeting = customerName ? `Hej ${esc(customerName)},` : 'Hej,';
+  const lang = locale === 'en' ? 'en' : 'da';
+  const t = STRINGS[lang];
+
+  const subject = t.subject(orderRef);
+  const greeting = customerName ? t.greetingWithName(esc(customerName)) : t.greetingAnonymous;
+  const shippingDisplay = shippingCents === 0 ? t.shippingFree : formatPrice(shippingCents, lang);
 
   const html = `<!DOCTYPE html>
-<html lang="da">
+<html lang="${t.htmlLang}">
 <head><meta charset="utf-8"><title>${esc(subject)}</title></head>
 <body style="margin:0;padding:0;background:${BG};font-family:Helvetica,Arial,sans-serif;color:${TEXT};">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${BG};padding:24px 0;">
@@ -76,42 +146,42 @@ function buildOrderEmail({
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#ffffff;border-radius:8px;overflow:hidden;">
         <tr><td style="background:${BRAND_DARK};padding:32px 32px 24px 32px;text-align:center;">
           <div style="color:${BRAND_GOLD};font-size:14px;letter-spacing:2px;text-transform:uppercase;">Making Art DIY</div>
-          <h1 style="color:#ffffff;font-size:24px;margin:12px 0 0 0;font-weight:normal;">Tak for din ordre!</h1>
+          <h1 style="color:#ffffff;font-size:24px;margin:12px 0 0 0;font-weight:normal;">${t.headerTitle}</h1>
         </td></tr>
         <tr><td style="padding:32px 32px 16px 32px;">
           <p style="margin:0 0 12px 0;font-size:16px;line-height:1.5;">${greeting}</p>
-          <p style="margin:0 0 12px 0;font-size:16px;line-height:1.5;">Tak for din ordre hos Making Art DIY. Vi har modtaget din betaling og går i gang med at gøre pakken klar.</p>
-          <p style="margin:0;font-size:14px;color:${MUTED};">Ordrenummer: <strong style="color:${BRAND_DARK};">#${esc(orderRef)}</strong></p>
+          <p style="margin:0 0 12px 0;font-size:16px;line-height:1.5;">${t.bodyIntro}</p>
+          <p style="margin:0;font-size:14px;color:${MUTED};">${t.orderNumberLabel}: <strong style="color:${BRAND_DARK};">#${esc(orderRef)}</strong></p>
         </td></tr>
         <tr><td style="padding:16px 32px;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:2px solid ${BRAND_GOLD};">
-            ${renderItemsHtml(items)}
+            ${renderItemsHtml(items, lang, t)}
           </table>
         </td></tr>
         <tr><td style="padding:8px 32px 16px 32px;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid ${BORDER};">
             <tr>
-              <td style="padding:8px 0;font-size:14px;color:${MUTED};">Subtotal</td>
-              <td style="padding:8px 0;font-size:14px;text-align:right;">${formatDKK(subtotalCents)}</td>
+              <td style="padding:8px 0;font-size:14px;color:${MUTED};">${t.subtotalLabel}</td>
+              <td style="padding:8px 0;font-size:14px;text-align:right;">${formatPrice(subtotalCents, lang)}</td>
             </tr>
             <tr>
-              <td style="padding:0 0 8px 0;font-size:14px;color:${MUTED};">Fragt</td>
-              <td style="padding:0 0 8px 0;font-size:14px;text-align:right;">${shippingCents === 0 ? 'Gratis' : formatDKK(shippingCents)}</td>
+              <td style="padding:0 0 8px 0;font-size:14px;color:${MUTED};">${t.shippingLabel}</td>
+              <td style="padding:0 0 8px 0;font-size:14px;text-align:right;">${shippingDisplay}</td>
             </tr>
             <tr>
-              <td style="padding:12px 0 0 0;border-top:2px solid ${BRAND_GOLD};font-size:16px;font-weight:bold;color:${BRAND_DARK};">Total</td>
-              <td style="padding:12px 0 0 0;border-top:2px solid ${BRAND_GOLD};font-size:16px;font-weight:bold;text-align:right;color:${BRAND_DARK};">${formatDKK(totalCents)}</td>
+              <td style="padding:12px 0 0 0;border-top:2px solid ${BRAND_GOLD};font-size:16px;font-weight:bold;color:${BRAND_DARK};">${t.totalLabel}</td>
+              <td style="padding:12px 0 0 0;border-top:2px solid ${BRAND_GOLD};font-size:16px;font-weight:bold;text-align:right;color:${BRAND_DARK};">${formatPrice(totalCents, lang)}</td>
             </tr>
           </table>
         </td></tr>
-        ${renderAddressHtml(shippingAddress)}
+        ${renderAddressHtml(shippingAddress, t)}
         <tr><td style="padding:24px 32px 32px 32px;border-top:1px solid ${BORDER};">
-          <p style="margin:0 0 8px 0;font-size:13px;color:${MUTED};line-height:1.5;">Levering forventes inden for 3-7 hverdage. Du hører fra os når pakken er afsendt.</p>
-          <p style="margin:0 0 8px 0;font-size:13px;color:${MUTED};line-height:1.5;">Priserne er ikke tillagt moms (jf. momslovens § 48).</p>
-          <p style="margin:12px 0 0 0;font-size:13px;color:${MUTED};line-height:1.5;">Spørgsmål? Svar bare på denne mail eller skriv til <a href="mailto:info@makingartdiy.dk" style="color:${BRAND_DARK};">info@makingartdiy.dk</a>.</p>
+          <p style="margin:0 0 8px 0;font-size:13px;color:${MUTED};line-height:1.5;">${t.deliveryNote}</p>
+          <p style="margin:0 0 8px 0;font-size:13px;color:${MUTED};line-height:1.5;">${t.vatNote}</p>
+          <p style="margin:12px 0 0 0;font-size:13px;color:${MUTED};line-height:1.5;">${t.supportLineHtml}</p>
         </td></tr>
         <tr><td style="background:${BRAND_DARK};padding:16px 32px;text-align:center;">
-          <div style="color:${BRAND_GOLD};font-size:12px;">Making Art DIY · makingartdiy.dk</div>
+          <div style="color:${BRAND_GOLD};font-size:12px;">${t.footerTagline}</div>
         </td></tr>
       </table>
     </td></tr>
@@ -120,7 +190,7 @@ function buildOrderEmail({
 </html>`;
 
   const itemsText = items
-    .map(i => `${i.name} × ${i.quantity} — ${formatDKK(i.priceCents * i.quantity)}`)
+    .map(i => `${i.name} × ${i.quantity} — ${formatPrice(i.priceCents * i.quantity, lang)}`)
     .join('\n');
 
   const addressText = shippingAddress
@@ -134,32 +204,32 @@ function buildOrderEmail({
     : '';
 
   const text = [
-    'Tak for din ordre hos Making Art DIY!',
+    t.plaintextIntro,
     '',
-    customerName ? `Hej ${customerName},` : 'Hej,',
+    customerName ? t.greetingWithName(customerName) : t.greetingAnonymous,
     '',
-    'Vi har modtaget din betaling og går i gang med at gøre pakken klar.',
+    t.plaintextBodyIntro,
     '',
-    `Ordrenummer: #${orderRef}`,
+    `${t.orderNumberLabel}: #${orderRef}`,
     '',
-    '--- DINE VARER ---',
+    t.plaintextItemsHeader,
     itemsText,
     '',
-    `Subtotal: ${formatDKK(subtotalCents)}`,
-    `Fragt: ${shippingCents === 0 ? 'Gratis' : formatDKK(shippingCents)}`,
-    `Total: ${formatDKK(totalCents)}`,
-    ...(addressText ? ['', '--- LEVERINGSADRESSE ---', addressText] : []),
+    `${t.subtotalLabel}: ${formatPrice(subtotalCents, lang)}`,
+    `${t.shippingLabel}: ${shippingDisplay}`,
+    `${t.totalLabel}: ${formatPrice(totalCents, lang)}`,
+    ...(addressText ? ['', t.plaintextAddressHeader, addressText] : []),
     '',
-    'Levering forventes inden for 3-7 hverdage.',
-    'Priserne er ikke tillagt moms (jf. momslovens § 48).',
+    t.plaintextDeliveryNote,
+    t.vatNote,
     '',
-    'Spørgsmål? Svar bare på denne mail eller skriv til info@makingartdiy.dk.',
+    t.supportLineText,
     '',
-    'Making Art DIY',
-    'makingartdiy.dk',
+    t.plaintextSignatureLine1,
+    t.plaintextSignatureLine2,
   ].join('\n');
 
   return { subject, html, text };
 }
 
-module.exports = { buildOrderEmail, formatDKK };
+module.exports = { buildOrderEmail, formatPrice };
