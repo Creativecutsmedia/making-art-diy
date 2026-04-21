@@ -36,6 +36,40 @@ Skift fra Stripe Test mode til Live mode kræver:
 - Begge opdateres i Netlify env vars (alle 4 deploy contexts)
 - Clear cache and deploy efter skift
 
+## Fase 2.1 — i18n (DA/EN)
+
+**Status:** ✓ Live-testet og virker end-to-end 2026-04-21
+
+### Hvad Fase 2.1 dækker
+Ordre-bekræftelsesmail understøtter nu både dansk og engelsk, baseret på
+`session.metadata.locale` som sættes i `create-checkout-session` fra
+frontend-sprogtoggle (DA/EN).
+
+### Komponenter
+- `netlify/functions/lib/order-email.js` — refaktoreret til ét HTML/plaintext
+  template + `STRINGS[locale]`-tabel. **Alle** tekst-strings kommer fra
+  tabellen (inkl. plaintext-headers `--- DINE VARER ---` / `--- YOUR ITEMS ---`
+  og adresse-headers). `<html lang="...">` sættes dynamisk.
+- `netlify/functions/stripe-webhook.js` — udtrækker
+  `locale = session.metadata?.locale === 'en' ? 'en' : 'da'` og videresender
+  til `buildOrderEmail`. Lokaliseret fallback for ukendt produkt. Locale
+  logges i `[webhook]`-logs.
+
+### Prisformat
+- **DA:** `108 kr` / `1.234 kr` (dansk tusindseparator, "kr")
+- **EN:** `108 DKK` / `1,234 DKK` (engelsk tusindseparator, ISO-valutakode)
+
+### Fallback
+Hvis `session.metadata.locale` mangler eller er en ugyldig værdi →
+`'da'` (konsistent med resten af pipeline; primærmarked).
+
+### Verificeret i end-to-end test 2026-04-21
+- ✓ Engelsk testkøb gennemført via EN-sprogtoggle
+- ✓ Email modtaget på engelsk med korrekt "DKK"-format
+- ✓ Alle labels oversat (Order number, Quantity, Shipping, Total, Shipping address)
+- ✓ Subject-linje på engelsk
+- ✓ `<html lang="en">` sat korrekt
+
 ## Næste fase
 Fase 2.5 (Shipmondo-integration) er parkeret indtil systemet har kørt stabilt
 et stykke tid i produktion.
