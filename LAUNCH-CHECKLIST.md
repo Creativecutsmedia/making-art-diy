@@ -30,3 +30,10 @@ Markér afsluttede punkter med `[x]`. Tilføj flere efter behov.
 
 - [ ] Rotér Stripe Test-nøgle til Live-nøgle
 - [ ] Opdater Netlify env vars til Live Stripe-nøgler (alle 4 deploy contexts)
+
+## Udviklings-workflow
+
+Note: Decap committer altid direkte til master via git-gateway, uanset hvor
+host-siten er deployet fra. Undgå at gemme i Decap på deploy previews mens
+en feature-branch er under review — det skaber divergent history. Når
+admin-v2 er færdigt og Decap udfases, forsvinder problemet.
