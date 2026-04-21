@@ -483,7 +483,7 @@ const T = {
 
   // email templates additions
   tmpl_order_confirm_cc: { da: 'Ordrebekræftelse — kreditkort', en: 'Order confirmation — credit card' },
-  tmpl_fragt_qr: { da: 'Fragt-QR-kode', en: 'Shipping QR code' },
+  tmpl_fragt_qr: { da: 'Pakken er sendt', en: 'Parcel shipped' },
   tmpl_cc_banner: { da: 'Bekræftelses-emails sendes KUN til kreditkort-ordrer. Manuelle ordrer (MobilePay, bankoverførsel, kontant, bytte, gratis) udløser ikke automatisk email.', en: 'Confirmation emails are sent ONLY for credit card orders. Manual orders (MobilePay, bank transfer, cash, barter, free) do not trigger automatic email.' },
 
   // packing slip

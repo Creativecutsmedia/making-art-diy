@@ -236,7 +236,7 @@ const DISCOUNTS = [
 const EMAIL_TEMPLATES = [
   { id: 'order_confirm_cc', trigger_da: 'Når kunde betaler ordre (kreditkort)', trigger_en: 'When customer pays for order (credit card)', subject_da: 'Tak for din ordre {{ordre}}', subject_en: 'Thanks for your order {{order}}', cc_only: true },
   { id: 'shipping', trigger_da: 'Når ordre afsendes', trigger_en: 'When order ships', subject_da: 'Din ordre er på vej', subject_en: 'Your order is on the way' },
-  { id: 'fragt_qr', trigger_da: 'Når Shipmondo-QR genereres', trigger_en: 'When Shipmondo QR is generated', subject_da: 'Din pakke er klar til afhentning', subject_en: 'Your parcel is ready for pickup', new: true },
+  { id: 'fragt_qr', trigger_da: 'Når Malik markerer ordren som afsendt', trigger_en: 'When the order is marked as shipped', subject_da: 'Din pakke er på vej', subject_en: 'Your parcel is on its way', new: true },
   { id: 'delivered', trigger_da: 'Når ordre markeres leveret', trigger_en: 'When order is marked delivered', subject_da: 'Din ordre er ankommet', subject_en: 'Your order has arrived' },
   { id: 'newsletter', trigger_da: 'Manuel udsendelse', trigger_en: 'Manual send', subject_da: '{{emne}}', subject_en: '{{subject}}' },
   { id: 'welcome', trigger_da: 'Ved nyhedsbrev-tilmelding', trigger_en: 'On newsletter signup', subject_da: 'Velkommen til Making Art DIY', subject_en: 'Welcome to Making Art DIY' },

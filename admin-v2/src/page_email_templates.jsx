@@ -63,13 +63,35 @@ function PageEmailTemplates({ t, lang }) {
                 {lang === 'da' ? selected.subject_da : selected.subject_en}
               </div>
               <div style={{ fontSize: 13.5, lineHeight: 1.6, color: '#3a2e20' }}>
-                {lang === 'da' ? 'Hej {{navn}},' : 'Hi {{name}},'}<br /><br />
-                {lang === 'da' ? 'Tak for din ordre hos Making Art DIY. Vi går straks i gang med at producere dine varer.' : 'Thanks for your order at Making Art DIY. We\'ll start producing your items right away.'}<br /><br />
-                {lang === 'da' ? 'Med venlig hilsen,' : 'Kind regards,'}<br />Malik
+                {selected.id === 'fragt_qr' ? (
+                  <>
+                    {lang === 'da' ? 'Hej {{navn}},' : 'Hi {{name}},'}<br /><br />
+                    {lang === 'da' ? 'Din ordre hos Making Art DIY er nu sendt afsted.' : 'Your order from Making Art DIY has been shipped.'}<br /><br />
+                    {lang === 'da' ? 'Du kan følge pakken her: {{track_link}}' : 'Track your parcel here: {{track_link}}'}<br /><br />
+                    {lang === 'da' ? 'Scan også QR-koden herunder i fx PostNords app for hurtig opslag.' : 'You can also scan the QR code below in an app like PostNord\'s for quick tracking lookup.'}<br /><br />
+                    {lang === 'da' ? 'Forventet levering: {{forventet_levering}}' : 'Expected delivery: {{expected_delivery}}'}<br /><br />
+                    {lang === 'da' ? 'Med venlig hilsen,' : 'Best regards,'}<br />Making Art DIY
+                  </>
+                ) : (
+                  <>
+                    {lang === 'da' ? 'Hej {{navn}},' : 'Hi {{name}},'}<br /><br />
+                    {lang === 'da' ? 'Tak for din ordre hos Making Art DIY. Vi går straks i gang med at producere dine varer.' : 'Thanks for your order at Making Art DIY. We\'ll start producing your items right away.'}<br /><br />
+                    {lang === 'da' ? 'Med venlig hilsen,' : 'Kind regards,'}<br />Malik
+                  </>
+                )}
               </div>
+              {selected.id === 'fragt_qr' && window.FakeQR && (
+                <div style={{ marginTop: 20, textAlign: 'center' }}>
+                  <div className="qr-frame">
+                    <window.FakeQR seed="fragt-preview" size={140} />
+                  </div>
+                </div>
+              )}
               <div style={{ marginTop: 24, textAlign: 'center' }}>
                 <button className="btn btn-primary" style={{ background: useBrand ? '#C9963A' : '#666', pointerEvents: 'none' }}>
-                  {lang === 'da' ? 'Se din ordre' : 'View your order'}
+                  {selected.id === 'fragt_qr'
+                    ? (lang === 'da' ? 'Følg pakken' : 'Track your parcel')
+                    : (lang === 'da' ? 'Se din ordre' : 'View your order')}
                 </button>
               </div>
             </div>
