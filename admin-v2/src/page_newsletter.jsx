@@ -95,13 +95,8 @@ function PageNewsletter({ t, lang }) {
         </button>
       </div>
 
-      <div style={{
-        padding: '10px 14px', background: 'var(--gold-softer)',
-        border: '1px solid rgba(201, 150, 58, 0.22)', borderRadius: 10,
-        marginBottom: 20, fontSize: 12.5, color: 'var(--fg-mute)',
-        display: 'flex', alignItems: 'center', gap: 10
-      }}>
-        <I.mail /> {t('gdpr_note')}
+      <div className="gold-box" style={{ marginBottom: 20 }}>
+        <I.mail /><span>{t('gdpr_note')}</span>
       </div>
 
       <div className="card" style={{ padding: 0 }}>
