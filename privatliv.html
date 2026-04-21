@@ -10,15 +10,13 @@
 ================================================================
 TODO FØR LAUNCH
 ================================================================
-Før siden sættes offentligt live, skal følgende udfyldes:
+1. Adresse tilføjes i sektion 1 "Dataansvarlig" når PO Box / erhvervsadresse
+   er på plads — se LAUNCH-CHECKLIST.md.
+2. Opdater "Senest opdateret" ved hver ændring.
 
-  1. [ADRESSE INDSÆTTES FØR LAUNCH]   – i sektion 1 "Dataansvarlig"
-  2. [TELEFON INDSÆTTES FØR LAUNCH]   – i sektion 1 "Dataansvarlig"
-  3. Datoen i "Senest opdateret"      – opdater ved hver ændring
-
-OBS – hvis du senere tilføjer cookies, analytics (fx Google Analytics, Plausible),
-  ekstern chatbot, betalingsgateways eller lignende, SKAL sektion 4 (databehandlere)
-  og sektion 6 (cookies) udvides tilsvarende.
+OBS – hvis du senere tilføjer cookies, analytics, ekstern chatbot,
+ny betalings- eller email-udbyder osv., SKAL sektion 4 (databehandlere)
+og sektion 6 (cookies) udvides tilsvarende.
 ================================================================
 -->
 <style>
@@ -71,7 +69,7 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:2.5rem 2
 
 <main class="legal-wrap">
   <h1>Privatlivspolitik</h1>
-  <p class="updated">Senest opdateret: 2026-04-18</p>
+  <p class="updated">Senest opdateret: 2026-04-21</p>
 
   <div class="english-note">
     🇬🇧 This page is in Danish. An English version is available on request —
@@ -88,9 +86,7 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:2.5rem 2
   <h2>1. Dataansvarlig</h2>
   <p>
     Making Art DIY (privat sælger)<br>
-    Adresse: [ADRESSE INDSÆTTES FØR LAUNCH]<br>
-    Email: <a href="mailto:makingartdiy@gmail.com">makingartdiy@gmail.com</a><br>
-    Telefon: [TELEFON INDSÆTTES FØR LAUNCH]
+    Kontakt via email: <a href="mailto:makingartdiy@gmail.com">makingartdiy@gmail.com</a>
   </p>
 
   <h2>2. Hvilke personoplysninger indsamler vi</h2>
@@ -139,10 +135,17 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:2.5rem 2
   </p>
   <ul>
     <li>
-      <strong>EmailJS</strong> (EmailJS, Inc., USA) — sender bestillings- og
-      bekræftelsesemails på vegne af os. Modtager dit navn, email, telefon, din besked
-      og kurvens indhold.<br>
-      <a href="https://www.emailjs.com/legal/privacy-policy/" target="_blank" rel="noopener">EmailJS privatlivspolitik</a>
+      <strong>Stripe</strong> (Stripe Payments Europe, Ltd., Irland) — håndterer
+      betaling. Modtager dit navn, email, leveringsadresse, ordrebeløb og
+      kortoplysninger. Vi modtager selv ingen kortdata. Stripe kan efter egne
+      standardkontraktbestemmelser videresende data til Stripe, Inc. (USA).<br>
+      <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Stripes privatlivspolitik</a>
+    </li>
+    <li>
+      <strong>Resend</strong> (Resend, Inc., USA) — sender ordre-bekræftelses- og
+      servicemails på vegne af os. Modtager din email-adresse og indholdet af mailen
+      (navn, ordrenummer, produkter, beløb, leveringsadresse).<br>
+      <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener">Resends privatlivspolitik</a>
     </li>
     <li>
       <strong>Netlify</strong> (Netlify, Inc., USA) — hoster siden og logger tekniske
@@ -156,9 +159,11 @@ footer{background:var(--wood-dark);color:rgba(255,255,255,0.75);padding:2.5rem 2
     </li>
   </ul>
   <div class="callout">
-    <strong>Overførsel til tredjelande:</strong> EmailJS og Netlify er amerikanske
-    virksomheder. Overførsel af data til USA sker på grundlag af EU-U.S. Data Privacy
-    Framework og/eller EU's standardkontraktbestemmelser (Art. 46 GDPR).
+    <strong>Overførsel til tredjelande:</strong> Resend og Netlify er amerikanske
+    virksomheder, og Stripe kan i henhold til egne standardkontraktbestemmelser
+    videresende data til sit amerikanske moderselskab. Overførsel til USA sker på
+    grundlag af EU-U.S. Data Privacy Framework og/eller EU's standardkontrakt-
+    bestemmelser (Art. 46 GDPR).
   </div>
 
   <h2>5. Opbevaringsperiode</h2>
