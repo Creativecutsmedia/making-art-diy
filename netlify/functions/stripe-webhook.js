@@ -132,21 +132,11 @@ async function handleCheckoutSessionCompleted(stripeEvent) {
 
   const resend = new Resend(process.env.RESEND_API_KEY);
 
-  // ─── TEMP TEST — REMOVE BEFORE PRODUCTION ──────────────────────
-  // Overstyrer modtager-adressen til en malformet email som Resend
-  // afviser synkront (422 validation error), så ORDER_EMAIL_FAILED
-  // + alert-email-flowet kan testes end-to-end. Påvirker KUN to:-
-  // feltet — customerEmail-variablen er urørt, så logs og alert-
-  // email viser den rigtige kunde-email.
-  // Roll back: git checkout netlify/functions/stripe-webhook.js
-  const FORCED_FAIL_EMAIL = 'forced-fail-no-at-sign';
-  // ───────────────────────────────────────────────────────────────
-
   let emailError = null;
   try {
     const result = await resend.emails.send({
       from: 'Making Art DIY <info@makingartdiy.dk>',
-      to: FORCED_FAIL_EMAIL, // TEMP TEST — was: customerEmail
+      to: customerEmail,
       bcc: 'makingartdiy@gmail.com',
       replyTo: 'info@makingartdiy.dk',
       subject,
