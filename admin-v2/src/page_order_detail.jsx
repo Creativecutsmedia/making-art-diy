@@ -274,3 +274,4 @@ function ShipmondoCard({ order, t, lang, fragtCreated, setFragtCreated }) {
 }
 
 window.OrderDetailFull = OrderDetailFull;
+window.FakeQR = FakeQR;
