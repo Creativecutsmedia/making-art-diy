@@ -31,6 +31,39 @@ function maskEmail(email) {
   return `${user.slice(0, 2)}***@${domain}`;
 }
 
+function stripeDashboardUrl(sessionId) {
+  const isTest = sessionId.startsWith('cs_test_');
+  const prefix = isTest ? 'test/' : '';
+  return `https://dashboard.stripe.com/${prefix}checkout/sessions/${sessionId}`;
+}
+
+async function sendAlertEmail(resend, { orderRef, customerEmail, sessionId, totalCents, locale, errorMessage }) {
+  const totalKr = (totalCents / 100).toFixed(2);
+  const body = [
+    `Ordre-bekræftelsesmail kunne ikke sendes til kunden.`,
+    ``,
+    `Ordre-ref:      #${orderRef}`,
+    `Kundens email:  ${customerEmail}`,
+    `Session ID:     ${sessionId}`,
+    `Total:          ${totalKr} kr (${totalCents} øre)`,
+    `Locale:         ${locale}`,
+    `Fejl:           ${errorMessage}`,
+    ``,
+    `Stripe Dashboard: ${stripeDashboardUrl(sessionId)}`,
+    ``,
+    `Betalingen er gennemført. Send manuelt en bekræftelse til kunden,`,
+    `eller gensend via Resend dashboard.`,
+  ].join('\n');
+
+  const result = await resend.emails.send({
+    from: 'Making Art DIY <info@makingartdiy.dk>',
+    to: 'makingartdiy@gmail.com',
+    subject: `[ALERT] Ordre-email fejlede — #${orderRef}`,
+    text: body,
+  });
+  if (result.error) throw new Error(result.error.message || 'unknown');
+}
+
 async function handleCheckoutSessionCompleted(stripeEvent) {
   const sessionId = stripeEvent.data.object.id;
   const orderRef = orderReferenceFromSessionId(sessionId);
@@ -98,26 +131,44 @@ async function handleCheckoutSessionCompleted(stripeEvent) {
   console.log(`[webhook] sending email to=${maskEmail(customerEmail)} ref=${orderRef} locale=${locale} items=${items.length} total=${totalCents}`);
 
   const resend = new Resend(process.env.RESEND_API_KEY);
-  const result = await resend.emails.send({
-    from: 'Making Art DIY <info@makingartdiy.dk>',
-    to: customerEmail,
-    bcc: 'makingartdiy@gmail.com',
-    replyTo: 'info@makingartdiy.dk',
-    subject,
-    html,
-    text,
+
+  let emailError = null;
+  try {
+    const result = await resend.emails.send({
+      from: 'Making Art DIY <info@makingartdiy.dk>',
+      to: customerEmail,
+      bcc: 'makingartdiy@gmail.com',
+      replyTo: 'info@makingartdiy.dk',
+      subject,
+      html,
+      text,
+    });
+    if (result.error) {
+      emailError = new Error(result.error.message || 'unknown');
+    } else {
+      console.log(`[webhook] email sent ref=${orderRef} resend_id=${result.data?.id || '(none)'}`);
+      return jsonResponse(200, { received: true, emailId: result.data?.id });
+    }
+  } catch (err) {
+    emailError = err;
+  }
+
+  console.error('ORDER_EMAIL_FAILED', {
+    orderRef, customerEmail, sessionId, locale, error: emailError.message,
   });
 
-  if (result.error) {
-    console.error(`[webhook] Resend error ref=${orderRef}:`, result.error);
-    return jsonResponse(200, {
-      received: true,
-      emailError: result.error.message || 'unknown',
+  try {
+    await sendAlertEmail(resend, {
+      orderRef, customerEmail, sessionId, totalCents, locale,
+      errorMessage: emailError.message,
+    });
+  } catch (alertErr) {
+    console.error('ALERT_EMAIL_FAILED', {
+      orderRef, sessionId, error: alertErr.message,
     });
   }
 
-  console.log(`[webhook] email sent ref=${orderRef} resend_id=${result.data?.id || '(none)'}`);
-  return jsonResponse(200, { received: true, emailId: result.data?.id });
+  return jsonResponse(200, { received: true, emailError: emailError.message });
 }
 
 exports.handler = async (event) => {
