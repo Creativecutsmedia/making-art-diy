@@ -123,6 +123,7 @@ function StackedBarChart({ data, labels }) {
         ))}
         {data.map((d, i) => {
           const x = pad.l + step * i + step / 2 - barW / 2;
+          const total = keys.reduce((s, k) => s + (d[k] || 0), 0);
           let y = pad.t + innerH;
           return (
             <g key={i}>
@@ -133,6 +134,9 @@ function StackedBarChart({ data, labels }) {
                 y -= h;
                 return <rect key={k} x={x} y={y} width={barW} height={h} fill={colors[k]} />;
               })}
+              {total > 0 && (
+                <text className="axis-label" x={x + barW / 2} y={y - 5} textAnchor="middle" style={{ fontWeight: 600 }}>{total}</text>
+              )}
               <text className="axis-label" x={x + barW / 2} y={H - 8} textAnchor="middle">{d.label}</text>
             </g>
           );

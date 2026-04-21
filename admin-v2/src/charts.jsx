@@ -39,6 +39,9 @@ function BarChart({ data, labelKey, valueKey, height = 240, showTrend = true }) 
         </g>
       )}
       {points.map((p, i) => (
+        <text key={`v${i}`} className="axis-label" x={p.x} y={p.y - 8} textAnchor="middle" style={{ fontWeight: 600 }}>{p.v}</text>
+      ))}
+      {points.map((p, i) => (
         <text key={i} className="axis-label" x={p.x} y={H - 8} textAnchor="middle">{p.label}</text>
       ))}
     </svg>
