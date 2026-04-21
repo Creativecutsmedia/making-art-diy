@@ -21,7 +21,7 @@ function PageSettings({ t, lang }) {
           </div>
           <div className="field">
             <label className="field-label">{lang === 'da' ? 'Kontakt-email' : 'Contact email'}</label>
-            <input className="input" defaultValue="hej@makingartdiy.dk" />
+            <input className="input" defaultValue="info@makingartdiy.dk" />
           </div>
         </div>
         <div className="form-grid-3">
