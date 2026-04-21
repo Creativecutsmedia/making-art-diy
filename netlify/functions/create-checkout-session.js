@@ -57,7 +57,7 @@ exports.handler = async (event) => {
         product_data: {
           name,
           images,
-          metadata: { slug: product.slug },
+          metadata: { slug: product.slug, sku: product.sku || '' },
         },
       },
       quantity: qty,
