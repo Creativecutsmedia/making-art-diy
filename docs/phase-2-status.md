@@ -70,6 +70,69 @@ Hvis `session.metadata.locale` mangler eller er en ugyldig værdi →
 - ✓ Subject-linje på engelsk
 - ✓ `<html lang="en">` sat korrekt
 
+## Fase 2.2 — alert-email + structured logging ved email-fejl
+
+**Status:** ✓ Live-testet og virker end-to-end 2026-04-21
+
+### Hvad Fase 2.2 dækker
+Robusthed for edge-casen hvor ordre-bekræftelsesmailen fejler (Resend-fejl
+eller exception). Tidligere tabte vi kunde-emailen stille; nu sendes en
+alert-mail til `makingartdiy@gmail.com` + en struktureret log-entry skrives
+til Netlify function-logs.
+
+### Komponenter
+- `netlify/functions/stripe-webhook.js` — Resend-kaldet pakket i try/catch
+  så både `result.error` (non-ok response) og kastede exceptions håndteres
+  ens. Ved fejl:
+  - Logger `ORDER_EMAIL_FAILED` med JSON-payload: `orderRef`,
+    `customerEmail`, `sessionId`, `locale`, `error`.
+  - Sender alert-email via `sendAlertEmail`-helper (plaintext, inline i
+    samme fil) med emne `[ALERT] Ordre-email fejlede — #<orderRef>` og
+    body med ordre-ref, kunde-email, session-ID, total, fejl-besked, og
+    link til Stripe Dashboard.
+  - Hvis alert-email også fejler → logger `ALERT_EMAIL_FAILED`;
+    funktionen returnerer 200 uanset.
+- Ingen ændringer til `order-email.js`.
+
+### Designvalg
+- **Return 200 ved Resend-fejl** (bevarer eksisterende strategi):
+  Stripe genstarter ikke webhook'en, ingen risiko for duplicate
+  customer-emails. Alert + log er nok til manuel opfølgning.
+- **Alert-logik inline i webhook-filen** (~30 linjer helper): bruger
+  samme Resend-instans, ingen genbrug forventet. En `lib/alert-email.js`
+  ville give mere struktur men mindre værdi ved nuværende scope.
+- **Stripe Dashboard-link auto-detekteres** fra session-ID prefix
+  (`cs_test_` vs `cs_live_`) → samme kode virker både i Test og Live mode
+  uden ændring ved launch.
+- **Plaintext alert-email (ingen HTML-template):** intern notifikation til
+  ejeren; simplicitet > styling.
+
+### Kendt begrænsning
+Både kunde-email og alert-email sendes via **samme Resend-kanal**. Hvis
+Resend selv er nede eller vores API-nøgle er ugyldig, fejler alert-email
+også — så sidste backstop er Netlify function-logs (`ORDER_EMAIL_FAILED`
++ `ALERT_EMAIL_FAILED` entries). For hobby-skala accepteret; en sekundær
+kanal (fx SMTP eller Slack webhook) ville være relevant hvis volumen
+stiger markant.
+
+### Forced-fail test 2026-04-21
+For at verificere error-path end-to-end i produktion blev `to:`-adressen
+i Resend-kaldet midlertidigt overstyret til en malformet email
+(`'forced-fail-no-at-sign'`), som Resend's API afviser synkront med 422.
+
+- Test-commit: `f99ec7f` — "test: forced-fail for end-to-end
+  verification of ORDER_EMAIL_FAILED flow (will be reverted)"
+- Revert: `b21fe45` — "Revert 'test: forced-fail ...'"
+
+Verificeret:
+- ✓ Kunden modtog ingen ordre-bekræftelse (forventet under forced-fail)
+- ✓ `[ALERT] Ordre-email fejlede — #<orderRef>` modtaget på
+  makingartdiy@gmail.com
+- ✓ `ORDER_EMAIL_FAILED` JSON-log i Netlify function-logs med korrekt
+  payload
+- ✓ Webhook returnerede 200 (ingen Stripe retry)
+- ✓ Efter revert: regression-check passed — happy path virker som før
+
 ## Næste fase
 Fase 2.5 (Shipmondo-integration) er parkeret indtil systemet har kørt stabilt
 et stykke tid i produktion.
