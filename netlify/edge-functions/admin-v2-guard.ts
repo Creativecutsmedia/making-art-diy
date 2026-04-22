@@ -41,22 +41,7 @@ function decodeJWT(token: string): JWTPayload | null {
 }
 
 export default async (req: Request, context: Context) => {
-  const path = new URL(req.url).pathname;
-  const cookieHeader = req.headers.get("cookie") ?? "";
-  const cookieNames = cookieHeader
-    .split(";")
-    .map((c) => c.trim().split("=")[0])
-    .filter(Boolean);
   const token = context.cookies.get("nf_jwt");
-
-  // DEBUG (temporary): diagnose post-login redirect loop on deploy preview.
-  // Remove once diagnosis is complete. Does not log the token itself.
-  console.log("[admin-v2-guard] request", {
-    path,
-    hasCookieHeader: cookieHeader.length > 0,
-    cookieNames,
-    hasNfJwt: !!token,
-  });
 
   if (!token) {
     return Response.redirect(new URL("/admin-v2/", req.url), 302);
@@ -64,15 +49,8 @@ export default async (req: Request, context: Context) => {
 
   const payload = decodeJWT(token);
   if (!payload) {
-    console.log("[admin-v2-guard] jwt decode failed");
     return new Response("Invalid session", { status: 401 });
   }
-
-  console.log("[admin-v2-guard] payload shape", {
-    payloadKeys: Object.keys(payload),
-    appMetadataKeys: payload.app_metadata ? Object.keys(payload.app_metadata) : null,
-    roles: payload.app_metadata?.roles ?? null,
-  });
 
   const now = Math.floor(Date.now() / 1000);
   if (!payload.exp || payload.exp <= now) {
