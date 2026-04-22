@@ -402,6 +402,7 @@ table.data tbody tr:hover { background: var(--row-hover); }
   width: 32px;
   height: 32px;
   border-radius: 6px;
+  overflow: hidden;
   background: var(--input-bg);
   border: 1px solid var(--border);
   display: inline-block;
