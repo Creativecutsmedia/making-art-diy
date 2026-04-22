@@ -28,8 +28,7 @@
   status = 404
   force = true
 
-# TODO(fase 3a): add server-side gate for /admin-v2/* before real data lands.
-# Currently relies on client-side Identity check only (Option B, Free tier).
-# Options: (A) Netlify Pro + role-based redirect with Role=admin condition;
-# (B) Netlify Edge Function validating nf_jwt cookie. Must be in place before
-# wiring real orders, customers, or Stripe data into admin-v2.
+[[edge_functions]]
+  path = "/admin-v2/*"
+  excludedPath = ["/admin-v2/", "/admin-v2/index.html", "/admin-v2/styles.css"]
+  function = "admin-v2-guard"
