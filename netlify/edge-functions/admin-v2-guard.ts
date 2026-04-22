@@ -9,7 +9,7 @@ import type { Context } from "https://edge.netlify.com/";
  * - nf_jwt is HttpOnly + Secure + SameSite=Lax. Client-side JavaScript cannot
  *   read or set it; only Netlify Identity's login endpoint issues it.
  * - Real signature verification happens downstream in Netlify Functions
- *   (e.g. admin-sales.js) via context.clientContext.identity, which Netlify
+ *   (e.g. admin-stats.js) via context.clientContext.identity, which Netlify
  *   populates only after verifying the JWT. Any endpoint that returns real
  *   customer or order data is gated there, not here.
  * - This Edge Function's job is to block the realistic threat — a `curl` of
