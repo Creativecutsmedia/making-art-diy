@@ -31,10 +31,15 @@ Markér afsluttede punkter med `[x]`. Tilføj flere efter behov.
       `nf_jwt`-cookie + `app_metadata.roles` indeholder `admin`. Allow-list:
       `/admin-v2/`, `index.html`, `styles.css` så Identity-widget kan rendre
       pre-login. Signatur-verifikation delegeret til Netlify Functions.
-- [ ] Overvej 2FA på admin-v2 før fase 3a-data går live. Nuværende setup:
+- [ ] Overvej 2FA på admin-v2. Nuværende setup:
       Netlify Identity med stærkt NordPass-genereret password. Mulige
       upgrades: GitHub OAuth external provider (nemt), Cloudflare Access
       (robust). Se session-summary fra 21. april 2026 for detaljer.
+- [x] Admin-v2 fase 3a-data: real-data wiring (products + stats).
+      ✓ Løst 2026-04-22 (merge-commit 7842a4c, PR #5) via Netlify
+      Function `admin-stats.js` + client-side hooks `useProducts` /
+      `useStats` i admin-v2/src/hooks.jsx. Varer-siden viser ægte
+      produkter fra products.json. Dashboard-wiring kommer i commit 2.1.
 
 ## Stripe Test → Live (før 1. juni 2026)
 
