@@ -43,12 +43,14 @@ function StatCard({ icon, label, value, trend, trendDir, trendLabel }) {
         <div className="stat-label" style={{ textAlign: 'right' }}>{label}</div>
       </div>
       <div className="stat-value">{value}</div>
-      <div className="stat-trend">
-        <span className={`trend-pill ${trendDir === 'up' ? 'trend-up' : 'trend-down'}`}>
-          {trendDir === 'up' ? '↑' : '↓'} {trend}
-        </span>
-        <span>{trendLabel}</span>
-      </div>
+      {trend && (
+        <div className="stat-trend">
+          <span className={`trend-pill ${trendDir === 'up' ? 'trend-up' : 'trend-down'}`}>
+            {trendDir === 'up' ? '↑' : '↓'} {trend}
+          </span>
+          <span>{trendLabel}</span>
+        </div>
+      )}
     </div>
   );
 }
