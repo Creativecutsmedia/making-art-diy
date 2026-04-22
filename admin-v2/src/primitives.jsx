@@ -53,7 +53,25 @@ function StatCard({ icon, label, value, trend, trendDir, trendLabel }) {
   );
 }
 
-function Thumb({ kind }) {
+function Thumb({ kind, src, alt }) {
+  if (src) {
+    return (
+      <span className="thumb thumb-img">
+        <img
+          src={src}
+          alt={alt || ''}
+          loading="lazy"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            display: 'block',
+            borderRadius: 'inherit',
+          }}
+        />
+      </span>
+    );
+  }
   return <span className={`thumb ${kind || 'gold'}`} />;
 }
 
