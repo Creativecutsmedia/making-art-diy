@@ -25,9 +25,12 @@ Markér afsluttede punkter med `[x]`. Tilføj flere efter behov.
 
 - [ ] Flyt `internal_notes` og `internal_files` fra markdown-frontmatter til
       Netlify Blobs (fase 3 opgave — fjerner GitHub-lækage-risiko)
-- [ ] Upgrade admin-v2 fil-beskyttelse til server-side gate før fase 3a-data
-      går live (kræver Netlify Pro + role-based redirect ELLER Edge Function
-      der validerer `nf_jwt`-cookie). Nu: kun client-side Identity-check.
+- [x] Upgrade admin-v2 fil-beskyttelse til server-side gate før fase 3a-data
+      går live. ✓ Løst 2026-04-22 (commit `dbf80c3`, PR #3) via Netlify
+      Edge Function `netlify/edge-functions/admin-v2-guard.ts` der validerer
+      `nf_jwt`-cookie + `app_metadata.roles` indeholder `admin`. Allow-list:
+      `/admin-v2/`, `index.html`, `styles.css` så Identity-widget kan rendre
+      pre-login. Signatur-verifikation delegeret til Netlify Functions.
 - [ ] Overvej 2FA på admin-v2 før fase 3a-data går live. Nuværende setup:
       Netlify Identity med stærkt NordPass-genereret password. Mulige
       upgrades: GitHub OAuth external provider (nemt), Cloudflare Access
