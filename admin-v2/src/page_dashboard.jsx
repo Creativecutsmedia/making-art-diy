@@ -1,6 +1,13 @@
+function formatRevenueDKK(cents, t) {
+  if (cents == null) return '—';
+  const kroner = Math.round(cents / 100);
+  return `${kroner.toLocaleString('da-DK')} ${t('kr')}`;
+}
+
 // Enhanced Dashboard
 function PageDashboard({ t, lang, navigate }) {
   const I = window.Icons;
+  const { data: stats, loading, error, refresh } = useStats();
   const { PRODUCTS, SALES_6M, ORDERS, ACTIVITY, DK_CITIES } = window.MAD_DATA;
   const chartData = SALES_6M.map(d => ({ label: lang === 'da' ? d.month_da : d.month_en, value: d.value }));
   const topProducts = [...PRODUCTS].sort((a, b) => b.sold - a.sold).slice(0, 5);
@@ -32,11 +39,31 @@ function PageDashboard({ t, lang, navigate }) {
         {t('low_revenue_sub')}
       </Callout>
 
+      {error && (
+        <div style={{
+          marginTop: 20,
+          padding: 16,
+          border: '1px solid var(--err)',
+          borderRadius: 8,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 12,
+        }}>
+          <div style={{ color: 'var(--err)' }}>
+            {lang === 'da' ? 'Kunne ikke loade statistik' : 'Could not load stats'}: {error}
+          </div>
+          <button className="btn btn-secondary" onClick={refresh}>
+            {lang === 'da' ? 'Prøv igen' : 'Retry'}
+          </button>
+        </div>
+      )}
+
       <div className="stats-grid" style={{ marginTop: 20 }}>
-        <StatCard icon={<I.box />} label={t('stat_products')} value="12" trend="+2" trendDir="up" trendLabel={t('stat_this_week')} />
-        <StatCard icon={<I.cart />} label={t('stat_orders')} value="47" trend="+12%" trendDir="up" trendLabel={t('stat_last_month')} />
-        <StatCard icon={<I.dollar />} label={<span>{t('stat_revenue')}<span className="info-tip" data-tip={t('revenue_cc_tooltip')}>i</span></span>} value={`8.420 ${t('kr')}`} trend="+8%" trendDir="up" trendLabel={t('stat_last_month')} />
-        <StatCard icon={<I.users />} label={t('stat_customers')} value="38" trend="−3%" trendDir="down" trendLabel={t('stat_last_month')} />
+        <StatCard icon={<I.box />} label={t('stat_products')} value={stats?.stats?.products_count ?? '—'} />
+        <StatCard icon={<I.cart />} label={t('stat_orders')} value={stats?.stats?.orders_count_30d ?? '—'} />
+        <StatCard icon={<I.dollar />} label={<span>{t('stat_revenue')}<span className="info-tip" data-tip={t('revenue_cc_tooltip')}>i</span></span>} value={formatRevenueDKK(stats?.stats?.revenue_cents_30d, t)} />
+        <StatCard icon={<I.users />} label={t('stat_customers')} value={stats?.stats?.customers_count ?? '—'} />
       </div>
 
       <div className="two-col">
@@ -50,7 +77,7 @@ function PageDashboard({ t, lang, navigate }) {
         <div className="card">
           <div className="card-head"><h3 className="card-title">{t('sales_cat')}</h3></div>
           <div className="donut-wrap">
-            <DonutChart data={donutData} centerLabel="47" centerSub={t('orders_unit')} />
+            <DonutChart data={donutData} centerLabel={stats?.stats?.orders_count_30d ?? '—'} centerSub={t('orders_unit')} />
             <div className="donut-legend">
               {donutData.map((d, i) => (
                 <div key={i} className="donut-item">
