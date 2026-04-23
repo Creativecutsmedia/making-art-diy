@@ -21,16 +21,21 @@ const CATEGORY_FALLBACK_COLOR = '#999';
 function PageDashboard({ t, lang, navigate }) {
   const I = window.Icons;
   const { data: stats, loading, error, refresh } = useStats();
-  const { PRODUCTS, ORDERS, ACTIVITY, DK_CITIES } = window.MAD_DATA;
-  const topProducts = [...PRODUCTS].sort((a, b) => b.sold - a.sold).slice(0, 5);
-  const ready = ORDERS.filter(o => o.payment === 'cc' && (o.status === 'new' || o.status === 'production')).slice(0, 4);
+  const { data: products } = useProducts();
+  const { ACTIVITY, DK_CITIES } = window.MAD_DATA;
 
-  // Manual orders last 30 days by payment method
-  const manualCounts = {};
-  ORDERS.filter(o => o.manual).forEach(o => {
-    manualCounts[o.payment] = (manualCounts[o.payment] || 0) + 1;
-  });
-  const manualList = Object.entries(manualCounts);
+  // Top-products: join useProducts with stats.sold_by_sku.
+  // Sort by sold desc; on ties or when all zero, fall back to alphabetical by current-lang name.
+  const soldBySku = stats?.sold_by_sku || {};
+  const topProducts = !products ? [] : [...products]
+    .map(p => ({ ...p, sold: soldBySku[p.sku] || 0 }))
+    .sort((a, b) => {
+      if (b.sold !== a.sold) return b.sold - a.sold;
+      const nameA = (lang === 'da' ? a.name_da : a.name_en) || '';
+      const nameB = (lang === 'da' ? b.name_da : b.name_en) || '';
+      return nameA.localeCompare(nameB, lang === 'da' ? 'da' : 'en');
+    })
+    .slice(0, 5);
 
   // Bar-chart data: derive from stats.sales_6m. Show placeholder if missing or all zero.
   const sales6m = stats?.sales_6m;
@@ -173,35 +178,17 @@ function PageDashboard({ t, lang, navigate }) {
               <h3 className="card-title">{t('ready_production')}</h3>
               <div className="card-sub">{t('ready_production_sub')} <span className="chip gold" style={{ marginLeft: 6 }}>{t('pay_cc')}</span></div>
             </div>
-            <button className="btn btn-ghost" onClick={() => navigate('orders')}>{t('view_all')}</button>
+            <button className="btn btn-ghost" disabled style={{ opacity: 0.5, cursor: 'not-allowed' }}>{t('view_all')}</button>
           </div>
-          <table className="data">
-            <thead>
-              <tr>
-                <th>{t('th_order')}</th>
-                <th>{t('th_customer')}</th>
-                <th>{t('th_items')}</th>
-                <th>{t('th_amount')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {ready.map(o => {
-                const days = Math.max(0, Math.floor((new Date('2026-04-21') - new Date(o.date)) / 86400000));
-                const itemCount = o.items.reduce((s, i) => s + i.qty, 0);
-                return (
-                  <tr key={o.no} onClick={() => navigate('orders')}>
-                    <td className="sku-cell bold">{o.no}</td>
-                    <td className="bold">{o.customer}</td>
-                    <td>{itemCount}</td>
-                    <td className="flex between items-center gap-2">
-                      <span className="bold">{o.amount} {t('kr')}</span>
-                      <span className="chip warn">{days} {t('days_ago')}</span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <div style={{
+            color: 'var(--fg-mute)',
+            fontSize: 13,
+            fontStyle: 'italic',
+            padding: '40px 20px',
+            textAlign: 'center',
+          }}>
+            {t('order_backend_pending')}
+          </div>
         </div>
         <div className="card">
           <div className="card-head">
@@ -209,24 +196,17 @@ function PageDashboard({ t, lang, navigate }) {
               <h3 className="card-title">{t('manual_orders_30d')}</h3>
               <div className="card-sub">{t('manual_orders_30d_sub')}</div>
             </div>
-            <button className="btn btn-ghost" onClick={() => navigate('orders')}>{t('view_all')}</button>
+            <button className="btn btn-ghost" disabled style={{ opacity: 0.5, cursor: 'not-allowed' }}>{t('view_all')}</button>
           </div>
-          <table className="data">
-            <thead><tr><th>{t('th_payment')}</th><th>{t('th_orders_count')}</th><th></th></tr></thead>
-            <tbody>
-              {manualList.map(([method, count]) => (
-                <tr key={method}>
-                  <td><PayChip method={method} t={t} /></td>
-                  <td className="bold">{count} {t('orders_unit')}</td>
-                  <td style={{ textAlign: 'right' }}>
-                    <div style={{ width: 80, height: 6, background: 'var(--input-bg)', borderRadius: 3, display: 'inline-block', overflow: 'hidden' }}>
-                      <div style={{ width: `${(count / Math.max(...manualList.map(([,c]) => c))) * 100}%`, height: '100%', background: 'var(--gold)' }}/>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div style={{
+            color: 'var(--fg-mute)',
+            fontSize: 13,
+            fontStyle: 'italic',
+            padding: '40px 20px',
+            textAlign: 'center',
+          }}>
+            {t('order_backend_pending')}
+          </div>
         </div>
       </div>
 
@@ -253,11 +233,11 @@ function PageDashboard({ t, lang, navigate }) {
               {topProducts.map(p => (
                 <tr key={p.sku} onClick={() => navigate('edit_product', { sku: p.sku })}>
                   <td className="sku-cell">{p.sku}</td>
-                  <td><Thumb kind={p.thumb} /></td>
+                  <td><Thumb src={p.image} alt={lang === 'da' ? p.name_da : p.name_en} /></td>
                   <td><span className="bold">{lang === 'da' ? p.name_da : p.name_en}</span></td>
                   <td>{p.price} {t('kr')}</td>
                   <td><CategoryChip category={p.category} t={t} /></td>
-                  <td className="bold">{p.sold}</td>
+                  <td className="bold">{p.sold || '—'}</td>
                   <td><span className={`status-dot ${p.visible ? 'ok' : 'muted'}`} /></td>
                 </tr>
               ))}
