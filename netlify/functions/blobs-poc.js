@@ -1,4 +1,4 @@
-const { getStore } = require('@netlify/blobs');
+const { getStore, connectLambda } = require('@netlify/blobs');
 
 const STORE_NAME = 'admin-poc-temp';
 
@@ -11,6 +11,11 @@ function jsonResponse(statusCode, payload) {
 }
 
 exports.handler = async (event, context) => {
+  // Bridge Lambda event -> Blobs context. Required for @netlify/blobs v10 in v1 Functions:
+  // reads siteID + token from event.blobs + x-nf-* headers, sets NETLIFY_BLOBS_CONTEXT.
+  // Without this, getStore() throws "environment has not been configured".
+  connectLambda(event);
+
   if (event.httpMethod !== 'GET') {
     return jsonResponse(405, { error: 'Method not allowed' });
   }
