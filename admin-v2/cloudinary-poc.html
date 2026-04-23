@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cloudinary POC (3.0b) — Making Art DIY</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 0 20px;
+      color: #1a1a1a;
+    }
+    button {
+      background: #C9963A;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 15px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    #result, #error { margin-top: 20px; padding: 16px; border-radius: 4px; }
+    #result { background: #f0fdf4; border: 1px solid #86efac; display: none; }
+    #error { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; display: none; }
+    #result img { max-width: 300px; margin-top: 12px; display: block; border-radius: 4px; }
+    pre { background: #f4f4f4; padding: 12px; border-radius: 4px; overflow-x: auto; font-size: 12px; }
+    .hint { color: #666; font-size: 13px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Cloudinary Upload POC</h1>
+  <p>Test-side for 3.0b (Fase 1 de-risking). Slettes når Fase 2-3 er valideret.</p>
+
+  <button id="upload-btn">Upload test image</button>
+  <p class="hint">Kræver admin-rolle. Billeder uploades til <code>test-poc-3.0b/</code> i Cloudinary.</p>
+
+  <div id="result"></div>
+  <div id="error"></div>
+
+  <script src="https://upload-widget.cloudinary.com/global/all.js"></script>
+  <script>
+    const btn = document.getElementById('upload-btn');
+    const resultEl = document.getElementById('result');
+    const errorEl = document.getElementById('error');
+
+    function showResult(info) {
+      resultEl.innerHTML = `
+        <h3>Upload OK ✓</h3>
+        <pre>${JSON.stringify(info, null, 2)}</pre>
+        <img src="${info.secure_url}" alt="Uploaded">
+      `;
+      resultEl.style.display = 'block';
+      errorEl.style.display = 'none';
+    }
+
+    function showError(msg) {
+      errorEl.innerHTML = `<h3>Error</h3><pre>${msg}</pre>`;
+      errorEl.style.display = 'block';
+      resultEl.style.display = 'none';
+    }
+
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      resultEl.style.display = 'none';
+      errorEl.style.display = 'none';
+
+      try {
+        // Fetch signed upload params from our backend (nf_jwt cookie auto-included).
+        const res = await fetch('/.netlify/functions/cloudinary-sign?folder=test-poc-3.0b', {
+          credentials: 'include',
+        });
+        if (!res.ok) {
+          const body = await res.text();
+          throw new Error(`Sign endpoint ${res.status}: ${body}`);
+        }
+        const params = await res.json();
+
+        // Open Cloudinary upload widget with signed params.
+        const widget = cloudinary.createUploadWidget({
+          cloudName: params.cloud_name,
+          apiKey: params.api_key,
+          uploadSignature: params.signature,
+          uploadSignatureTimestamp: params.timestamp,
+          folder: params.folder,
+          sources: ['local'],
+          multiple: false,
+          maxFiles: 1,
+          clientAllowedFormats: ['jpg', 'jpeg', 'png', 'webp'],
+          maxFileSize: 5_000_000,
+        }, (error, result) => {
+          if (error) {
+            showError(error.message || JSON.stringify(error));
+            btn.disabled = false;
+            return;
+          }
+          if (result && result.event === 'success') {
+            showResult({
+              public_id: result.info.public_id,
+              secure_url: result.info.secure_url,
+              format: result.info.format,
+              bytes: result.info.bytes,
+              width: result.info.width,
+              height: result.info.height,
+              folder: result.info.folder,
+            });
+            btn.disabled = false;
+          }
+          if (result && result.event === 'close') {
+            btn.disabled = false;
+          }
+        });
+
+        widget.open();
+      } catch (err) {
+        showError(err.message);
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
