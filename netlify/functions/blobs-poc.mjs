@@ -1,26 +1,25 @@
-const { getStore } = require('@netlify/blobs');
+import { getStore } from '@netlify/blobs';
 
 const STORE_NAME = 'admin-poc-temp';
 
-function jsonResponse(statusCode, payload) {
-  return {
-    statusCode,
+function jsonResponse(status, payload) {
+  return new Response(JSON.stringify(payload, null, 2), {
+    status,
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload, null, 2),
-  };
+  });
 }
 
-exports.handler = async (event, context) => {
-  if (event.httpMethod !== 'GET') {
+export default async (req, context) => {
+  if (req.method !== 'GET') {
     return jsonResponse(405, { error: 'Method not allowed' });
   }
 
   // Auth: authenticated Netlify Identity user with 'admin' role required.
-  const user = context.clientContext && context.clientContext.user;
+  const user = context.clientContext?.user;
   if (!user) {
     return jsonResponse(401, { error: 'Unauthorized' });
   }
-  const roles = (user.app_metadata && user.app_metadata.roles) || [];
+  const roles = user.app_metadata?.roles || [];
   if (!roles.includes('admin')) {
     return jsonResponse(403, { error: 'Forbidden — admin role required' });
   }
