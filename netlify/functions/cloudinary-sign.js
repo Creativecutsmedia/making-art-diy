@@ -4,13 +4,11 @@ const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const API_KEY = process.env.CLOUDINARY_API_KEY;
 const API_SECRET = process.env.CLOUDINARY_API_SECRET;
 
-// Whitelist of allowed upload folders. Prevents folder-injection via query param.
-// Grows as new features need dedicated folders (products for Fase 2-3, etc.).
+// Whitelist of allowed upload folders. Prevents folder-injection via request body.
 const ALLOWED_FOLDERS = new Set([
   'test-poc-3.0b',
   'products',
 ]);
-const DEFAULT_FOLDER = 'test-poc-3.0b';
 
 function jsonResponse(statusCode, payload) {
   return {
@@ -21,7 +19,7 @@ function jsonResponse(statusCode, payload) {
 }
 
 exports.handler = async (event, context) => {
-  if (event.httpMethod !== 'GET') {
+  if (event.httpMethod !== 'POST') {
     return jsonResponse(405, { error: 'Method not allowed' });
   }
 
@@ -46,29 +44,30 @@ exports.handler = async (event, context) => {
     });
   }
 
+  // Parse body — widget sends the exact params it will upload with.
+  let paramsToSign;
+  try {
+    paramsToSign = JSON.parse(event.body || '{}');
+  } catch {
+    return jsonResponse(400, { error: 'Invalid JSON body' });
+  }
+
   // Folder validation — reject anything not in whitelist.
-  const folder = (event.queryStringParameters && event.queryStringParameters.folder) || DEFAULT_FOLDER;
-  if (!ALLOWED_FOLDERS.has(folder)) {
+  // Checked BEFORE signing so an attacker cannot trick us into signing
+  // uploads to folders we don't own.
+  if (!paramsToSign.folder || !ALLOWED_FOLDERS.has(paramsToSign.folder)) {
     return jsonResponse(400, {
       error: 'Folder not allowed',
-      folder,
+      folder: paramsToSign.folder,
       allowed: [...ALLOWED_FOLDERS],
     });
   }
 
-  // Generate signed upload params. Signature locks folder+timestamp so the widget
-  // cannot upload to a different folder or replay after a long delay.
-  const timestamp = Math.round(Date.now() / 1000);
-  const paramsToSign = { folder, timestamp };
+  // Sign the full params set the widget will upload with.
+  // cloudinary.utils.api_sign_request sorts alphabetically and appends api_secret.
   const signature = cloudinary.utils.api_sign_request(paramsToSign, API_SECRET);
 
-  console.log(`[cloudinary-sign] signed folder=${folder} user=${user.email || user.sub}`);
+  console.log(`[cloudinary-sign] signed folder=${paramsToSign.folder} user=${user.email || user.sub}`);
 
-  return jsonResponse(200, {
-    cloud_name: CLOUD_NAME,
-    api_key: API_KEY,
-    timestamp,
-    signature,
-    folder,
-  });
+  return jsonResponse(200, { signature });
 };
