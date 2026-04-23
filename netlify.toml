@@ -1,5 +1,5 @@
 [build]
-  command = "pip install -r requirements.txt && python3 update-products.py"
+  command = "pip install -r requirements.txt && python3 update-products.py && npm install && npm run build:admin"
   publish = "."
 
 [build.environment]

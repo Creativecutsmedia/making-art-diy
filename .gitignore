@@ -4,3 +4,4 @@ node_modules/
 *.swp
 .claude/
 *:Zone.Identifier
+admin-v2/dist/
