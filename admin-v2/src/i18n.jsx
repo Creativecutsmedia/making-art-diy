@@ -42,6 +42,7 @@ const T = {
   orders_unit: { da: 'ordrer', en: 'orders' },
   no_sales_data: { da: 'Ingen salgsdata endnu', en: 'No sales data yet' },
   category_data_pending: { da: 'Kategori-data kommer med Live-switch', en: 'Category data coming with Live switch' },
+  order_backend_pending: { da: 'Tilgængelig efter ordre-backend (fase 3c)', en: 'Available after order backend (phase 3c)' },
 
   // categories
   cat_voksne: { da: 'Voksne', en: 'Adults' },
