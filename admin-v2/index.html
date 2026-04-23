@@ -98,7 +98,7 @@
         if (!hasAdminRole(user)) render(user);
       });
       window.netlifyIdentity.init({
-        APIUrl: 'https://makingartdiy.dk/.netlify/identity'
+        APIUrl: window.location.origin + '/.netlify/identity'
       });
     }
 
