@@ -3,10 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "description": "Netlify Functions for Making Art DIY shop (Stripe checkout + Resend email)",
+  "scripts": {
+    "build:admin": "esbuild admin-v2/src/*.jsx --outdir=admin-v2/dist --sourcemap",
+    "watch:admin": "esbuild admin-v2/src/*.jsx --outdir=admin-v2/dist --sourcemap --watch"
+  },
   "dependencies": {
     "@netlify/blobs": "^10.7.4",
     "cloudinary": "^2.9.0",
     "resend": "^6.0.0",
     "stripe": "^18.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.0"
   }
 }
