@@ -40,6 +40,8 @@ const T = {
   top_products: { da: 'Mest solgte varer', en: 'Top-selling products' },
   order_count_label: { da: 'antal ordrer', en: 'orders' },
   orders_unit: { da: 'ordrer', en: 'orders' },
+  no_sales_data: { da: 'Ingen salgsdata endnu', en: 'No sales data yet' },
+  category_data_pending: { da: 'Kategori-data kommer med Live-switch', en: 'Category data coming with Live switch' },
 
   // categories
   cat_voksne: { da: 'Voksne', en: 'Adults' },

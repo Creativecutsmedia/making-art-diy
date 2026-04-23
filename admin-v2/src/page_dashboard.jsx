@@ -4,12 +4,24 @@ function formatRevenueDKK(cents, t) {
   return `${kroner.toLocaleString('da-DK')} ${t('kr')}`;
 }
 
+// Month-name lookup (indexed via month - 1)
+const MONTH_DA = ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'];
+const MONTH_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+// Maps products.json `category` field → i18n key + donut color.
+// Unknown categories fall back to the category name and a neutral grey.
+const CATEGORY_META = {
+  'Voksne':  { tKey: 'cat_voksne',  color: '#C9963A' },
+  'Børn':    { tKey: 'cat_born',    color: '#6fa3d6' },
+  'Erhverv': { tKey: 'cat_erhverv', color: '#a78bd4' },
+};
+const CATEGORY_FALLBACK_COLOR = '#999';
+
 // Enhanced Dashboard
 function PageDashboard({ t, lang, navigate }) {
   const I = window.Icons;
   const { data: stats, loading, error, refresh } = useStats();
-  const { PRODUCTS, SALES_6M, ORDERS, ACTIVITY, DK_CITIES } = window.MAD_DATA;
-  const chartData = SALES_6M.map(d => ({ label: lang === 'da' ? d.month_da : d.month_en, value: d.value }));
+  const { PRODUCTS, ORDERS, ACTIVITY, DK_CITIES } = window.MAD_DATA;
   const topProducts = [...PRODUCTS].sort((a, b) => b.sold - a.sold).slice(0, 5);
   const ready = ORDERS.filter(o => o.payment === 'cc' && (o.status === 'new' || o.status === 'production')).slice(0, 4);
 
@@ -20,11 +32,26 @@ function PageDashboard({ t, lang, navigate }) {
   });
   const manualList = Object.entries(manualCounts);
 
-  const donutData = [
-    { label: t('cat_voksne'), value: 55, color: '#C9963A' },
-    { label: t('cat_born'), value: 28, color: '#6fa3d6' },
-    { label: t('cat_erhverv'), value: 17, color: '#a78bd4' },
-  ];
+  // Bar-chart data: derive from stats.sales_6m. Show placeholder if missing or all zero.
+  const sales6m = stats?.sales_6m;
+  const barChartEmpty = !sales6m?.length || sales6m.every(m => m.count === 0);
+  const barChartData = barChartEmpty ? [] : sales6m.map(m => ({
+    label: (lang === 'da' ? MONTH_DA : MONTH_EN)[m.month - 1],
+    value: m.count,
+  }));
+
+  // Donut-categories data: map sales_by_category object → chart-ready array.
+  // Empty in Stripe Test mode until Live-switch (SKU metadata gap).
+  const salesByCategory = stats?.sales_by_category;
+  const donutEmpty = !salesByCategory || Object.keys(salesByCategory).length === 0;
+  const donutData = donutEmpty ? [] : Object.entries(salesByCategory).map(([cat, frac]) => {
+    const meta = CATEGORY_META[cat];
+    return {
+      label: meta ? t(meta.tKey) : cat,
+      value: Math.round(frac * 100),
+      color: meta ? meta.color : CATEGORY_FALLBACK_COLOR,
+    };
+  });
 
   return (
     <div className="content">
@@ -72,21 +99,42 @@ function PageDashboard({ t, lang, navigate }) {
             <h3 className="card-title">{t('sales_6m')}</h3>
             <span className="card-sub">{t('order_count_label')}</span>
           </div>
-          <BarChart data={chartData} labelKey="label" valueKey="value" height={260} />
+          {barChartEmpty ? (
+            <div style={{
+              height: 260,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--fg-mute)',
+              fontSize: 13,
+            }}>
+              {loading ? '—' : t('no_sales_data')}
+            </div>
+          ) : (
+            <BarChart data={barChartData} labelKey="label" valueKey="value" height={260} />
+          )}
         </div>
         <div className="card">
           <div className="card-head"><h3 className="card-title">{t('sales_cat')}</h3></div>
           <div className="donut-wrap">
             <DonutChart data={donutData} centerLabel={stats?.stats?.orders_count_30d ?? '—'} centerSub={t('orders_unit')} />
-            <div className="donut-legend">
-              {donutData.map((d, i) => (
-                <div key={i} className="donut-item">
-                  <span className="donut-swatch" style={{ background: d.color }}/>
-                  <span className="donut-item-label">{d.label}</span>
-                  <span className="donut-item-val">{d.value}%</span>
+            {donutEmpty ? (
+              !loading && (
+                <div className="donut-legend" style={{ color: 'var(--fg-mute)', fontSize: 13, fontStyle: 'italic' }}>
+                  {t('category_data_pending')}
                 </div>
-              ))}
-            </div>
+              )
+            ) : (
+              <div className="donut-legend">
+                {donutData.map((d, i) => (
+                  <div key={i} className="donut-item">
+                    <span className="donut-swatch" style={{ background: d.color }}/>
+                    <span className="donut-item-label">{d.label}</span>
+                    <span className="donut-item-val">{d.value}%</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
