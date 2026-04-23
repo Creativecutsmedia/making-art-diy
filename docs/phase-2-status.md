@@ -29,7 +29,7 @@ mode** — derfor modtog endpointet ingen events. Løst ved at slette Sandbox-
 webhook'en, oprette ny i Test mode, kopiere nyt `whsec_...` til Netlify env
 vars (alle 4 deploy contexts) og køre "Clear cache and deploy site".
 
-## Før launch (planlagt 2026-06-01)
+## Før launch (planlagt 2026-08-01)
 Skift fra Stripe Test mode til Live mode kræver:
 - Ny webhook-endpoint registreret i Live mode → nyt `STRIPE_WEBHOOK_SECRET`
 - Live API-nøgle → nyt `STRIPE_SECRET_KEY`
