@@ -42,6 +42,11 @@
 
   <script src="https://upload-widget.cloudinary.com/global/all.js"></script>
   <script>
+    // cloud_name + api_key er designet som public by Cloudinary
+    // API_SECRET forbliver i Netlify env vars — aldrig i browser
+    const CLOUD_NAME = 'makingartdiy';
+    const API_KEY = '424442646348262';
+
     const btn = document.getElementById('upload-btn');
     const resultEl = document.getElementById('result');
     const errorEl = document.getElementById('error');
@@ -62,62 +67,61 @@
       resultEl.style.display = 'none';
     }
 
-    btn.addEventListener('click', async () => {
+    // Build widget once on page load. Opens when button clicked.
+    // uploadSignature is an async callback — widget calls it with the params
+    // it will upload, we POST them to backend, backend signs, widget uploads.
+    const widget = cloudinary.createUploadWidget({
+      cloudName: CLOUD_NAME,
+      apiKey: API_KEY,
+      uploadSignature: async (callback, paramsToSign) => {
+        try {
+          const res = await fetch('/.netlify/functions/cloudinary-sign', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(paramsToSign),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || `Sign failed ${res.status}`);
+          callback(data.signature);
+        } catch (err) {
+          callback(err);
+        }
+      },
+      folder: 'test-poc-3.0b',
+      sources: ['local'],
+      multiple: false,
+      maxFiles: 1,
+      clientAllowedFormats: ['jpg', 'jpeg', 'png', 'webp'],
+      maxFileSize: 5_000_000,
+    }, (error, result) => {
+      if (error) {
+        showError(error.message || JSON.stringify(error));
+        btn.disabled = false;
+        return;
+      }
+      if (result && result.event === 'success') {
+        showResult({
+          public_id: result.info.public_id,
+          secure_url: result.info.secure_url,
+          format: result.info.format,
+          bytes: result.info.bytes,
+          width: result.info.width,
+          height: result.info.height,
+          folder: result.info.folder,
+        });
+        btn.disabled = false;
+      }
+      if (result && result.event === 'close') {
+        btn.disabled = false;
+      }
+    });
+
+    btn.addEventListener('click', () => {
       btn.disabled = true;
       resultEl.style.display = 'none';
       errorEl.style.display = 'none';
-
-      try {
-        // Fetch signed upload params from our backend (nf_jwt cookie auto-included).
-        const res = await fetch('/.netlify/functions/cloudinary-sign?folder=test-poc-3.0b', {
-          credentials: 'include',
-        });
-        if (!res.ok) {
-          const body = await res.text();
-          throw new Error(`Sign endpoint ${res.status}: ${body}`);
-        }
-        const params = await res.json();
-
-        // Open Cloudinary upload widget with signed params.
-        const widget = cloudinary.createUploadWidget({
-          cloudName: params.cloud_name,
-          apiKey: params.api_key,
-          uploadSignature: params.signature,
-          uploadSignatureTimestamp: params.timestamp,
-          folder: params.folder,
-          sources: ['local'],
-          multiple: false,
-          maxFiles: 1,
-          clientAllowedFormats: ['jpg', 'jpeg', 'png', 'webp'],
-          maxFileSize: 5_000_000,
-        }, (error, result) => {
-          if (error) {
-            showError(error.message || JSON.stringify(error));
-            btn.disabled = false;
-            return;
-          }
-          if (result && result.event === 'success') {
-            showResult({
-              public_id: result.info.public_id,
-              secure_url: result.info.secure_url,
-              format: result.info.format,
-              bytes: result.info.bytes,
-              width: result.info.width,
-              height: result.info.height,
-              folder: result.info.folder,
-            });
-            btn.disabled = false;
-          }
-          if (result && result.event === 'close') {
-            btn.disabled = false;
-          }
-        });
-
-        widget.open();
-      } catch (err) {
-        showError(err.message);
-        btn.disabled = false;
-      }
+      widget.open();
     });
   </script>
 </body>
