@@ -1,7 +1,5 @@
 // Shared primitives: Chip, Toggle, StatCard, TableWrap, Thumb, StatusChip
 
-const { useState } = React;
-
 function Chip({ kind, children }) {
   return <span className={`chip ${kind}`}>{children}</span>;
 }

@@ -1,16 +1,14 @@
 // Root App — state, routing, theme, language
-const { useState, useEffect } = React;
-
 function App() {
-  const [page, setPage] = useState(() => localStorage.getItem('mad_page') || 'dashboard');
-  const [params, setParams] = useState({});
-  const [lang, setLang] = useState(() => localStorage.getItem('mad_lang') || 'da');
-  const [theme, setTheme] = useState(() => localStorage.getItem('mad_theme') || 'dark');
-  const [cmdOpen, setCmdOpen] = useState(false);
+  const [page, setPage] = React.useState(() => localStorage.getItem('mad_page') || 'dashboard');
+  const [params, setParams] = React.useState({});
+  const [lang, setLang] = React.useState(() => localStorage.getItem('mad_lang') || 'da');
+  const [theme, setTheme] = React.useState(() => localStorage.getItem('mad_theme') || 'dark');
+  const [cmdOpen, setCmdOpen] = React.useState(false);
 
   const { t } = useI18n(lang);
 
-  useEffect(() => {
+  React.useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     document.documentElement.setAttribute('lang', lang);
     localStorage.setItem('mad_theme', theme);
@@ -18,7 +16,7 @@ function App() {
     localStorage.setItem('mad_page', page);
   }, [theme, lang, page]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const handler = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
