@@ -75,7 +75,19 @@
         msg.textContent = 'Netlify Identity kunne ikke indlæses.';
         return;
       }
-      window.netlifyIdentity.on('init', render);
+      window.netlifyIdentity.on('init', function(user) {
+        if (user) {
+          // Validate session to catch widget/nf_jwt desync (memory Option A).
+          // jwt() refreshes the token if nf_jwt is expired; rejects if the
+          // refresh-token is also dead (true session expiry) — then we force
+          // logout to clear stale widget state in localStorage.
+          user.jwt()
+            .then(function() { render(user); })
+            .catch(function() { window.netlifyIdentity.logout(); });
+        } else {
+          render(null);
+        }
+      });
       window.netlifyIdentity.on('login', function(user) {
         render(user);
         window.netlifyIdentity.close();
