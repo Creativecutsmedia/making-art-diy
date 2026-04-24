@@ -12,7 +12,7 @@ Autoritativ status + 14-ugers roadmap: se memory `project_phase_status.md`.
 | Uge | Periode | Fase | Status |
 |---|---|---|---|
 | W1 | 27. apr – 3. maj | Infrastructure de-risking | ✓ komplet — 3.0a Blobs, 3.0b Cloudinary, 3.0c auth-gate, 3.0d CoolRunner spike, 3.0e denne oprydning |
-| W2 | 4. – 10. maj | Buffer + Fase 1-spillover | planlagt |
+| W2 | 4. – 10. maj | Buffer + Fase 1-spillover | ✓ komplet — 3.1-prep.a/.b/.b-exec/.c + .c free-tier follow-up |
 | W3-W6 | 11. maj – 7. juni | Produkt-system (create/edit/delete + Cloudinary-upload) | — |
 | W7-W10 | 8. juni – 5. juli | Ordrer + Kunder + CoolRunner halv-auto | — |
 | W11-W12 | 6. – 19. juli | Stats + rabatter + refunds + email + settings + fragt | — |
@@ -75,12 +75,16 @@ Planlagt cutover-uge før launch. Detaljeret procedure:
       Add endpoint. URL: `https://makingartdiy.dk/.netlify/functions/stripe-webhook`,
       event: `checkout.session.completed`.
 - [ ] **Dag 1: Opdatér `STRIPE_WEBHOOK_SECRET` i Netlify**
-      Kopiér nyt `whsec_...` fra Live webhook → Netlify env vars → **alle 4
-      deploy contexts** (Production, Deploy previews, Branch deploys, Local
-      dev) → scope: Functions → marked as secret.
+      Kopiér nyt `whsec_...` fra Live webhook → Netlify env vars → **alle 5
+      deploy contexts** (Production, Deploy Previews, Branch deploys, Preview
+      Server & Agent Runners, Local development (Netlify CLI)) → scope: alle
+      scopes (free tier-tvunget) → marked as secret.
 - [ ] **Dag 1: Opdatér `STRIPE_SECRET_KEY` i Netlify**
       Hent `sk_live_...` fra Stripe Dashboard → Developers → API keys →
-      Live mode → samme 4 contexts.
+      Live mode → samme 5 contexts, alle scopes.
+
+      **Gotcha (free tier):** Scopes + 5-felt-paste er upgrade-locked. Se memory
+      `project_netlify_free_tier_env_vars.md` for detaljer + tidsestimat.
 - [ ] **Dag 1: Netlify "Clear cache and deploy site"**
       Uden dette bruger functions stadig cachede Test-env-vars.
 - [ ] **Dag 2 (tirsdag 21. juli): Live-test med eget køb**
@@ -158,3 +162,4 @@ Hver søndag under W2-W14: gå igennem dette, skriv svar i en ugenote.
 - **2026-04-22** — oprettet som fase 3a-data completion-log (commit `b29390d`)
 - **2026-04-23** — 3.0e oprydning: dato-korrektion (06-01 → 08-01), uge-oversigt,
   udvidet Stripe-sektion, søndags-review-template, link til memory-filer
+- **2026-04-24** — W2 afsluttet 4/4: 3.1-prep.a/.b/.b-exec/.c + .c free-tier follow-up (PRs #17-21). Plus diverse cleanup og søndags-review-prep.
