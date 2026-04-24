@@ -16,6 +16,17 @@ Variabelnavnet `GITHUB_PAT` besluttes i denne doc (ingen tidligere reference i k
 
 ---
 
+## Setup notes (free tier)
+
+Dokumentet blev oprindeligt skrevet som forskrift. Faktisk eksekvering 2026-04-24 afslørede at Netlify free tier låser to granularitets-options bag upgrade — Trin 2 beskriver begge paths nedenfor.
+
+- **Scopes — "Upgrade to unlock":** Functions-only er ikke valgbart på free tier. Alle scopes tvinges samlet (Builds + Functions + Runtime). Paid tier kan begrænse til Functions-only, hvilket reducerer eksponering (PAT læses ikke under build, ikke i edge-runtime).
+- **Deploy contexts — "Same value for all deploy contexts" låst:** PAT skal paste'es i 5 separate felter, præcis navngivet af Netlify: **Production**, **Deploy Previews**, **Branch deploys**, **Preview Server & Agent Runners**, **Local development (Netlify CLI)**. Paid tier tilbyder én checkbox der deler værdi på tværs.
+
+**Konsekvens for rotation:** Regn med ~5 min ekstra på free tier pga. 5-felt-paste. Hvis tier opgraderes inden næste rotation (2026-07-23), følg paid tier-stien i Trin 2 og Trin 4.
+
+---
+
 ## Hvorfor nu (W2) og ikke W3
 
 W3 er første arbejdsuge med nyt backend-arbejde (`admin-products-write.js` Netlify Function). Hvis token-setup først påbegyndes W3-dag-1, taber vi kodnings-tid på browser-flows gennem GitHub + Netlify dashboards — specielt hvis noget driller (f.eks. scope-valg eller Netlify deploy-context edge case). 3.1-prep.c fjerner den friktion forud.
@@ -67,8 +78,12 @@ Spike'en er bevidst docs-only. Selve PAT-genereringen + indsættelse i Netlify e
 
 1. **Key:** `GITHUB_PAT` (præcis skrivemåde — case-sensitive)
 2. **Values:**
-   - **Scopes:** Kun **Functions**. Fravælg "Builds", "Runtime", "Post processing". Build-step har ikke brug for tokenen; begrænsning reducerer eksponering.
-   - **Deploy contexts:** **Production**, **Deploy Previews**, **Branch deploys** — alle tre. Årsag: W3's test-flow kører i deploy-previews og skal kunne committe til test-branches. Hvis kun Production, kan preview-URLs ikke verificere write-flowet.
+   - **Scopes:**
+     - **Free tier (nuværende 2026-04-24):** Alle scopes tvinges samlet (Builds + Functions + Runtime). Functions-only er "Upgrade to unlock" og kan ikke fravælges.
+     - **Paid tier (fremtidig mulighed):** Vælg kun **Functions**. Fravælg "Builds", "Runtime", "Post processing". Build-step har ikke brug for tokenen; begrænsning reducerer eksponering.
+   - **Deploy contexts:** Alle 5 contexts skal have PAT'en — W3's test-flow kører i deploy-previews og skal kunne committe til test-branches. Hvis kun Production, kan preview-URLs ikke verificere write-flowet.
+     - **Free tier (nuværende 2026-04-24):** "Same value for all deploy contexts"-checkboxen er upgrade-locked. Paste PAT-værdien i alle 5 context-felter Netlify viser: **Production**, **Deploy Previews**, **Branch deploys**, **Preview Server & Agent Runners**, **Local development (Netlify CLI)**.
+     - **Paid tier (fremtidig mulighed):** Én paste + enable "Same value for all deploy contexts".
 3. **Value:** paste PAT-strengen (starter med `github_pat_...`)
 4. Klik "Create variable"
 
@@ -162,6 +177,7 @@ PAT expirer efter 90 dage. Uden rotation bryder W3-save-flow tavst med `HTTP 401
 
 ## Historik
 
-- **2026-04-24** — spike skrevet (W2 pre-planning). Variabelnavn `GITHUB_PAT` låst. Faktisk PAT-generering + Netlify-indsættelse + curl-verifikation udføres af Malik efter merge.
+- **2026-04-24 (spike-skrivning)** — spike skrevet som forskrift. Variabelnavn `GITHUB_PAT` låst. Merged som PR #20 (`b1795ee`).
+- **2026-04-24 (post-execution)** — PAT genereret, indsat i Netlify, curl-verificeret (HTTP 200). Expiry 2026-07-23. Docs opdateret med "Setup notes (free tier)"-sektion + korrigeret Trin 2 til at afspejle at Netlify free tier låser Functions-only og per-context-values bag upgrade.
 - **W3 (11.-17. maj)** — første faktisk brug i `admin-products-write.js`. Opdatér historik hvis setup-trin afslørede uklarheder i docs.
 - **Ved første rotation (~2026-07-23)** — opdatér expiry-dato + verificér at rotation-proceduren matcher faktisk oplevelse.
