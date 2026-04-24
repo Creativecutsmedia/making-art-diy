@@ -71,6 +71,12 @@ Ingen er launch-blokerende. Ingen kræver beslutning søndag.
    - Remote gone, arbejde bevaret i master via squash-commit `c3a9984` (PR #6)
    - Ikke noget at følge op på
 
+4. **4. produkt-kategori "Værksted/Garage/Skur" — beslutning søndag**
+   - Malik har produkter klar til kategorien, men ingen billeder endnu
+   - Beslutning søndag: pre-launch (tilføj til MUST-scope) vs post-launch v1.1 (park)
+   - Implementation rører mindst 6 filer: `update-products.py`, `_products/` YAML-schema, `shop.html` filter, `produkt.html` visning, `admin-v2/src/hooks.jsx` CATEGORY_SLUG map, `netlify/functions/admin-stats.js` categoryBySku
+   - Ingen kode eller plan produceret — afventer beslutning
+
 ---
 
 ## 5. Næste uges plan (27. april–3. maj)
