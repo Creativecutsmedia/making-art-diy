@@ -77,6 +77,12 @@ Ingen er launch-blokerende. Ingen kræver beslutning søndag.
    - Implementation rører mindst 6 filer: `update-products.py`, `_products/` YAML-schema, `shop.html` filter, `produkt.html` visning, `admin-v2/src/hooks.jsx` CATEGORY_SLUG map, `netlify/functions/admin-stats.js` categoryBySku
    - Ingen kode eller plan produceret — afventer beslutning
 
+5. **npm audit findings — 5 moderate vulnerabilities (beslutning søndag)**
+   - Alle 5 sporer til én CVE: `uuid < 14.0.0` (GHSA-w5hq-g745-h8pq, missing buffer bounds check)
+   - Transitive paths: `@netlify/blobs` → `@netlify/dev-utils` → `uuid`, og `resend` → `svix` → `uuid`
+   - `npm audit fix --force` ville downgrade `@netlify/blobs` til v8.2.0 — bryder W1-arkitektur-beslutning (v10+ CJS + connectLambda pattern, 3.0a PR #11)
+   - Ingen handling kørt; alle opgraderings-beslutninger defereret
+
 ---
 
 ## 5. Næste uges plan (27. april–3. maj)
