@@ -1,49 +1,220 @@
-// Add / Edit product form
+// Edit product form — calls 3.1a admin-products-write endpoint per
+// docs/3.1b-product-edit-form-contract.md.
+// State-machine: idle → dirty → saving → saved/error.
+// 3.1b is edit-only; create new product is W5-scope.
 function PageProductEdit({ t, lang, navigate, params }) {
   const I = window.Icons;
-  const { PRODUCTS, INTERNAL_FILES } = window.MAD_DATA;
-  const existing = params?.sku ? PRODUCTS.find(p => p.sku === params.sku) : null;
+  const { data: products, loading: productsLoading } = useProducts();
   const isNew = params?.new;
 
-  const [form, setForm] = React.useState({
-    sku: existing?.sku || '',
-    name_da: existing?.name_da || '',
-    name_en: existing?.name_en || '',
-    price: existing?.price || '',
-    category: existing?.category || 'voksne',
-    visible: existing?.visible ?? true,
-    desc_da: existing?.desc_da || '',
-    desc_en: existing?.desc_en || '',
-    notes: existing ? '8 skruer 4x40mm, træ fra Silvan, printtid 4t @ 0.2mm. Husk at slibe kanter før lakering.' : '',
+  const existing = React.useMemo(() => {
+    if (isNew || !params?.sku || !products) return null;
+    return products.find(p => p.sku === params.sku) || null;
+  }, [products, params?.sku, isNew]);
+
+  const emptyForm = {
+    sku: '', name_da: '', name_en: '', price: '', category: 'voksne',
+    visible: true, desc_da: '', desc_en: '', notes: '',
+  };
+  const [form, setForm] = React.useState(emptyForm);
+  const [originalForm, setOriginalForm] = React.useState(emptyForm);
+  const [slug, setSlug] = React.useState(null);
+
+  const [saveState, setSaveState] = React.useState('idle');
+  const [bannerMsg, setBannerMsg] = React.useState(null);
+  const [fieldErrors, setFieldErrors] = React.useState({});
+
+  // Hydrate form once products loaded + existing found
+  React.useEffect(() => {
+    if (existing) {
+      const initial = {
+        sku: existing.sku,
+        name_da: existing.name_da || '',
+        name_en: existing.name_en || '',
+        price: String(existing.price ?? ''),
+        category: existing.category || 'voksne',
+        visible: existing.visible ?? true,
+        desc_da: existing.desc_da || '',
+        desc_en: existing.desc_en || '',
+        notes: '',
+      };
+      setForm(initial);
+      setOriginalForm(initial);
+      setSlug(existing.slug);
+    }
+  }, [existing]);
+
+  // Dirty-tracking via shallow JSON-equality.
+  // Caveat: assumes primitive fields. 3.1c (extra_images array) needs deep-equality.
+  const isDirty = React.useMemo(
+    () => JSON.stringify(form) !== JSON.stringify(originalForm),
+    [form, originalForm]
+  );
+
+  // Auto-fade success banner after 5s → idle
+  React.useEffect(() => {
+    if (saveState === 'saved') {
+      const timer = setTimeout(() => {
+        setSaveState('idle');
+        setBannerMsg(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [saveState]);
+
+  const update = (k, v) => {
+    setForm(f => ({ ...f, [k]: v }));
+    if (fieldErrors[k]) {
+      setFieldErrors(prev => {
+        const { [k]: _drop, ...rest } = prev;
+        return rest;
+      });
+    }
+  };
+
+  const onCancel = () => {
+    if (isDirty && !window.confirm(t('discard_changes_confirm'))) return;
+    navigate('products');
+  };
+
+  const onSave = async () => {
+    if (!slug) return;
+    setSaveState('saving');
+    setBannerMsg(null);
+    setFieldErrors({});
+    try {
+      const fields = formToFields(form);
+      const res = await fetch('/.netlify/functions/admin-products-write', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug, sku: form.sku, fields }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 200 && data.ok) {
+        setSaveState('saved');
+        setBannerMsg({ type: 'success', text: t('saved_message') });
+        setOriginalForm(form);
+        return;
+      }
+      const errorKey = data.error || 'internal_error';
+      setSaveState('error');
+      setBannerMsg({ type: 'error', text: t('err_' + errorKey) });
+      if (errorKey === 'validation_failed' && data.details && data.details.fields) {
+        const backendToForm = {
+          title: 'name_da',
+          title_en: 'name_en',
+          description: 'desc_da',
+          description_en: 'desc_en',
+          price: 'price',
+          category: 'category',
+          published: 'visible',
+          internal_notes: 'notes',
+        };
+        const mapped = {};
+        for (const [bKey, msg] of Object.entries(data.details.fields)) {
+          mapped[backendToForm[bKey] || bKey] = msg;
+        }
+        setFieldErrors(mapped);
+      }
+    } catch (err) {
+      setSaveState('error');
+      setBannerMsg({ type: 'error', text: t('err_network') });
+    }
+  };
+
+  const dismissBanner = () => setBannerMsg(null);
+  const saveDisabled = saveState === 'saving' || !isDirty || isNew;
+
+  // Inline styles match admin-v2 pattern (page_products.jsx uses inline
+  // var(--err)/var(--ok) for status indicators).
+  const bannerStyle = (type) => ({
+    marginBottom: 16,
+    padding: '12px 14px',
+    borderRadius: 'var(--radius-input)',
+    border: '1px solid',
+    borderColor: type === 'success' ? 'var(--ok)' : 'var(--err)',
+    background: type === 'success' ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)',
+    color: type === 'success' ? 'var(--ok)' : 'var(--err)',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 12,
   });
+  const fieldErrorStyle = { color: 'var(--err)', fontSize: 12, marginTop: 4 };
 
-  const update = (k, v) => setForm(f => ({ ...f, [k]: v }));
-  const thumbKind = existing?.thumb || 'gold';
+  // 3.1b is edit-only — create new product is W5
+  if (isNew) {
+    return (
+      <div className="content" style={{ maxWidth: 960 }}>
+        <button className="btn btn-ghost" onClick={() => navigate('products')} style={{ marginBottom: 8 }}>
+          {t('back')}
+        </button>
+        <div style={{ padding: 48, textAlign: 'center', color: 'var(--fg-soft)' }}>
+          {lang === 'da' ? 'Opret nyt produkt kommer i W5.' : 'Create new product coming in W5.'}
+        </div>
+      </div>
+    );
+  }
 
-  const galleryImages = [
-    { kind: thumbKind, primary: true },
-    { kind: 'wood' },
-    { kind: 'blue' },
-    { kind: 'purple' },
-  ];
+  if (productsLoading) {
+    return (
+      <div className="content" style={{ maxWidth: 960 }}>
+        <div style={{ padding: 48, textAlign: 'center', color: 'var(--fg-soft)' }}>
+          {lang === 'da' ? 'Indlæser produkt…' : 'Loading product…'}
+        </div>
+      </div>
+    );
+  }
+
+  if (!existing) {
+    return (
+      <div className="content" style={{ maxWidth: 960 }}>
+        <div style={{ padding: 48, textAlign: 'center' }}>
+          <div style={{ color: 'var(--err)', marginBottom: 12 }}>{t('err_product_not_found')}</div>
+          <button className="btn btn-secondary" onClick={() => navigate('products')}>
+            {t('back_to_products')}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="content" style={{ maxWidth: 960 }}>
       <div className="page-header">
-        <button className="btn btn-ghost" onClick={() => navigate('products')} style={{ marginBottom: 8, paddingLeft: 0 }}>
+        <button className="btn btn-ghost" onClick={onCancel} style={{ marginBottom: 8, paddingLeft: 0 }}>
           {t('back')}
         </button>
         <div className="flex between items-center">
           <div>
-            <h1 className="page-title">{isNew ? t('add_product_title') : t('edit_product')}</h1>
-            <p className="page-sub">{existing ? existing.sku : t('add_product_title')}</p>
+            <h1 className="page-title">{t('edit_product')}</h1>
+            <p className="page-sub">{existing.sku}</p>
           </div>
           <div className="flex gap-2">
-            <button className="btn btn-secondary">{t('cancel')}</button>
-            <button className="btn btn-primary">{t('save')}</button>
+            <button className="btn btn-secondary" onClick={onCancel} disabled={saveState === 'saving'}>
+              {t('cancel')}
+            </button>
+            <button className="btn btn-primary" onClick={onSave} disabled={saveDisabled}>
+              {saveState === 'saving' ? t('saving') : <><I.check />{t('save')}</>}
+            </button>
           </div>
         </div>
       </div>
+
+      {bannerMsg && (
+        <div style={bannerStyle(bannerMsg.type)}>
+          <span>{bannerMsg.text}</span>
+          {bannerMsg.type === 'error' && (
+            <button
+              className="btn btn-ghost"
+              onClick={dismissBanner}
+              title={t('dismiss')}
+              style={{ padding: '0 8px', minWidth: 'auto' }}
+            >×</button>
+          )}
+        </div>
+      )}
 
       {/* Basics */}
       <div className="form-section">
@@ -53,11 +224,12 @@ function PageProductEdit({ t, lang, navigate, params }) {
         <div className="form-grid-3" style={{ marginBottom: 14 }}>
           <div className="field">
             <label className="field-label">{t('th_sku')}</label>
-            <input className="input mono" value={form.sku} onChange={(e) => update('sku', e.target.value)} placeholder="MAD-XXXX-001" />
+            <input className="input mono" value={form.sku} readOnly />
           </div>
           <div className="field">
             <label className="field-label">{t('price_dkk')}</label>
             <input className="input" type="number" value={form.price} onChange={(e) => update('price', e.target.value)} />
+            {fieldErrors.price && <div style={fieldErrorStyle}>{fieldErrors.price}</div>}
           </div>
           <div className="field">
             <label className="field-label">{t('th_category')}</label>
@@ -66,6 +238,7 @@ function PageProductEdit({ t, lang, navigate, params }) {
               <option value="born">{t('cat_born')}</option>
               <option value="erhverv">{t('cat_erhverv')}</option>
             </select>
+            {fieldErrors.category && <div style={fieldErrorStyle}>{fieldErrors.category}</div>}
           </div>
         </div>
 
@@ -73,10 +246,12 @@ function PageProductEdit({ t, lang, navigate, params }) {
           <div className="field">
             <label className="field-label">{t('name_da')}</label>
             <input className="input" value={form.name_da} onChange={(e) => update('name_da', e.target.value)} />
+            {fieldErrors.name_da && <div style={fieldErrorStyle}>{fieldErrors.name_da}</div>}
           </div>
           <div className="field">
             <label className="field-label">{t('name_en')}</label>
             <input className="input" value={form.name_en} onChange={(e) => update('name_en', e.target.value)} />
+            {fieldErrors.name_en && <div style={fieldErrorStyle}>{fieldErrors.name_en}</div>}
           </div>
         </div>
 
@@ -100,73 +275,12 @@ function PageProductEdit({ t, lang, navigate, params }) {
           <div className="field">
             <label className="field-label">{t('desc_da')}</label>
             <textarea className="textarea" rows="5" value={form.desc_da} onChange={(e) => update('desc_da', e.target.value)} />
+            {fieldErrors.desc_da && <div style={fieldErrorStyle}>{fieldErrors.desc_da}</div>}
           </div>
           <div className="field">
             <label className="field-label">{t('desc_en')}</label>
             <textarea className="textarea" rows="5" value={form.desc_en} onChange={(e) => update('desc_en', e.target.value)} />
-          </div>
-        </div>
-      </div>
-
-      {/* Images */}
-      <div className="form-section">
-        <h3 className="form-section-title">{t('images')}</h3>
-        <p className="form-section-desc">{t('images_desc')}</p>
-
-        <div className="image-grid">
-          {galleryImages.map((img, i) => {
-            const label = i === 0
-              ? (lang === 'da' ? 'Hovedbillede' : 'Primary image')
-              : (lang === 'da' ? `Galleri ${i}` : `Gallery ${i}`);
-            return (
-              <div key={i}>
-                <div className={`image-tile ${img.primary ? 'primary' : ''} thumb ${img.kind}`}
-                  style={{ borderRadius: 'var(--radius-inner)' }} title={label}>
-                </div>
-                <div className="small muted" style={{ marginTop: 6, textAlign: 'center' }}>{label}</div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="dropzone">
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-            <I.image />
-            <div className="dropzone-title">{t('drop_images')}</div>
-            <div className="dropzone-sub">{t('image_types')}</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Internal files */}
-      <div className="form-section">
-        <div className="flex between items-center mb-3">
-          <div>
-            <h3 className="form-section-title">🔒 {t('internal_files')}</h3>
-            <p className="form-section-desc" style={{ marginBottom: 0 }}>{t('internal_files_desc')}</p>
-          </div>
-        </div>
-
-        {INTERNAL_FILES.map((f, i) => (
-          <div key={i} className="file-row">
-            <div className="file-icon">
-              {f.name.endsWith('.stl') ? <I.file_3d /> : <I.file_pdf />}
-            </div>
-            <div className="file-meta">
-              <div className="file-name">{f.name}</div>
-              <div className="file-sub">{f.size}</div>
-            </div>
-            <Chip kind="gold">{lang === 'da' ? f.label_da : f.label_en}</Chip>
-            <button className="btn btn-ghost" title={t('download') || 'Download'}><I.download /></button>
-            <button className="btn btn-ghost"><I.x /></button>
-          </div>
-        ))}
-
-        <div className="dropzone" style={{ marginTop: 12 }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-            <I.upload />
-            <div className="dropzone-title">{t('drop_files')}</div>
-            <div className="dropzone-sub">{t('file_types')}</div>
+            {fieldErrors.desc_en && <div style={fieldErrorStyle}>{fieldErrors.desc_en}</div>}
           </div>
         </div>
       </div>
@@ -177,11 +291,16 @@ function PageProductEdit({ t, lang, navigate, params }) {
         <p className="form-section-desc">{t('internal_notes_desc')}</p>
         <textarea className="textarea" rows="5" placeholder={t('notes_placeholder')}
           value={form.notes} onChange={(e) => update('notes', e.target.value)} />
+        {fieldErrors.notes && <div style={fieldErrorStyle}>{fieldErrors.notes}</div>}
       </div>
 
       <div className="flex gap-2" style={{ justifyContent: 'flex-end' }}>
-        <button className="btn btn-secondary">{t('cancel')}</button>
-        <button className="btn btn-primary"><I.check />{t('save')}</button>
+        <button className="btn btn-secondary" onClick={onCancel} disabled={saveState === 'saving'}>
+          {t('cancel')}
+        </button>
+        <button className="btn btn-primary" onClick={onSave} disabled={saveDisabled}>
+          {saveState === 'saving' ? t('saving') : <><I.check />{t('save')}</>}
+        </button>
       </div>
     </div>
   );
