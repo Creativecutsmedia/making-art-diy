@@ -1,8 +1,8 @@
 ---
-title: TEST 3.1b Throwaway
+title: "⚠️ TEST — IKKE TIL SALG ⚠️"
 sku: MAD-TEST-998
-price: 1
+price: 99999
 category: Voksne
-description: Throwaway produkt brugt til 3.1b admin-v2 product-edit-form test-suite. Slettes via cleanup-commit i 3.1b feature-PR.
-published: false
+description: DETTE PRODUKT ER IKKE TIL SALG — automatisk test fra 3.1b admin-v2 udvikling, fjernes om få minutter.
+published: true
 ---
