@@ -8,6 +8,12 @@ const CATEGORY_SLUG = {
   'Erhverv': 'erhverv',
 };
 
+const CATEGORY_DISPLAY = {
+  'born': 'Børn',
+  'voksne': 'Voksne',
+  'erhverv': 'Erhverv',
+};
+
 function remapProduct(p) {
   return {
     sku: p.sku,
@@ -22,6 +28,22 @@ function remapProduct(p) {
     image: p.image || null,
     images: Array.isArray(p.images) ? p.images : [],
     slug: p.slug,
+  };
+}
+
+// Write-direction adapter: form-state → 3.1a contract fields per
+// docs/3.1b-product-edit-form-contract.md. SKU + slug sent at top level.
+// image/extra_images excluded (W4 Cloudinary).
+function formToFields(form) {
+  return {
+    title: form.name_da,
+    title_en: form.name_en,
+    description: form.desc_da,
+    description_en: form.desc_en,
+    price: parseInt(form.price, 10),
+    category: CATEGORY_DISPLAY[form.category],
+    published: form.visible,
+    internal_notes: form.notes,
   };
 }
 
@@ -124,3 +146,4 @@ function useStats() {
 
 window.useProducts = useProducts;
 window.useStats = useStats;
+window.formToFields = formToFields;

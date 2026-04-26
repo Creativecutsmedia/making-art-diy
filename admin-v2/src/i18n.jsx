@@ -497,6 +497,26 @@ const T = {
   // misc
   info_tooltip: { da: 'Info', en: 'Info' },
   pickup: { da: 'Afhentning', en: 'Pickup' },
+
+  // 3.1b — product edit form save flow
+  saved_message: { da: 'Gemt — kunder ser ændringen om ca. 1 minut', en: 'Saved — customers will see the change in ~1 minute' },
+  saving: { da: 'Gemmer…', en: 'Saving…' },
+  discard_changes_confirm: { da: 'Du har ugemte ændringer. Forkast dem?', en: 'You have unsaved changes. Discard them?' },
+  back_to_products: { da: 'Tilbage til produktliste', en: 'Back to products' },
+  dismiss: { da: 'Luk', en: 'Dismiss' },
+
+  // 3.1b — error banners (per HTTP-status fra 3.1a-kontrakt)
+  err_invalid_request: { da: 'Ugyldig forespørgsel — kontakt udvikler', en: 'Invalid request — contact developer' },
+  err_validation_failed: { da: 'Tjek felter markeret med fejl', en: 'Check fields marked with errors' },
+  err_unauthorized: { da: 'Du er logget ud — log ind igen', en: 'You\'re logged out — log in again' },
+  err_forbidden: { da: 'Du har ikke rettigheder til at gemme produkter', en: 'You don\'t have permission to save products' },
+  err_product_not_found: { da: 'Produktet findes ikke længere', en: 'Product no longer exists' },
+  err_sku_mismatch: { da: 'SKU-mismatch — genindlæs siden', en: 'SKU mismatch — reload page' },
+  err_concurrent_write: { da: 'Konflikt — en anden ændring kom først. Genindlæs siden.', en: 'Conflict — another change won. Reload page.' },
+  err_rate_limited: { da: 'API rate-limit ramt — prøv igen om få minutter', en: 'API rate limit hit — try again in a few minutes' },
+  err_internal_error: { da: 'Uventet fejl — prøv igen eller kontakt udvikler', en: 'Unexpected error — try again or contact developer' },
+  err_github_error: { da: 'GitHub API-fejl — prøv igen om lidt', en: 'GitHub API error — try again in a moment' },
+  err_network: { da: 'Netværksfejl — tjek forbindelsen og prøv igen', en: 'Network error — check connection and try again' },
 };
 
 function useI18n(lang) {
