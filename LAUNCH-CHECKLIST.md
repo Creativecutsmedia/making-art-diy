@@ -13,7 +13,7 @@ Autoritativ status + 14-ugers roadmap: se memory `project_phase_status.md`.
 |---|---|---|---|
 | W1 | 27. apr – 3. maj | Infrastructure de-risking | ✓ komplet — 3.0a Blobs, 3.0b Cloudinary, 3.0c auth-gate, 3.0d CoolRunner spike, 3.0e denne oprydning |
 | W2 | 4. – 10. maj | Buffer + Fase 1-spillover | ✓ komplet — 3.1-prep.a/.b/.b-exec/.c + .c free-tier follow-up |
-| W3-W6 | 11. maj – 7. juni | Produkt-system (create/edit/delete + Cloudinary-upload) | — |
+| W3-W6 | 11. maj – 7. juni | Produkt-system (create/edit/delete + Cloudinary-upload) | 3.1a ✓ (PR #29); 3.1b/c pending |
 | W7-W10 | 8. juni – 5. juli | Ordrer + Kunder + CoolRunner halv-auto | — |
 | W11-W12 | 6. – 19. juli | Stats + rabatter + refunds + email + settings + fragt | — |
 | W13 | 20. – 26. juli | **Stripe Live cutover + soft launch** | — |
@@ -44,6 +44,19 @@ Autoritativ status + 14-ugers roadmap: se memory `project_phase_status.md`.
 
 ## Sikkerhed
 
+- [ ] **MUST før launch:** `admin-stats.js` mangler eksplicit admin-role-check.
+      Read-only endpoint så lavere risiko end write-endpoints, men eksponerer
+      session-data til alle Identity-brugere. Fix-mønster: kopiér role-check
+      fra `admin-products-write.js` step 3. Tracket som F3 i memory
+      `project_phase_status.md`.
+- [ ] **MUST før launch:** admin-v2 mangler synlig log-ud-knap.
+      Brugeren kan kun logge ud via DevTools cookie-sletning. Implementation:
+      log-ud-knap i sidebar/header der kalder `netlifyIdentity.logout()`.
+      Sikkerhedsmangel — auth uden synlig logout er minimumskrav.
+- [ ] **MUST før launch:** admin-v2 session-udløb redirect.
+      Når session udløber viser appen kun fejl-besked uden redirect til login.
+      Implementation: detect 401 fra admin-endpoints, kald
+      `netlifyIdentity.logout()` + redirect til login. Pre-launch UX-mangel.
 - [ ] Flyt `internal_notes` og `internal_files` fra markdown-frontmatter til
       Netlify Blobs (fase 3 opgave — fjerner GitHub-lækage-risiko)
 - [x] Upgrade admin-v2 fil-beskyttelse til server-side gate før fase 3a-data
@@ -163,3 +176,4 @@ Hver søndag under W2-W14: gå igennem dette, skriv svar i en ugenote.
 - **2026-04-23** — 3.0e oprydning: dato-korrektion (06-01 → 08-01), uge-oversigt,
   udvidet Stripe-sektion, søndags-review-template, link til memory-filer
 - **2026-04-24** — W2 afsluttet 4/4: 3.1-prep.a/.b/.b-exec/.c + .c free-tier follow-up (PRs #17-21). Plus diverse cleanup og søndags-review-prep.
+- **2026-04-26** — søndags-review låst (W3 tidlig-start JA, 4. kategori parkeret post-launch v1.1, npm audit accept-risk, PR #28). 3.1a admin-products-write endpoint shippet (PR #29 `805c43d`) via mini-PR throwaway-strategi (PR #30). 3 nye MUST-før-launch issues identificeret: admin-stats role-check (F3), admin-v2 log-ud-knap, admin-v2 session-udløb redirect.
