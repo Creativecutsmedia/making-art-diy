@@ -1,8 +1,8 @@
 ---
 title: ⚠️ TEST — IKKE TIL SALG ⚠️
 sku: MAD-TEST-998
-price: 88888
-category: Voksne
+price: 99999
+category: Børn
 description: >-
   DETTE PRODUKT ER IKKE TIL SALG — automatisk test fra 3.1b admin-v2 udvikling,
   fjernes om få minutter.
