@@ -13,7 +13,7 @@ Autoritativ status + 14-ugers roadmap: se memory `project_phase_status.md`.
 |---|---|---|---|
 | W1 | 27. apr – 3. maj | Infrastructure de-risking | ✓ komplet — 3.0a Blobs, 3.0b Cloudinary, 3.0c auth-gate, 3.0d CoolRunner spike, 3.0e denne oprydning |
 | W2 | 4. – 10. maj | Buffer + Fase 1-spillover | ✓ komplet — 3.1-prep.a/.b/.b-exec/.c + .c free-tier follow-up |
-| W3-W6 | 11. maj – 7. juni | Produkt-system (create/edit/delete + Cloudinary-upload) | 3.1a ✓ (PR #29); 3.1b/c pending |
+| W3-W6 | 11. maj – 7. juni | Produkt-system (create/edit/delete + Cloudinary-upload) | 3.1a ✓ + 3.1b ✓ (PR #34); 3.1c pending |
 | W7-W10 | 8. juni – 5. juli | Ordrer + Kunder + CoolRunner halv-auto | — |
 | W11-W12 | 6. – 19. juli | Stats + rabatter + refunds + email + settings + fragt | — |
 | W13 | 20. – 26. juli | **Stripe Live cutover + soft launch** | — |
@@ -176,4 +176,4 @@ Hver søndag under W2-W14: gå igennem dette, skriv svar i en ugenote.
 - **2026-04-23** — 3.0e oprydning: dato-korrektion (06-01 → 08-01), uge-oversigt,
   udvidet Stripe-sektion, søndags-review-template, link til memory-filer
 - **2026-04-24** — W2 afsluttet 4/4: 3.1-prep.a/.b/.b-exec/.c + .c free-tier follow-up (PRs #17-21). Plus diverse cleanup og søndags-review-prep.
-- **2026-04-26** — søndags-review låst (W3 tidlig-start JA, 4. kategori parkeret post-launch v1.1, npm audit accept-risk, PR #28). 3.1a admin-products-write endpoint shippet (PR #29 `805c43d`) via mini-PR throwaway-strategi (PR #30). 3 nye MUST-før-launch issues identificeret: admin-stats role-check (F3), admin-v2 log-ud-knap, admin-v2 session-udløb redirect.
+- **2026-04-26** — søndags-review låst (W3 tidlig-start JA, 4. kategori parkeret post-launch v1.1, npm audit accept-risk, PR #28). 3.1a admin-products-write endpoint shippet (PR #29 `805c43d`) via mini-PR throwaway-strategi (PR #30). 3 nye MUST-før-launch issues identificeret: admin-stats role-check (F3), admin-v2 log-ud-knap, admin-v2 session-udløb redirect. Senere samme dag: 3.1b admin-v2 product edit form shippet (PR #34 `69cc892`) via 4-PR-sekvens med Phase 4 build-pipeline-pivot. 2 nye post-launch polish-issues sporet: DA-oversættelse af backend validation_failed strings, Save-knap visuel disabled-state.
