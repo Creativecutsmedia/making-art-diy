@@ -9,7 +9,7 @@
 - W1 100% (3.0a–3.0e): PR #11, #13, #14, #15, #16
 - W2 4/4 de-risking-spikes + 1 follow-up: PR #17, #18, #19, #20, #21
 - Plus chore: PR #22 (gitignore products.json)
-- Master HEAD: `8f539a6`
+- Master HEAD: `235741c`
 - **W1 landede 4 dage før plan; W2 afsluttet 14 dage før plan.**
 
 ### Tracking mod launch 2026-08-01
@@ -36,7 +36,7 @@
 - Scope-creep-risiko: "vi har jo tiden" → features tilføjet uden for MUST-listen
 
 ### Beslutning
-- [ ] **Ja** — start W3 [dato?]. Begynd med 3.1a admin-products-write backend.
+- [x] **Ja** — start W3 [dato?]. Begynd med 3.1a admin-products-write backend.
 - [ ] **Nej** — hold planlagt W3-start 11. maj. Buffer-aktivitet: __________.
 
 ---
@@ -99,8 +99,11 @@ Ingen er launch-blokerende. Ingen kræver beslutning søndag.
 
 ## 6. Decisions taken i dag
 
-_(udfyldes søndag)_
+**1. W3 tidlig-start: JA**
+Start 3.1a Phase 4 (function-implementation) nu. Rationale: pre-W3 recon + kontrakt-doc shippet 2026-04-25, mental model frisk; W1-pattern "new integrations fail first attempt" gør tidlig start til buffer mod 3.1a-iteration frem for buffer-spending. PAT klar i Netlify (`GITHUB_PAT`, expiry 2026-07-23), ingen setup-friktion.
 
-- [ ] W3 early-start: Ja / Nej
-- [ ] Buffer-aktivitet (hvis nej): __________
-- [ ] Andre: __________
+**2. 4. kategori "Værksted/Garage/Skur": POST-LAUNCH v1.1**
+Park i WON'T-pre-launch. Rationale: ingen billeder klar; implementation rører mindst 6 filer (`update-products.py`, `_products/` YAML-schema, `shop.html` filter, `produkt.html` visning, `admin-v2/src/hooks.jsx` CATEGORY_SLUG, `netlify/functions/admin-stats.js` categoryBySku); scope-creep-risiko mod 1. august cutoff vurderes højere end værdien af én ekstra kategori ved launch.
+
+**3. npm audit (5 moderate, uuid<14): ACCEPT RISK**
+Ingen handling. Rationale: alle 5 sporer til én transitive CVE (GHSA-w5hq-g745-h8pq, missing buffer bounds check i uuid). `npm audit fix --force` ville downgrade `@netlify/blobs` til v8.2.0 og bryde W1-arkitektur (v10+ CJS + connectLambda, PR #11). Risiko vurderes lav (admin-only paths, ingen user-supplied uuid-input). Revurderes post-launch v1.1.
