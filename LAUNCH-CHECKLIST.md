@@ -79,6 +79,20 @@ Autoritativ status + 14-ugers roadmap: se memory `project_phase_status.md`.
       `useStats` i admin-v2/src/hooks.jsx. Varer-siden viser ægte
       produkter fra products.json. Dashboard-wiring kommer i commit 2.1.
 
+## Ordrer — manuel oprettelse (W7-W10)
+
+Admin kan oprette ordrer manuelt uden at kunden går gennem checkout —
+til venner, familie og lokale kunder.
+
+- [ ] **MUST før launch:** Manuel ordre-oprettelse fra admin-v2.
+      Krav:
+      - Admin opretter ordren manuelt fra admin-v2-UI'en
+      - Stripe Payment Link genereres for ordren
+      - Mulighed for at udelade fragt (custom 0-kr shipping-override) — bruges til lokal afhentning, gaver til venner/familie, eller custom-aftaler
+      - Email sendes til kunden med betalingslinket
+      - Ordre lagres i samme Netlify Blobs-store som checkout-ordrer
+        så stats, fragt og status-flows virker uden specialcases
+
 ## Stripe Test → Live (W13: 20. – 26. juli 2026)
 
 Planlagt cutover-uge før launch. Detaljeret procedure:
@@ -177,3 +191,4 @@ Hver søndag under W2-W14: gå igennem dette, skriv svar i en ugenote.
   udvidet Stripe-sektion, søndags-review-template, link til memory-filer
 - **2026-04-24** — W2 afsluttet 4/4: 3.1-prep.a/.b/.b-exec/.c + .c free-tier follow-up (PRs #17-21). Plus diverse cleanup og søndags-review-prep.
 - **2026-04-26** — søndags-review låst (W3 tidlig-start JA, 4. kategori parkeret post-launch v1.1, npm audit accept-risk, PR #28). 3.1a admin-products-write endpoint shippet (PR #29 `805c43d`) via mini-PR throwaway-strategi (PR #30). 3 nye MUST-før-launch issues identificeret: admin-stats role-check (F3), admin-v2 log-ud-knap, admin-v2 session-udløb redirect. Senere samme dag: 3.1b admin-v2 product edit form shippet (PR #34 `69cc892`) via 4-PR-sekvens med Phase 4 build-pipeline-pivot. 2 nye post-launch polish-issues sporet: DA-oversættelse af backend validation_failed strings, Save-knap visuel disabled-state.
+- **2026-04-27** — W7-W10 MUST-scope udvidet: manuel ordre-oprettelse fra admin (Stripe Payment Link + 0-kr fragt-override + kunde-email + samme Blobs-store som checkout-ordrer).
