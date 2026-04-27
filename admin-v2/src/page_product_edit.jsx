@@ -15,6 +15,7 @@ function PageProductEdit({ t, lang, navigate, params }) {
   const emptyForm = {
     sku: '', name_da: '', name_en: '', price: '', category: 'voksne',
     visible: true, desc_da: '', desc_en: '', notes: '',
+    weight_grams: '', length_cm: '', width_cm: '', height_cm: '',
   };
   const [form, setForm] = React.useState(emptyForm);
   const [originalForm, setOriginalForm] = React.useState(emptyForm);
@@ -37,6 +38,10 @@ function PageProductEdit({ t, lang, navigate, params }) {
         desc_da: existing.desc_da || '',
         desc_en: existing.desc_en || '',
         notes: '',
+        weight_grams: String(existing.weight_grams ?? ''),
+        length_cm: String(existing.length_cm ?? ''),
+        width_cm: String(existing.width_cm ?? ''),
+        height_cm: String(existing.height_cm ?? ''),
       };
       setForm(initial);
       setOriginalForm(initial);
@@ -282,6 +287,40 @@ function PageProductEdit({ t, lang, navigate, params }) {
             <label className="field-label">{t('desc_en')}</label>
             <textarea className="textarea" rows="5" value={form.desc_en} onChange={(e) => update('desc_en', e.target.value)} />
             {fieldErrors.desc_en && <div style={fieldErrorStyle}>{fieldErrors.desc_en}</div>}
+          </div>
+        </div>
+      </div>
+
+      {/* Leveringsdetaljer (3.1c) */}
+      <div className="form-section">
+        <h3 className="form-section-title">{t('delivery_details')}</h3>
+        <p className="form-section-desc">{t('delivery_details_desc')}</p>
+        <div className="form-grid-2">
+          <div className="field">
+            <label className="field-label">{t('weight_grams')}</label>
+            <input className="input" type="number" min="0" step="1"
+              value={form.weight_grams}
+              onChange={(e) => update('weight_grams', e.target.value)} />
+          </div>
+          <div className="form-grid-3">
+            <div className="field">
+              <label className="field-label">{t('dim_length_cm')}</label>
+              <input className="input" type="number" min="0" step="1"
+                value={form.length_cm}
+                onChange={(e) => update('length_cm', e.target.value)} />
+            </div>
+            <div className="field">
+              <label className="field-label">{t('dim_width_cm')}</label>
+              <input className="input" type="number" min="0" step="1"
+                value={form.width_cm}
+                onChange={(e) => update('width_cm', e.target.value)} />
+            </div>
+            <div className="field">
+              <label className="field-label">{t('dim_height_cm')}</label>
+              <input className="input" type="number" min="0" step="1"
+                value={form.height_cm}
+                onChange={(e) => update('height_cm', e.target.value)} />
+            </div>
           </div>
         </div>
       </div>

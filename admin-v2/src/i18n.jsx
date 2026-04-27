@@ -201,9 +201,13 @@ const T = {
   variant_name: { da: 'Variant', en: 'Variant' },
   delivery_details: { da: 'Leveringsdetaljer', en: 'Delivery details' },
   delivery_details_desc: { da: 'Hvordan produktet pakkes og sendes', en: 'How the product is packaged and shipped' },
-  weight_g: { da: 'Vægt (gram)', en: 'Weight (grams)' },
+  // 3.1c — vægt + dimensioner
+  weight_grams: { da: 'Vægt (gram)', en: 'Weight (grams)' },
+  dim_length_cm: { da: 'Længde (cm)', en: 'Length (cm)' },
+  dim_width_cm: { da: 'Bredde (cm)', en: 'Width (cm)' },
+  dim_height_cm: { da: 'Højde (cm)', en: 'Height (cm)' },
+  // reserved for W7-W10 ordrer/forsendelse — do not remove
   delivery_time: { da: 'Leveringstid', en: 'Delivery time' },
-  dimensions: { da: 'Dimensioner (L × B × H cm)', en: 'Dimensions (L × W × H cm)' },
   dt_fast: { da: '1–3 dage', en: '1–3 days' },
   dt_med: { da: '3–7 dage', en: '3–7 days' },
   dt_slow: { da: '2–4 uger', en: '2–4 weeks' },
