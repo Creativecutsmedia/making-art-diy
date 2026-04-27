@@ -95,6 +95,7 @@ function PageProductEdit({ t, lang, navigate, params }) {
         setSaveState('saved');
         setBannerMsg({ type: 'success', text: t('saved_message') });
         setOriginalForm(form);
+        updateCachedProduct(form.sku, form);
         return;
       }
       const errorKey = data.error || 'internal_error';

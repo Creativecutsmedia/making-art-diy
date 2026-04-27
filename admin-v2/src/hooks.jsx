@@ -67,6 +67,29 @@ function loadProducts() {
   return productsPromise;
 }
 
+// Sync productsCache after save so subsequent mounts don't show stale data.
+function updateCachedProduct(sku, formState) {
+  if (!productsCache.data) return;
+  const idx = productsCache.data.findIndex(p => p.sku === sku);
+  if (idx === -1) return;
+  productsCache.data = productsCache.data.map((p, i) =>
+    i !== idx ? p : {
+      ...p,
+      name_da: formState.name_da,
+      name_en: formState.name_en,
+      price: parseInt(formState.price, 10),
+      category: formState.category,
+      visible: formState.visible,
+      desc_da: formState.desc_da,
+      desc_en: formState.desc_en,
+      weight_grams: (formState.weight_grams ?? '') !== '' ? parseInt(formState.weight_grams, 10) : undefined,
+      length_cm: (formState.length_cm ?? '') !== '' ? parseInt(formState.length_cm, 10) : undefined,
+      width_cm: (formState.width_cm ?? '') !== '' ? parseInt(formState.width_cm, 10) : undefined,
+      height_cm: (formState.height_cm ?? '') !== '' ? parseInt(formState.height_cm, 10) : undefined,
+    }
+  );
+}
+
 // ---- stats cache + loader ----
 
 let statsCache = { data: null, error: null };
@@ -147,3 +170,4 @@ function useStats() {
 window.useProducts = useProducts;
 window.useStats = useStats;
 window.formToFields = formToFields;
+window.updateCachedProduct = updateCachedProduct;
