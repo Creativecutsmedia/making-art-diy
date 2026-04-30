@@ -15,5 +15,6 @@ extra_images:
   - /images/uploads/vase-1.jpeg
 published: true
 internal_notes: ''
-weight_grams: -10
+weight_grams: 300
+length_cm: 12
 ---
