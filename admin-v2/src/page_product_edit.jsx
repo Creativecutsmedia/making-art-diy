@@ -43,6 +43,7 @@ function PageProductEdit({ t, lang, navigate, params }) {
         width_cm: String(existing.width_cm ?? ''),
         height_cm: String(existing.height_cm ?? ''),
       };
+      console.log('[3.1c-debug hydrate]', { existing, initial, existingWeight: existing.weight_grams, existingWeightType: typeof existing.weight_grams });
       setForm(initial);
       setOriginalForm(initial);
       setSlug(existing.slug);
@@ -52,7 +53,13 @@ function PageProductEdit({ t, lang, navigate, params }) {
   // Dirty-tracking via shallow JSON-equality.
   // Caveat: assumes primitive fields. 3.1c (extra_images array) needs deep-equality.
   const isDirty = React.useMemo(
-    () => JSON.stringify(form) !== JSON.stringify(originalForm),
+    () => {
+      const formStr = JSON.stringify(form);
+      const origStr = JSON.stringify(originalForm);
+      const dirty = formStr !== origStr;
+      console.log('[3.1c-debug isDirty]', { dirty, form, originalForm, formStr, origStr });
+      return dirty;
+    },
     [form, originalForm]
   );
 
@@ -68,6 +75,7 @@ function PageProductEdit({ t, lang, navigate, params }) {
   }, [saveState]);
 
   const update = (k, v) => {
+    if (k === 'weight_grams') console.log('[3.1c-debug update]', { key: k, value: v, type: typeof v, length: v?.length });
     setForm(f => ({ ...f, [k]: v }));
     if (fieldErrors[k]) {
       setFieldErrors(prev => {
@@ -110,6 +118,7 @@ function PageProductEdit({ t, lang, navigate, params }) {
         setSaveState('saved');
         setBannerMsg({ type: 'success', text: t('saved_message') });
         setOriginalForm(form);
+        console.log('[3.1c-debug setOriginalForm]', { form, formWeight: form.weight_grams, formWeightType: typeof form.weight_grams });
         updateCachedProduct(form.sku, form);
         return;
       }
