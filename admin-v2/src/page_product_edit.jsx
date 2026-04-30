@@ -15,6 +15,7 @@ function PageProductEdit({ t, lang, navigate, params }) {
   const emptyForm = {
     sku: '', name_da: '', name_en: '', price: '', category: 'voksne',
     visible: true, desc_da: '', desc_en: '', notes: '',
+    weight_grams: '', length_cm: '', width_cm: '', height_cm: '',
   };
   const [form, setForm] = React.useState(emptyForm);
   const [originalForm, setOriginalForm] = React.useState(emptyForm);
@@ -37,7 +38,12 @@ function PageProductEdit({ t, lang, navigate, params }) {
         desc_da: existing.desc_da || '',
         desc_en: existing.desc_en || '',
         notes: '',
+        weight_grams: String(existing.weight_grams ?? ''),
+        length_cm: String(existing.length_cm ?? ''),
+        width_cm: String(existing.width_cm ?? ''),
+        height_cm: String(existing.height_cm ?? ''),
       };
+      console.log('[3.1c-debug hydrate]', { existing, initial, existingWeight: existing.weight_grams, existingWeightType: typeof existing.weight_grams });
       setForm(initial);
       setOriginalForm(initial);
       setSlug(existing.slug);
@@ -47,7 +53,13 @@ function PageProductEdit({ t, lang, navigate, params }) {
   // Dirty-tracking via shallow JSON-equality.
   // Caveat: assumes primitive fields. 3.1c (extra_images array) needs deep-equality.
   const isDirty = React.useMemo(
-    () => JSON.stringify(form) !== JSON.stringify(originalForm),
+    () => {
+      const formStr = JSON.stringify(form);
+      const origStr = JSON.stringify(originalForm);
+      const dirty = formStr !== origStr;
+      console.log('[3.1c-debug isDirty]', { dirty, form, originalForm, formStr, origStr });
+      return dirty;
+    },
     [form, originalForm]
   );
 
@@ -63,6 +75,7 @@ function PageProductEdit({ t, lang, navigate, params }) {
   }, [saveState]);
 
   const update = (k, v) => {
+    if (k === 'weight_grams') console.log('[3.1c-debug update]', { key: k, value: v, type: typeof v, length: v?.length });
     setForm(f => ({ ...f, [k]: v }));
     if (fieldErrors[k]) {
       setFieldErrors(prev => {
@@ -79,6 +92,16 @@ function PageProductEdit({ t, lang, navigate, params }) {
 
   const onSave = async () => {
     if (!slug) return;
+
+    // Frontend min=0 guard. HTML5 min=0 håndhæves ikke uden form-submit;
+    // backend validerer også per kontrakt §150 (belt-and-suspenders).
+    const dimFields = ['weight_grams', 'length_cm', 'width_cm', 'height_cm'];
+    if (dimFields.some(k => form[k] !== '' && parseInt(form[k], 10) < 0)) {
+      setSaveState('error');
+      setBannerMsg({ type: 'error', text: t('err_negative_dimension') });
+      return;
+    }
+
     setSaveState('saving');
     setBannerMsg(null);
     setFieldErrors({});
@@ -95,6 +118,7 @@ function PageProductEdit({ t, lang, navigate, params }) {
         setSaveState('saved');
         setBannerMsg({ type: 'success', text: t('saved_message') });
         setOriginalForm(form);
+        console.log('[3.1c-debug setOriginalForm]', { form, formWeight: form.weight_grams, formWeightType: typeof form.weight_grams });
         updateCachedProduct(form.sku, form);
         return;
       }
@@ -282,6 +306,40 @@ function PageProductEdit({ t, lang, navigate, params }) {
             <label className="field-label">{t('desc_en')}</label>
             <textarea className="textarea" rows="5" value={form.desc_en} onChange={(e) => update('desc_en', e.target.value)} />
             {fieldErrors.desc_en && <div style={fieldErrorStyle}>{fieldErrors.desc_en}</div>}
+          </div>
+        </div>
+      </div>
+
+      {/* Leveringsdetaljer (3.1c) */}
+      <div className="form-section">
+        <h3 className="form-section-title">{t('delivery_details')}</h3>
+        <p className="form-section-desc">{t('delivery_details_desc')}</p>
+        <div className="form-grid-2">
+          <div className="field">
+            <label className="field-label">{t('weight_grams')}</label>
+            <input className="input" type="number" min="0" step="1"
+              value={form.weight_grams}
+              onChange={(e) => update('weight_grams', e.target.value)} />
+          </div>
+          <div className="form-grid-3">
+            <div className="field">
+              <label className="field-label">{t('dim_length_cm')}</label>
+              <input className="input" type="number" min="0" step="1"
+                value={form.length_cm}
+                onChange={(e) => update('length_cm', e.target.value)} />
+            </div>
+            <div className="field">
+              <label className="field-label">{t('dim_width_cm')}</label>
+              <input className="input" type="number" min="0" step="1"
+                value={form.width_cm}
+                onChange={(e) => update('width_cm', e.target.value)} />
+            </div>
+            <div className="field">
+              <label className="field-label">{t('dim_height_cm')}</label>
+              <input className="input" type="number" min="0" step="1"
+                value={form.height_cm}
+                onChange={(e) => update('height_cm', e.target.value)} />
+            </div>
           </div>
         </div>
       </div>

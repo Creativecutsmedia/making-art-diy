@@ -27,6 +27,10 @@ function remapProduct(p) {
     files: p.internal_files_count || 0,
     image: p.image || null,
     images: Array.isArray(p.images) ? p.images : [],
+    weight_grams: typeof p.weight_grams === 'number' ? p.weight_grams : undefined,
+    length_cm: typeof p.length_cm === 'number' ? p.length_cm : undefined,
+    width_cm: typeof p.width_cm === 'number' ? p.width_cm : undefined,
+    height_cm: typeof p.height_cm === 'number' ? p.height_cm : undefined,
     slug: p.slug,
   };
 }
@@ -44,6 +48,10 @@ function formToFields(form) {
     category: CATEGORY_DISPLAY[form.category],
     published: form.visible,
     internal_notes: form.notes,
+    ...(form.weight_grams !== '' && { weight_grams: parseInt(form.weight_grams, 10) }),
+    ...(form.length_cm !== '' && { length_cm: parseInt(form.length_cm, 10) }),
+    ...(form.width_cm !== '' && { width_cm: parseInt(form.width_cm, 10) }),
+    ...(form.height_cm !== '' && { height_cm: parseInt(form.height_cm, 10) }),
   };
 }
 

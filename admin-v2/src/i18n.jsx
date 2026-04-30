@@ -201,9 +201,13 @@ const T = {
   variant_name: { da: 'Variant', en: 'Variant' },
   delivery_details: { da: 'Leveringsdetaljer', en: 'Delivery details' },
   delivery_details_desc: { da: 'Hvordan produktet pakkes og sendes', en: 'How the product is packaged and shipped' },
-  weight_g: { da: 'Vægt (gram)', en: 'Weight (grams)' },
+  // 3.1c — vægt + dimensioner
+  weight_grams: { da: 'Vægt (gram)', en: 'Weight (grams)' },
+  dim_length_cm: { da: 'Længde (cm)', en: 'Length (cm)' },
+  dim_width_cm: { da: 'Bredde (cm)', en: 'Width (cm)' },
+  dim_height_cm: { da: 'Højde (cm)', en: 'Height (cm)' },
+  // reserved for W7-W10 ordrer/forsendelse — do not remove
   delivery_time: { da: 'Leveringstid', en: 'Delivery time' },
-  dimensions: { da: 'Dimensioner (L × B × H cm)', en: 'Dimensions (L × W × H cm)' },
   dt_fast: { da: '1–3 dage', en: '1–3 days' },
   dt_med: { da: '3–7 dage', en: '3–7 days' },
   dt_slow: { da: '2–4 uger', en: '2–4 weeks' },
@@ -517,6 +521,10 @@ const T = {
   err_internal_error: { da: 'Uventet fejl — prøv igen eller kontakt udvikler', en: 'Unexpected error — try again or contact developer' },
   err_github_error: { da: 'GitHub API-fejl — prøv igen om lidt', en: 'GitHub API error — try again in a moment' },
   err_network: { da: 'Netværksfejl — tjek forbindelsen og prøv igen', en: 'Network error — check connection and try again' },
+
+  // 3.1c — dim-validation banners (frontend guard + backend whitelist)
+  err_negative_dimension: { da: 'Negative tal ikke tilladt — tjek vægt og dimensioner', en: 'Negative numbers not allowed — check weight and dimensions' },
+  err_invalid_dimension: { da: 'Ugyldig værdi i vægt eller dimensioner — skal være heltal ≥ 0', en: 'Invalid value in weight or dimensions — must be integer ≥ 0' },
 };
 
 function useI18n(lang) {
