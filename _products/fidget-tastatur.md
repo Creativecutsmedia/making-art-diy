@@ -14,4 +14,9 @@ description_en: |-
   Extremely satisfying to click!
 image: /images/uploads/whatsapp-image-2026-04-15-at-21.25.34.jpeg
 published: true
+internal_notes: ''
+weight_grams: 75
+length_cm: 7
+width_cm: 7
+height_cm: 2
 ---
