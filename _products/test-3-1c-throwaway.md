@@ -8,7 +8,7 @@ description: Test produkt for 3.1c (vægt + dimensioner) — slettes efter merge
 description_en: Test product for 3.1c (weight + dimensions) — deleted after merge
 published: true
 internal_notes: ''
-weight_grams: 700
+weight_grams: 750
 length_cm: 20
 width_cm: 15
 height_cm: 10
