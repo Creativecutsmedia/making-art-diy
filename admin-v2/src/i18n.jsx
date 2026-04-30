@@ -521,6 +521,10 @@ const T = {
   err_internal_error: { da: 'Uventet fejl — prøv igen eller kontakt udvikler', en: 'Unexpected error — try again or contact developer' },
   err_github_error: { da: 'GitHub API-fejl — prøv igen om lidt', en: 'GitHub API error — try again in a moment' },
   err_network: { da: 'Netværksfejl — tjek forbindelsen og prøv igen', en: 'Network error — check connection and try again' },
+
+  // 3.1c — dim-validation banners (frontend guard + backend whitelist)
+  err_negative_dimension: { da: 'Negative tal ikke tilladt — tjek vægt og dimensioner', en: 'Negative numbers not allowed — check weight and dimensions' },
+  err_invalid_dimension: { da: 'Ugyldig værdi i vægt eller dimensioner — skal være heltal ≥ 0', en: 'Invalid value in weight or dimensions — must be integer ≥ 0' },
 };
 
 function useI18n(lang) {

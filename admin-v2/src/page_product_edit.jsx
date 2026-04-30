@@ -84,6 +84,16 @@ function PageProductEdit({ t, lang, navigate, params }) {
 
   const onSave = async () => {
     if (!slug) return;
+
+    // Frontend min=0 guard. HTML5 min=0 håndhæves ikke uden form-submit;
+    // backend validerer også per kontrakt §150 (belt-and-suspenders).
+    const dimFields = ['weight_grams', 'length_cm', 'width_cm', 'height_cm'];
+    if (dimFields.some(k => form[k] !== '' && parseInt(form[k], 10) < 0)) {
+      setSaveState('error');
+      setBannerMsg({ type: 'error', text: t('err_negative_dimension') });
+      return;
+    }
+
     setSaveState('saving');
     setBannerMsg(null);
     setFieldErrors({});

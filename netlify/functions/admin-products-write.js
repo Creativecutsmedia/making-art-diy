@@ -56,6 +56,16 @@ function validateMerged(data) {
     errors.internal_notes = 'must be a string';
   }
 
+  // 3.1c — weight + dimensions whitelist (replaces §150 passthrough)
+  const dimFields = ['weight_grams', 'length_cm', 'width_cm', 'height_cm'];
+  for (const k of dimFields) {
+    if (data[k] !== undefined) {
+      if (typeof data[k] !== 'number' || !Number.isInteger(data[k]) || data[k] < 0) {
+        errors[k] = 'must be a non-negative integer';
+      }
+    }
+  }
+
   return errors;
 }
 
@@ -162,9 +172,13 @@ exports.handler = async (event, context) => {
     // Step 8: whitelist-validate merged
     const errors = validateMerged(merged);
     if (Object.keys(errors).length > 0) {
+      const dimFields = ['weight_grams', 'length_cm', 'width_cm', 'height_cm'];
+      const errorKey = Object.keys(errors).every(k => dimFields.includes(k))
+        ? 'invalid_dimension'
+        : 'validation_failed';
       return jsonResponse(400, {
         ok: false,
-        error: 'validation_failed',
+        error: errorKey,
         details: { fields: errors },
       });
     }
